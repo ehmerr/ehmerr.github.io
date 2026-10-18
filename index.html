@@ -1,0 +1,1109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ahmar Rahmani</title>
+<meta name="description" content="Ahmar Rahmani, DevOps Intern at BytePe. Moving dev, staging and production from VMs to GKE with Helm, Terraform and GitLab CI/CD.">
+<meta property="og:title" content="Ahmar Rahmani">
+<meta property="og:description" content="DevOps Intern at BytePe. Moving dev, staging and production from VMs to GKE.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Averia+Serif+Libre:ital,wght@0,300;0,400;0,700;1,400&family=Geist+Mono:wght@400;500&family=Mona+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a ruled paper column (max 1180px) with hairline side rules and section rules. A friendly
+   serif carries a lowercase, conversational voice; pastel highlighter chips mark the key words, and
+   the hero's card deck tells the dev -> staging -> production story.
+   Motion sits on top: a load-in sequence, scroll reveals, a marquee band and a playable deploy
+   diagram. All of it switches off under prefers-reduced-motion, and the header's pause button
+   stops everything that loops. */
+:root {
+  --paper: #f5f6f3;
+  --surface: #ffffff;
+  --ink: #1f2328;
+  --muted: #5b6570;
+  --rule: #e1e4df;
+  --link: #0969da;
+  --lime: #e4fb7a;
+  --sky: #b9e3ff;
+  --peach: #ffe2c7;
+  --blush: #fff0ea;
+  --chip-ink: #1f2328;
+  --card-edge: rgb(31 35 40 / 0.10);
+  --card-glass: rgb(255 255 255 / 0.62);
+  --card-line: rgb(31 35 40 / 0.22);
+  --card-ok: #1a7f37;
+  --card-busy: #9a4b00;
+  --ok: #1f883d;
+  --busy: #b25a00;
+  --wait: #8c959f;
+  --sheet-paper: #ffffff;
+  --spot: rgb(228 251 122 / 0.55);
+  --header: rgb(245 246 243 / 0.86);
+  --shadow: 0 22px 40px -26px rgb(31 35 40 / 0.55);
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --serif: "Averia Serif Libre", Georgia, "Times New Roman", serif;
+  --sans: "Mona Sans", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --b-googlecloud: #4285f4; --b-kubernetes: #326ce5; --b-helm: #0f1689; --b-terraform: #844fba;
+  --b-docker: #2496ed; --b-gitlab: #fc6d26; --b-githubactions: #2088ff; --b-git: #f05032;
+  --b-grafana: #f46800; --b-linux: #1b2430; --b-ubuntu: #e95420; --b-nginx: #009639;
+  --b-postgresql: #4169e1; --b-mysql: #4479a1; --b-redis: #ff4438; --b-python: #3776ab;
+  --b-gnubash: #3f9a1f; --b-nvidia: #6aa600; --b-k6: #7d64ff; --b-claude: #d97757; --b-network: #0b7b8f;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #121417;
+    --surface: #1a1d21;
+    --ink: #e8eaed;
+    --muted: #9aa3ad;
+    --rule: #2a2e34;
+    --link: #6cb6ff;
+    --blush: #261f21;
+    --ok: #3fb950;
+    --busy: #e3a14a;
+    --wait: #6e7681;
+    --spot: rgb(228 251 122 / 0.13);
+    --header: rgb(18 20 23 / 0.84);
+    --shadow: 0 22px 40px -26px rgb(0 0 0 / 0.8);
+    --b-helm: #8f9bff; --b-linux: #e8eaed; --b-python: #5b9bd8; --b-mysql: #6a9fcc; --b-gnubash: #5cc23a; --b-nvidia: #76b900; --b-network: #4cc4d6;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #121417;
+  --surface: #1a1d21;
+  --ink: #e8eaed;
+  --muted: #9aa3ad;
+  --rule: #2a2e34;
+  --link: #6cb6ff;
+  --blush: #261f21;
+  --ok: #3fb950;
+  --busy: #e3a14a;
+  --wait: #6e7681;
+  --spot: rgb(228 251 122 / 0.13);
+  --header: rgb(18 20 23 / 0.84);
+  --shadow: 0 22px 40px -26px rgb(0 0 0 / 0.8);
+  --b-helm: #8f9bff; --b-linux: #e8eaed; --b-python: #5b9bd8; --b-mysql: #6a9fcc; --b-gnubash: #5cc23a; --b-nvidia: #76b900; --b-network: #4cc4d6;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 1rem; line-height: 1.6; -webkit-text-size-adjust: 100%; }
+img, svg { max-width: 100%; }
+[hidden] { display: none !important; }
+a { color: var(--link); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 4px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.ic { width: 1.15em; height: 1.15em; flex: none; fill: currentColor; }
+.b-googlecloud { color: var(--b-googlecloud); } .b-kubernetes { color: var(--b-kubernetes); } .b-helm { color: var(--b-helm); }
+.b-terraform { color: var(--b-terraform); } .b-docker { color: var(--b-docker); } .b-gitlab { color: var(--b-gitlab); }
+.b-githubactions { color: var(--b-githubactions); } .b-git { color: var(--b-git); } .b-grafana { color: var(--b-grafana); }
+.b-linux { color: var(--b-linux); } .b-ubuntu { color: var(--b-ubuntu); } .b-nginx { color: var(--b-nginx); }
+.b-postgresql { color: var(--b-postgresql); } .b-mysql { color: var(--b-mysql); } .b-redis { color: var(--b-redis); }
+.b-python { color: var(--b-python); } .b-gnubash { color: var(--b-gnubash); } .b-nvidia { color: var(--b-nvidia); } .b-k6 { color: var(--b-k6); } .b-claude { color: var(--b-claude); }
+.b-network { color: var(--b-network); }
+
+/* Scroll progress: a hairline across the top of the viewport */
+.progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 60; pointer-events: none; }
+.progress i { display: block; height: 100%; background: var(--ink); transform: scaleX(0); transform-origin: 0 50%; }
+
+/* Page frame: gutter outside, hairline rules inside */
+.page { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); overflow-x: clip; }
+.frame { max-width: 1180px; margin: 0 auto; border-left: 1px solid var(--rule); border-right: 1px solid var(--rule); }
+.sec { padding: 72px 44px; border-top: 1px solid var(--rule); }
+
+/* Header: pinned on wider screens, frosted over the page */
+.top { position: sticky; top: 0; z-index: 30; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 24px; min-height: 66px; padding: 12px 44px; border-bottom: 1px solid var(--rule); background: var(--header); -webkit-backdrop-filter: saturate(1.4) blur(12px); backdrop-filter: saturate(1.4) blur(12px); transition: box-shadow 0.3s ease; }
+.top.stuck { box-shadow: 0 16px 30px -28px rgb(0 0 0 / 0.5); }
+.logo { display: inline-flex; align-items: center; gap: 12px; font-family: var(--serif); font-size: 1.25rem; color: var(--ink); text-decoration: none; }
+.logo i { width: 12px; height: 12px; border-radius: 3px; background: var(--lime); box-shadow: 5px 5px 0 var(--sky); transition: rotate 0.5s var(--ease); }
+.logo:hover i { rotate: 90deg; }
+.top nav { display: flex; flex-wrap: wrap; gap: 4px 26px; }
+.top nav a { padding: 2px 0; font-family: var(--mono); font-size: 13px; color: var(--muted); text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1.5px no-repeat; transition: color 0.2s ease, background-size 0.35s var(--ease); }
+.top nav a:hover, .top nav a.on { color: var(--ink); background-size: 100% 1.5px; }
+.top-end, .tools { display: flex; align-items: center; gap: 8px; }
+.hero, .sec { scroll-margin-top: 65px; } /* in-page jumps land below the pinned header */
+.icon-btn { display: inline-grid; place-items: center; width: 34px; height: 34px; padding: 0; border: 1px solid var(--rule); border-radius: 50%; background: var(--surface); color: var(--ink); cursor: pointer; transition: border-color 0.2s ease, rotate 0.5s var(--ease); }
+.icon-btn:hover { border-color: var(--ink); }
+.icon-btn:focus-visible { border-radius: 50%; }
+.btn:focus-visible, .reach button:focus-visible { border-radius: 999px; }
+.icon-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.theme-btn:hover { rotate: 25deg; }
+.theme-btn[aria-pressed="true"] .moon, .theme-btn:not([aria-pressed="true"]) .sun { display: none; }
+.motion-btn[aria-pressed="true"] .pause, .motion-btn:not([aria-pressed="true"]) .play { display: none; }
+.avail { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; padding: 5px 12px; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); }
+.avail::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--ok); animation: ping 1.6s ease-out 1.2s 3; }
+@keyframes ping { from { box-shadow: 0 0 0 0 var(--ok); } to { box-shadow: 0 0 0 7px transparent; } }
+
+/* Hero: the lines rise in, then the highlighter sweeps across the chips */
+.hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: center; padding: 64px 44px 72px; }
+.hero > * { min-width: 0; }
+.headline { font-family: var(--serif); font-weight: 400; font-size: clamp(2.2rem, 4.9vw, 4rem); line-height: 1.08; letter-spacing: -0.02em; margin: 0 0 26px; text-wrap: balance; }
+.headline .line { display: block; animation: lift 0.9s var(--ease) backwards; }
+.headline .line:nth-child(2) { animation-delay: 0.1s; }
+.headline .line:nth-child(3) { animation-delay: 0.2s; }
+.hl { --hl: var(--lime); color: var(--chip-ink); background: linear-gradient(var(--hl), var(--hl)) 0 0 / 100% 100% no-repeat; border-radius: 0.2em; padding: 0 0.14em; white-space: nowrap; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.hl.sky { --hl: var(--sky); }
+.headline .hl { animation: sweep 0.8s cubic-bezier(0.65, 0, 0.25, 1) 0.45s backwards; }
+.headline .line:nth-child(2) .hl { animation-delay: 0.62s; }
+.headline .tail { color: var(--muted); font-style: italic; }
+.lede { font-size: 1.125rem; max-width: 34rem; margin: 0; animation: lift 0.8s var(--ease) 0.3s backwards; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 28px 0 0; padding: 0; list-style: none; }
+.hero .actions { animation: lift 0.8s var(--ease) 0.4s backwards; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font-family: inherit; font-weight: 600; font-size: 0.9375rem; line-height: 1.6; text-decoration: none; cursor: pointer; transition: transform 0.2s ease, border-color 0.2s ease; }
+.btn:hover { transform: translateY(-2px); border-color: var(--ink); }
+.btn.primary { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.daily { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 30px 0 0; padding: 0; list-style: none; }
+.daily li { animation: pop 0.5s cubic-bezier(0.3, 1.5, 0.5, 1) backwards; animation-delay: calc(0.55s + var(--i, 0) * 45ms); }
+.daily .label { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-right: 2px; }
+.daily .ic { width: 22px; height: 22px; transition: transform 0.2s ease; }
+.daily li:hover .ic { transform: translateY(-3px) rotate(-6deg); }
+@keyframes lift { from { opacity: 0; translate: 0 0.5em; } }
+@keyframes sweep { from { background-size: 0% 100%; color: var(--ink); } }
+@keyframes pop { from { opacity: 0; scale: 0.4; } }
+
+/* The deck: dev, staging, production in order, slightly overlapped so every card reads at rest.
+   Cards deal in on load, lean toward the pointer at different depths, and lift on hover. */
+.deck { --px: 0; --py: 0; display: flex; justify-content: center; align-items: center; padding: 28px 0 40px; }
+.env {
+  position: relative; flex: 0 1 190px; min-width: 0; min-height: 236px; margin: 0 -7px; padding: 16px 16px 18px;
+  display: flex; flex-direction: column; gap: 8px; border-radius: 16px; border: 1px solid var(--card-edge);
+  color: var(--chip-ink); box-shadow: var(--shadow);
+  transform: translateY(var(--y)) rotate(var(--r));
+  translate: calc(var(--px) * var(--depth) * 1px) calc(var(--py) * var(--depth) * 1px);
+  transition: transform 0.45s var(--ease), translate 0.7s var(--ease);
+  animation: rise 0.9s var(--ease) backwards; animation-delay: var(--d);
+}
+.env-dev { background: var(--sky); --y: 18px; --r: -7deg; --d: 0.15s; --depth: 7; z-index: 1; }
+.env-stage { background: var(--lime); --y: -10px; --r: 1.5deg; --d: 0.28s; --depth: 12; z-index: 2; }
+.env-prod { background: var(--peach); --y: 22px; --r: 6deg; --d: 0.41s; --depth: 18; z-index: 3; }
+.env-dev, .env-stage { padding-right: 24px; } /* the next card overlaps this edge */
+.env:hover { transform: translateY(calc(var(--y) - 12px)) rotate(0deg); z-index: 4; }
+@keyframes rise { from { opacity: 0; transform: translateY(calc(var(--y) + 46px)) rotate(0deg); } }
+.env-top { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.env-name { font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; }
+.state { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 11.5px; padding: 2px 9px; border-radius: 999px; background: var(--card-glass); }
+.state::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.state.done { color: var(--card-ok); }
+.state.busy { color: var(--card-busy); }
+.state.busy::before { animation: beat 1.8s ease-out infinite; }
+@keyframes beat { 0% { box-shadow: 0 0 0 0 currentColor; } 70%, 100% { box-shadow: 0 0 0 6px transparent; } }
+.env-big { font-family: var(--serif); font-size: 1.7rem; line-height: 1.05; margin: 6px 0 0; }
+.env-note { margin: 0; font-size: 0.875rem; line-height: 1.45; }
+.env-foot { margin: auto 0 0; padding-top: 10px; border-top: 1px dashed var(--card-line); font-family: var(--mono); font-size: 11.5px; }
+
+/* Marquee band: two tapes crossing, running in opposite directions. Script clones each group so the
+   loop is seamless; without script the tapes sit still. Hover or the pause button stops them. */
+.band-wrap { position: relative; overflow: hidden; padding: 34px 0; border-top: 1px solid var(--rule); }
+.band { margin: 0 -24px; border-block: 1px solid var(--card-edge); color: var(--chip-ink); overflow: hidden; }
+.band-front { position: relative; z-index: 1; background: var(--lime); rotate: -1.6deg; box-shadow: var(--shadow); }
+.band-back { position: absolute; left: 0; right: 0; top: 50%; translate: 0 -50%; background: var(--sky); rotate: 1.6deg; }
+.band-track { display: flex; width: max-content; }
+.band-group { display: flex; align-items: center; gap: 26px; padding: 11px 26px 11px 0; white-space: nowrap; }
+.band-front .band-group { font-family: var(--serif); font-size: 1.35rem; }
+.band-back .band-group { font-family: var(--mono); font-size: 13px; letter-spacing: 0.04em; }
+.band-group span { display: inline-flex; align-items: center; gap: 9px; }
+.band-group .ic { width: 0.95em; height: 0.95em; }
+.band-group i { width: 8px; height: 8px; flex: none; border-radius: 2px; background: currentColor; rotate: 45deg; opacity: 0.55; }
+.band.loop .band-track { animation: marquee 48s linear infinite; }
+.band-back.loop .band-track { animation-duration: 64s; animation-direction: reverse; }
+.band-wrap:hover .band.loop .band-track, .still .band.loop .band-track { animation-play-state: paused; }
+@keyframes marquee { to { translate: -50% 0; } }
+
+/* Section heads */
+.eyebrow { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12.5px; color: var(--muted); margin: 0 0 14px; }
+.eyebrow::before { content: ""; width: 9px; height: 9px; border-radius: 2px; background: var(--lime); box-shadow: 0 0 0 1px var(--card-edge); }
+.sec h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(1.9rem, 3.6vw, 2.75rem); line-height: 1.1; letter-spacing: -0.015em; margin: 0 0 14px; text-wrap: balance; }
+.intro { color: var(--muted); max-width: 60ch; margin: 0 0 36px; }
+
+/* Work */
+.work { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 48px; }
+.facts { margin: 0; display: grid; gap: 14px; align-content: start; }
+.facts div { display: grid; gap: 2px; }
+.facts dt { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.facts dd { margin: 0; font-weight: 500; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--rule); border-radius: 14px; background: var(--surface); margin: 0 0 28px; overflow: hidden; }
+.stats div { padding: 20px 22px; min-width: 0; }
+.stats div + div { border-left: 1px solid var(--rule); }
+.stats b { display: block; font-family: var(--serif); font-weight: 700; font-size: 2.4rem; line-height: 1; margin-bottom: 8px; font-variant-numeric: tabular-nums; }
+.stats span { color: var(--muted); font-size: 0.9375rem; }
+.ruled { list-style: none; margin: 0; padding: 0; }
+.ruled li { padding: 15px 0; border-top: 1px solid var(--rule); }
+.ruled li:last-child { border-bottom: 1px solid var(--rule); }
+.ruled strong { font-weight: 600; }
+
+/* Platform diagram, with a playable deploy: nodes light up as a pulse travels the edges */
+.diagram { overflow-x: auto; border: 1px solid var(--rule); border-radius: 14px; padding: 18px; background: var(--surface); }
+.diagram svg { display: block; width: 100%; min-width: 720px; height: auto; }
+.d-node { fill: var(--paper); stroke: var(--rule); stroke-width: 1.5; }
+.d-key { fill: var(--lime); stroke: var(--card-edge); stroke-width: 1.5; }
+.d-text { fill: var(--ink); font-family: var(--mono); font-size: 13px; }
+.d-title { fill: var(--chip-ink); font-family: var(--serif); font-size: 20px; }
+.d-sub { fill: var(--chip-ink); font-family: var(--mono); font-size: 11.5px; }
+.d-edge { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+.d-dash { stroke-dasharray: 5 5; }
+.d-label { fill: var(--muted); font-family: var(--mono); font-size: 11px; }
+.d-arrow { fill: var(--muted); }
+.d-node, .d-key, .d-edge, .d-text { transition: fill 0.35s ease, stroke 0.35s ease, stroke-width 0.35s ease; }
+.d-n.lit .d-node { fill: var(--lime); stroke: var(--chip-ink); }
+.d-n.lit .d-text { fill: var(--chip-ink); }
+.d-n.lit .d-key { stroke: var(--ink); stroke-width: 2.5; }
+.d-edge.lit { stroke: var(--ink); stroke-width: 2.25; }
+.d-ring { fill: none; stroke: var(--ok); stroke-width: 2; opacity: 0; }
+.d-n.lit .d-ring { animation: ring 1.1s ease-out 2; }
+@keyframes ring { from { opacity: 0.85; stroke-width: 2; } to { opacity: 0; stroke-width: 26; } }
+.d-dot { fill: var(--ink); stroke: var(--lime); stroke-width: 3; opacity: 0; transition: opacity 0.2s ease; }
+.d-dot.on { opacity: 1; }
+.ship { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin: 18px 0 0; }
+.ship .ic { width: 0.95em; height: 0.95em; }
+.ship-log { flex: 1 1 260px; min-width: 0; margin: 0; font-family: var(--mono); font-size: 13px; color: var(--muted); }
+.ship-log::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 9px; border-radius: 50%; background: var(--wait); vertical-align: 1px; }
+.ship.busy .ship-log { color: var(--ink); }
+.ship.busy .ship-log::before { background: var(--ok); animation: blink 0.9s ease-in-out infinite alternate; }
+@keyframes blink { to { opacity: 0.25; } }
+
+/* Up next */
+.next { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 18px 48px; padding: 28px; border-radius: 16px; background: var(--blush); border: 1px solid var(--card-edge); }
+.next-text { flex: 1 1 360px; min-width: 0; }
+.next h3 { font-family: var(--serif); font-weight: 400; font-size: 1.75rem; line-height: 1.15; margin: 0 0 8px; }
+.next p { margin: 0; }
+.track { flex: 0 1 320px; display: flex; list-style: none; margin: 0; padding: 0; }
+.track li { flex: 1; position: relative; padding-top: 24px; font-family: var(--mono); font-size: 12px; color: var(--muted); min-width: 0; }
+.track li::before { content: ""; position: absolute; top: 3px; left: 0; width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--wait); background: var(--paper); z-index: 1; transition: scale 0.5s cubic-bezier(0.3, 1.6, 0.5, 1) 0.2s; }
+.track li::after { content: ""; position: absolute; top: 9px; left: 14px; right: 0; height: 2px; background: var(--rule); transform-origin: 0 50%; transition: scale 0.9s var(--ease) 0.45s; }
+.track li:last-child { flex: 0 0 auto; }
+.track li:last-child::after { display: none; }
+.track li.done { color: var(--ink); }
+.track li.done::before { background: var(--ok); border-color: var(--ok); }
+.track li.done::after { background: var(--ok); }
+.next.pending .track li.done::before { scale: 0.2; }
+.next.pending .track li.done::after { scale: 0 1; }
+
+/* Stack: each logo sits in a chip tinted with its own brand colour, so logos of different weights
+   read as one set. Title and note are pinned to the top of the tile (row 2 takes the slack), so they
+   line up across a row whatever the note's length. A soft spotlight follows the pointer. */
+.cats { display: grid; gap: 30px; }
+.cat-name { font-family: var(--mono); font-size: 12.5px; color: var(--muted); margin: 0 0 12px; }
+.tiles { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.tile { position: relative; isolation: isolate; overflow: hidden; display: grid; grid-template-columns: 42px minmax(0, 1fr); grid-template-rows: auto 1fr; column-gap: 14px; row-gap: 2px; align-items: start; padding: 16px; border: 1px solid var(--rule); border-radius: 12px; background: var(--surface); transition: transform 0.2s ease, border-color 0.2s ease; }
+.tile::after { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(200px circle at var(--mx, 50%) var(--my, 50%), var(--spot), transparent 70%); opacity: 0; transition: opacity 0.3s ease; }
+.tile:hover { transform: translateY(-2px); border-color: var(--ink); }
+.tile:hover::after { opacity: 1; }
+.tile-ic { grid-row: 1 / span 2; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 11px; background: var(--paper); background: color-mix(in srgb, currentColor 13%, transparent); transition: background-color 0.25s ease; }
+.tile-ic .ic { width: 24px; height: 24px; transition: transform 0.35s cubic-bezier(0.3, 1.6, 0.5, 1); }
+.tile:hover .tile-ic { background: color-mix(in srgb, currentColor 22%, transparent); }
+.tile:hover .tile-ic .ic { transform: rotate(-8deg) scale(1.12); }
+.tile b { font-weight: 600; font-size: 0.9375rem; line-height: 1.4; }
+.tile small { color: var(--muted); font-size: 0.8125rem; line-height: 1.4; }
+
+/* Education */
+.rows { margin: 0; display: grid; }
+.rows > div { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 4px 24px; padding: 15px 0; border-top: 1px solid var(--rule); }
+.rows > div:last-child { border-bottom: 1px solid var(--rule); }
+.rows dt { font-family: var(--mono); font-size: 12.5px; color: var(--muted); padding-top: 2px; }
+.rows dd { margin: 0; }
+
+/* Resume: the PDF's first page as a tilted sheet on a backing sheet; it leans toward the pointer */
+.cv { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 420px); gap: 56px; align-items: center; }
+.cv > * { min-width: 0; }
+.cv .intro { margin-bottom: 20px; }
+.cv-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 26px; padding: 0; list-style: none; }
+.cv-tags li { padding: 4px 11px; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); font-family: var(--mono); font-size: 12px; color: var(--ink); }
+.cv-meta { display: flex; flex-wrap: wrap; gap: 12px 32px; margin: 0; }
+.cv-meta div { display: grid; gap: 2px; }
+.cv-meta dt { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.cv-meta dd { margin: 0; font-weight: 500; }
+.sheet-wrap { justify-self: center; width: 100%; max-width: 420px; }
+.sheet { position: relative; isolation: isolate; display: block; margin: 18px 14px 22px 0; transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) rotate(var(--rz, -2.5deg)) translateY(var(--lift, 0px)); transition: transform 0.5s var(--ease); }
+.sheet.tilting { transition-duration: 0.15s; }
+.sheet:hover, .sheet:focus-visible { --rz: 0deg; --lift: -6px; }
+.sheet::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: 10px; background: var(--sky); border: 1px solid var(--card-edge); transform: translate(14px, 10px) rotate(5deg); transition: transform 0.5s var(--ease); }
+.sheet img { display: block; width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--card-edge); background: var(--sheet-paper); box-shadow: var(--shadow); }
+.sheet:hover::before, .sheet:focus-visible::before { transform: translate(22px, 14px) rotate(8deg); }
+.sheet-tag { position: absolute; top: -12px; right: -10px; font-family: var(--mono); font-size: 12px; color: var(--chip-ink); background: var(--lime); border: 1px solid var(--card-edge); border-radius: 999px; padding: 4px 11px; transform: rotate(6deg); box-shadow: var(--shadow); }
+
+/* Footer */
+.foot { overflow: hidden; padding-bottom: 28px; }
+.foot h2 { font-size: clamp(2.1rem, 5vw, 3.6rem); max-width: 18ch; }
+/* Email and phone: value | copy button, two aligned columns; on phones each value sits above its button */
+.reach { display: grid; grid-template-columns: minmax(0, max-content) max-content; align-items: center; gap: 10px 14px; margin: 6px 0 0; }
+.reach code, .reach .tel { font-family: var(--mono); font-size: 1.125rem; overflow-wrap: anywhere; }
+.reach code { user-select: all; }
+.reach .tel { color: var(--ink); text-decoration: none; }
+.reach .tel:hover { text-decoration: underline; }
+.reach button { justify-self: start; font: 600 0.875rem var(--sans); color: var(--ink); background: var(--surface); border: 1px solid var(--rule); border-radius: 999px; padding: 7px 14px; cursor: pointer; }
+.reach button:hover { border-color: var(--ink); }
+.swipe { display: none; margin: 10px 0 0; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.wordmark { display: block; margin: 56px 0 18px; font-family: var(--serif); font-size: clamp(2rem, 11.2vw, 10rem); line-height: 0.9; letter-spacing: -0.03em; white-space: nowrap; cursor: default; user-select: none; }
+.wordmark span { display: inline-block; transition: transform 0.35s var(--ease) calc(var(--i) * 22ms), color 0.35s ease calc(var(--i) * 22ms), translate 0.9s var(--ease) calc(var(--i) * 32ms), opacity 0.6s ease calc(var(--i) * 32ms); }
+.wordmark:hover span { transform: translateY(-0.12em) rotate(-3deg); }
+.wordmark:hover span:nth-child(odd) { color: var(--muted); }
+.wordmark.pre span { translate: 0 0.55em; opacity: 0; }
+.fine { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 20px; margin: 0; padding-top: 18px; border-top: 1px solid var(--rule); font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+/* Scroll reveal: script adds .reveal only to blocks that start below the fold, then .in as each
+   one arrives, and removes both once it has settled, so hover transitions are left untouched. */
+.reveal { opacity: 0; translate: 0 28px; transition: opacity 0.7s ease, translate 0.9s var(--ease); transition-delay: calc(var(--ri, 0) * 80ms); }
+.reveal.in { opacity: 1; translate: none; }
+.sec h2.reveal .hl { background-size: 0% 100%; color: var(--ink); }
+.sec h2.reveal.in .hl { background-size: 100% 100%; color: var(--chip-ink); transition: background-size 0.8s cubic-bezier(0.65, 0, 0.25, 1) 0.35s, color 0.3s ease 0.75s; }
+
+/* Theme switch: the new theme opens as a circle from the button */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+
+/* Paused: everything that loops stops */
+.still .avail::before, .still .state.busy::before, .still .ship.busy .ship-log::before, .still .d-n.lit .d-ring { animation: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .headline .line, .headline .hl, .lede, .hero .actions, .daily li, .env, .avail::before, .state.busy::before, .ship.busy .ship-log::before, .d-n.lit .d-ring { animation: none; }
+  .band-track { animation: none !important; }
+  .motion-btn { display: none; }
+  .env { transition: none; translate: none; }
+  .env:hover { transform: translateY(var(--y)) rotate(var(--r)); }
+  .btn, .tile, .tile-ic .ic, .daily .ic, .wordmark span, .sheet, .sheet::before, .logo i, .icon-btn, .track li::before, .track li::after, .d-dot { transition: none; }
+  .btn:hover, .tile:hover, .tile:hover .tile-ic .ic, .daily li:hover .ic, .wordmark:hover span { transform: none; }
+  .logo:hover i, .theme-btn:hover { rotate: none; }
+  .sheet:hover, .sheet:focus-visible { --rz: -2.5deg; --lift: 0px; }
+  .sheet:hover::before, .sheet:focus-visible::before { transform: translate(14px, 10px) rotate(5deg); }
+}
+@media (max-width: 980px) {
+  .hero { grid-template-columns: 1fr; gap: 12px; padding: 48px 44px 56px; }
+  .work { grid-template-columns: 1fr; gap: 24px; }
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cv { grid-template-columns: 1fr; gap: 36px; }
+  .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 721px) and (max-width: 1060px) {
+  /* Too narrow for one row: logo and controls on top, the nav on its own row underneath */
+  .top nav { order: 3; flex-basis: 100%; }
+  .hero, .sec { scroll-margin-top: 93px; } /* the two-row header is 94px */
+}
+@media (max-width: 880px) {
+  .swipe { display: block; } /* below this the 720px-wide diagram scrolls sideways */
+}
+@media (max-width: 720px) {
+  .top { position: relative; }
+  .hero, .sec { scroll-margin-top: 0; }
+  .top nav { flex-basis: 100%; gap: 4px 18px; } /* own row, clear of the buttons in the logo row */
+  .tools { position: absolute; top: 12px; right: 20px; } /* buttons share the logo's row */
+  .top, .sec { padding-left: 20px; padding-right: 20px; }
+  .hero { padding: 40px 20px 48px; }
+  .sec { padding-top: 52px; padding-bottom: 52px; }
+  .stats { grid-template-columns: 1fr; }
+  .stats div + div { border-left: 0; border-top: 1px solid var(--rule); }
+  .rows > div { grid-template-columns: 1fr; }
+  .deck { flex-direction: column; gap: 14px; padding: 8px 0 20px; }
+  .env { flex: none; width: 100%; max-width: 360px; min-height: 0; margin: 0; translate: none; }
+  .env-dev { --y: 0px; --r: -1.5deg; } .env-stage { --y: 0px; --r: 1deg; } .env-prod { --y: 0px; --r: -1deg; }
+  .env-dev, .env-stage { padding-right: 16px; }
+  .band-wrap { padding: 24px 0; }
+  .band-front .band-group { font-size: 1.1rem; }
+  .band-group { gap: 18px; padding-right: 18px; }
+  .ship-log { min-height: 3.2em; }
+  .next { padding: 22px; }
+  .sheet-wrap { max-width: 320px; }
+}
+@media (max-width: 520px) {
+  .tiles { grid-template-columns: 1fr; }
+  .reach { grid-template-columns: minmax(0, 1fr); row-gap: 6px; }
+  .reach button { margin-bottom: 10px; }
+}
+@media (max-width: 400px) {
+  .reach code, .reach .tel { font-size: 1rem; }
+  .avail { font-size: 11px; padding: 5px 10px; }
+}
+@media print {
+  .top { position: static; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .progress, .band-wrap, .ship, .icon-btn { display: none !important; }
+  .reveal, .wordmark.pre span { opacity: 1 !important; translate: none !important; }
+}
+</style>
+</head>
+<body>
+<svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <defs><clipPath id="cp-mysql"><path d="M0 0H24V14H23.2V13.02H0Z"/></clipPath></defs>
+  <symbol id="i-docker" viewBox="0 0 24 24"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.184-.186h-2.12a.186.186 0 00-.186.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 00-.75.748 11.376 11.376 0 00.692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 003.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288Z"/></symbol>
+  <symbol id="i-git" viewBox="0 0 24 24"><path d="M13.09 23.549a1.54 1.54 0 0 1-2.18 0L.451 13.089a1.54 1.54 0 0 1 0-2.179l7.191-7.19 2.733 2.733a1.85 1.85 0 0 0 .964 2.326v6.66a1.849 1.849 0 1 0 1.54 0V8.957l2.508 2.508a1.85 1.85 0 1 0 1.09-1.09l-2.634-2.634a1.85 1.85 0 0 0-2.378-2.377L8.73 2.63 10.91.451a1.54 1.54 0 0 1 2.179 0l10.459 10.46a1.54 1.54 0 0 1 0 2.179z"/></symbol>
+  <symbol id="i-githubactions" viewBox="0 0 24 24"><path d="M10.984 13.836a.5.5 0 0 1-.353-.146l-.745-.743a.5.5 0 1 1 .706-.708l.392.391 1.181-1.18a.5.5 0 0 1 .708.707l-1.535 1.533a.504.504 0 0 1-.354.146zm9.353-.147l1.534-1.532a.5.5 0 0 0-.707-.707l-1.181 1.18-.392-.391a.5.5 0 1 0-.706.708l.746.743a.497.497 0 0 0 .706-.001zM4.527 7.452l2.557-1.585A1 1 0 0 0 7.09 4.17L4.533 2.56A1 1 0 0 0 3 3.406v3.196a1.001 1.001 0 0 0 1.527.85zm2.03-2.436L4 6.602V3.406l2.557 1.61zM24 12.5c0 1.93-1.57 3.5-3.5 3.5a3.503 3.503 0 0 1-3.46-3h-2.08a3.503 3.503 0 0 1-3.46 3 3.502 3.502 0 0 1-3.46-3h-.558c-.972 0-1.85-.399-2.482-1.042V17c0 1.654 1.346 3 3 3h.04c.244-1.693 1.7-3 3.46-3 1.93 0 3.5 1.57 3.5 3.5S13.43 24 11.5 24a3.502 3.502 0 0 1-3.46-3H8c-2.206 0-4-1.794-4-4V9.899A5.008 5.008 0 0 1 0 5c0-2.757 2.243-5 5-5s5 2.243 5 5a5.005 5.005 0 0 1-4.952 4.998A2.482 2.482 0 0 0 7.482 12h.558c.244-1.693 1.7-3 3.46-3a3.502 3.502 0 0 1 3.46 3h2.08a3.503 3.503 0 0 1 3.46-3c1.93 0 3.5 1.57 3.5 3.5zm-15 8c0 1.378 1.122 2.5 2.5 2.5s2.5-1.122 2.5-2.5-1.122-2.5-2.5-2.5S9 19.122 9 20.5zM5 9c2.206 0 4-1.794 4-4S7.206 1 5 1 1 2.794 1 5s1.794 4 4 4zm9 3.5c0-1.378-1.122-2.5-2.5-2.5S9 11.122 9 12.5s1.122 2.5 2.5 2.5 2.5-1.122 2.5-2.5zm9 0c0-1.378-1.122-2.5-2.5-2.5S18 11.122 18 12.5s1.122 2.5 2.5 2.5 2.5-1.122 2.5-2.5zm-13 8a.5.5 0 1 0 1 0 .5.5 0 0 0-1 0zm2 0a.5.5 0 1 0 1 0 .5.5 0 0 0-1 0zm12 0c0 1.93-1.57 3.5-3.5 3.5a3.503 3.503 0 0 1-3.46-3.002c-.007.001-.013.005-.021.005l-.506.017h-.017a.5.5 0 0 1-.016-.999l.506-.017c.018-.002.035.006.052.007A3.503 3.503 0 0 1 20.5 17c1.93 0 3.5 1.57 3.5 3.5zm-1 0c0-1.378-1.122-2.5-2.5-2.5S18 19.122 18 20.5s1.122 2.5 2.5 2.5 2.5-1.122 2.5-2.5z"/></symbol>
+  <symbol id="i-gitlab" viewBox="0 0 24 24"><path d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"/></symbol>
+  <symbol id="i-gnubash" viewBox="0 0 24 24"><path d="M21.038,4.9l-7.577-4.498C13.009,0.134,12.505,0,12,0c-0.505,0-1.009,0.134-1.462,0.403L2.961,4.9 C2.057,5.437,1.5,6.429,1.5,7.503v8.995c0,1.073,0.557,2.066,1.462,2.603l7.577,4.497C10.991,23.866,11.495,24,12,24 c0.505,0,1.009-0.134,1.461-0.402l7.577-4.497c0.904-0.537,1.462-1.529,1.462-2.603V7.503C22.5,6.429,21.943,5.437,21.038,4.9z M15.17,18.946l0.013,0.646c0.001,0.078-0.05,0.167-0.111,0.198l-0.383,0.22c-0.061,0.031-0.111-0.007-0.112-0.085L14.57,19.29 c-0.328,0.136-0.66,0.169-0.872,0.084c-0.04-0.016-0.057-0.075-0.041-0.142l0.139-0.584c0.011-0.046,0.036-0.092,0.069-0.121 c0.012-0.011,0.024-0.02,0.036-0.026c0.022-0.011,0.043-0.014,0.062-0.006c0.229,0.077,0.521,0.041,0.802-0.101 c0.357-0.181,0.596-0.545,0.592-0.907c-0.003-0.328-0.181-0.465-0.613-0.468c-0.55,0.001-1.064-0.107-1.072-0.917 c-0.007-0.667,0.34-1.361,0.889-1.8l-0.007-0.652c-0.001-0.08,0.048-0.168,0.111-0.2l0.37-0.236 c0.061-0.031,0.111,0.007,0.112,0.087l0.006,0.653c0.273-0.109,0.511-0.138,0.726-0.088c0.047,0.012,0.067,0.076,0.048,0.151 l-0.144,0.578c-0.011,0.044-0.036,0.088-0.065,0.116c-0.012,0.012-0.025,0.021-0.038,0.028c-0.019,0.01-0.038,0.013-0.057,0.009 c-0.098-0.022-0.332-0.073-0.699,0.113c-0.385,0.195-0.52,0.53-0.517,0.778c0.003,0.297,0.155,0.387,0.681,0.396 c0.7,0.012,1.003,0.318,1.01,1.023C16.105,17.747,15.736,18.491,15.17,18.946z M19.143,17.859c0,0.06-0.008,0.116-0.058,0.145 l-1.916,1.164c-0.05,0.029-0.09,0.004-0.09-0.056v-0.494c0-0.06,0.037-0.093,0.087-0.122l1.887-1.129 c0.05-0.029,0.09-0.004,0.09,0.056V17.859z M20.459,6.797l-7.168,4.427c-0.894,0.523-1.553,1.109-1.553,2.187v8.833 c0,0.645,0.26,1.063,0.66,1.184c-0.131,0.023-0.264,0.039-0.398,0.039c-0.42,0-0.833-0.114-1.197-0.33L3.226,18.64 c-0.741-0.44-1.201-1.261-1.201-2.142V7.503c0-0.881,0.46-1.702,1.201-2.142l7.577-4.498c0.363-0.216,0.777-0.33,1.197-0.33 c0.419,0,0.833,0.114,1.197,0.33l7.577,4.498c0.624,0.371,1.046,1.013,1.164,1.732C21.686,6.557,21.12,6.411,20.459,6.797z"/></symbol>
+  <symbol id="i-googlecloud" viewBox="0 0 24 24"><path d="M12.19 2.38a9.344 9.344 0 0 0-9.234 6.893c.053-.02-.055.013 0 0-3.875 2.551-3.922 8.11-.247 10.941l.006-.007-.007.03a6.717 6.717 0 0 0 4.077 1.356h5.173l.03.03h5.192c6.687.053 9.376-8.605 3.835-12.35a9.365 9.365 0 0 0-2.821-4.552l-.043.043.006-.05A9.344 9.344 0 0 0 12.19 2.38zm-.358 4.146c1.244-.04 2.518.368 3.486 1.15a5.186 5.186 0 0 1 1.862 4.078v.518c3.53-.07 3.53 5.262 0 5.193h-5.193l-.008.009v-.04H6.785a2.59 2.59 0 0 1-1.067-.23h.001a2.597 2.597 0 1 1 3.437-3.437l3.013-3.012A6.747 6.747 0 0 0 8.11 8.24c.018-.01.04-.026.054-.023a5.186 5.186 0 0 1 3.67-1.69z"/></symbol>
+  <symbol id="i-grafana" viewBox="0 0 24 24"><path d="M23.02 10.59a8.578 8.578 0 0 0-.862-3.034 8.911 8.911 0 0 0-1.789-2.445c.337-1.342-.413-2.505-.413-2.505-1.292-.08-2.113.4-2.416.62-.052-.02-.102-.044-.154-.064-.22-.089-.446-.172-.677-.247-.231-.073-.47-.14-.711-.197a9.867 9.867 0 0 0-.875-.161C14.557.753 12.94 0 12.94 0c-1.804 1.145-2.147 2.744-2.147 2.744l-.018.093c-.098.029-.2.057-.298.088-.138.042-.275.094-.413.143-.138.055-.275.107-.41.166a8.869 8.869 0 0 0-1.557.87l-.063-.029c-2.497-.955-4.716.195-4.716.195-.203 2.658.996 4.33 1.235 4.636a11.608 11.608 0 0 0-.607 2.635C1.636 12.677.953 15.014.953 15.014c1.926 2.214 4.171 2.351 4.171 2.351.003-.002.006-.002.006-.005.285.509.615.994.986 1.446.156.19.32.371.488.548-.704 2.009.099 3.68.099 3.68 2.144.08 3.553-.937 3.849-1.173a9.784 9.784 0 0 0 3.164.501h.08l.055-.003.107-.002.103-.005.003.002c1.01 1.44 2.788 1.646 2.788 1.646 1.264-1.332 1.337-2.653 1.337-2.94v-.058c0-.02-.003-.039-.003-.06.265-.187.52-.387.758-.6a7.875 7.875 0 0 0 1.415-1.7c1.43.083 2.437-.885 2.437-.885-.236-1.49-1.085-2.216-1.264-2.354l-.018-.013-.016-.013a.217.217 0 0 1-.031-.02c.008-.092.016-.18.02-.27.011-.162.016-.323.016-.48v-.253l-.005-.098-.008-.135a1.891 1.891 0 0 0-.01-.13c-.003-.042-.008-.083-.013-.125l-.016-.124-.018-.122a6.215 6.215 0 0 0-2.032-3.73 6.015 6.015 0 0 0-3.222-1.46 6.292 6.292 0 0 0-.85-.048l-.107.002h-.063l-.044.003-.104.008a4.777 4.777 0 0 0-3.335 1.695c-.332.4-.592.84-.768 1.297a4.594 4.594 0 0 0-.312 1.817l.003.091c.005.055.007.11.013.164a3.615 3.615 0 0 0 .698 1.82 3.53 3.53 0 0 0 1.827 1.282c.33.098.66.14.971.137.039 0 .078 0 .114-.002l.063-.003c.02 0 .041-.003.062-.003.034-.002.065-.007.099-.01.007 0 .018-.003.028-.003l.031-.005.06-.008a1.18 1.18 0 0 0 .112-.02c.036-.008.072-.013.109-.024a2.634 2.634 0 0 0 .914-.415c.028-.02.056-.041.085-.065a.248.248 0 0 0 .039-.35.244.244 0 0 0-.309-.06l-.078.042c-.09.044-.184.083-.283.116a2.476 2.476 0 0 1-.475.096c-.028.003-.054.006-.083.006l-.083.002c-.026 0-.054 0-.08-.002l-.102-.006h-.012l-.024.006c-.016-.003-.031-.003-.044-.006-.031-.002-.06-.007-.091-.01a2.59 2.59 0 0 1-.724-.213 2.557 2.557 0 0 1-.667-.438 2.52 2.52 0 0 1-.805-1.475 2.306 2.306 0 0 1-.029-.444l.006-.122v-.023l.002-.031c.003-.021.003-.04.005-.06a3.163 3.163 0 0 1 1.352-2.29 3.12 3.12 0 0 1 .937-.43 2.946 2.946 0 0 1 .776-.101h.06l.07.002.045.003h.026l.07.005a4.041 4.041 0 0 1 1.635.49 3.94 3.94 0 0 1 1.602 1.662 3.77 3.77 0 0 1 .397 1.414l.005.076.003.075c.002.026.002.05.002.075 0 .024.003.052 0 .07v.065l-.002.073-.008.174a6.195 6.195 0 0 1-.08.639 5.1 5.1 0 0 1-.267.927 5.31 5.31 0 0 1-.624 1.13 5.052 5.052 0 0 1-3.237 2.014 4.82 4.82 0 0 1-.649.066l-.039.003h-.287a6.607 6.607 0 0 1-1.716-.265 6.776 6.776 0 0 1-3.4-2.274 6.75 6.75 0 0 1-.746-1.15 6.616 6.616 0 0 1-.714-2.596l-.005-.083-.002-.02v-.056l-.003-.073v-.096l-.003-.104v-.07l.003-.163c.008-.22.026-.45.054-.678a8.707 8.707 0 0 1 .28-1.355c.128-.444.286-.872.473-1.277a7.04 7.04 0 0 1 1.456-2.1 5.925 5.925 0 0 1 .953-.763c.169-.111.343-.213.524-.306.089-.05.182-.091.273-.135.047-.02.093-.042.138-.062a7.177 7.177 0 0 1 .714-.267l.145-.045c.049-.015.098-.026.148-.041.098-.029.197-.052.296-.076.049-.013.1-.02.15-.033l.15-.032.151-.028.076-.013.075-.01.153-.024c.057-.01.114-.013.171-.023l.169-.021c.036-.003.073-.008.106-.01l.073-.008.036-.003.042-.002c.057-.003.114-.008.171-.01l.086-.006h.023l.037-.003.145-.007a7.999 7.999 0 0 1 1.708.125 7.917 7.917 0 0 1 2.048.68 8.253 8.253 0 0 1 1.672 1.09l.09.077.089.078c.06.052.114.107.171.159.057.052.112.106.166.16.052.055.107.107.159.164a8.671 8.671 0 0 1 1.41 1.978c.012.026.028.052.04.078l.04.078.075.156c.023.051.05.1.07.153l.065.15a8.848 8.848 0 0 1 .45 1.34.19.19 0 0 0 .201.142.186.186 0 0 0 .172-.184c.01-.246.002-.532-.024-.856z"/></symbol>
+  <symbol id="i-helm" viewBox="0 0 24 24"><path d="M12.337 0c-.475 0-.861 1.016-.861 2.269 0 .527.069 1.011.183 1.396a8.514 8.514 0 0 0-3.961 1.22 5.229 5.229 0 0 0-.595-1.093c-.606-.866-1.34-1.436-1.79-1.43a.381.381 0 0 0-.217.066c-.39.273-.123 1.326.596 2.353.267.381.559.705.84.948a8.683 8.683 0 0 0-1.528 1.716h1.734a7.179 7.179 0 0 1 5.381-2.421 7.18 7.18 0 0 1 5.382 2.42h1.733a8.687 8.687 0 0 0-1.32-1.53c.35-.249.735-.643 1.078-1.133.719-1.027.986-2.08.596-2.353a.382.382 0 0 0-.217-.065c-.45-.007-1.184.563-1.79 1.43a4.897 4.897 0 0 0-.676 1.325 8.52 8.52 0 0 0-3.899-1.42c.12-.39.193-.887.193-1.429 0-1.253-.386-2.269-.862-2.269zM1.624 9.443v5.162h1.358v-1.968h1.64v1.968h1.357V9.443H4.62v1.838H2.98V9.443zm5.912 0v5.162h3.21v-1.108H8.893v-.95h1.64v-1.142h-1.64v-.84h1.853V9.443zm4.698 0v5.162h3.218v-1.362h-1.86v-3.8zm4.706 0v5.162h1.364v-2.643l1.357 1.225 1.35-1.232v2.65h1.365V9.443h-.614l-2.1 1.914-2.109-1.914zm-11.82 7.28a8.688 8.688 0 0 0 1.412 1.548 5.206 5.206 0 0 0-.841.948c-.719 1.027-.985 2.08-.596 2.353.39.273 1.289-.338 2.007-1.364a5.23 5.23 0 0 0 .595-1.092 8.514 8.514 0 0 0 3.961 1.219 5.01 5.01 0 0 0-.183 1.396c0 1.253.386 2.269.861 2.269.476 0 .862-1.016.862-2.269 0-.542-.072-1.04-.193-1.43a8.52 8.52 0 0 0 3.9-1.42c.121.4.352.865.675 1.327.719 1.026 1.617 1.637 2.007 1.364.39-.273.123-1.326-.596-2.353-.343-.49-.727-.885-1.077-1.135a8.69 8.69 0 0 0 1.202-1.36h-1.771a7.174 7.174 0 0 1-5.227 2.252 7.174 7.174 0 0 1-5.226-2.252z"/></symbol>
+  <symbol id="i-k6" viewBox="0 0 24 24"><path d="M24 23.646H0L7.99 6.603l4.813 3.538L19.08.354Zm-8.8-3.681h.052a2.292 2.292 0 0 0 1.593-.64 2.088 2.088 0 0 0 .685-1.576 1.912 1.912 0 0 0-.66-1.511 2.008 2.008 0 0 0-1.37-.59h-.04a.716.716 0 0 0-.199.027l1.267-1.883-1.01-.705-.477.705-1.22 1.864c-.21.31-.386.582-.495.77-.112.2-.21.41-.29.625a1.942 1.942 0 0 0-.138.719 2.086 2.086 0 0 0 .676 1.558c.422.411.989.641 1.578.64Zm-5.365-2.027 1.398 1.978h1.496l-1.645-2.295 1.46-2.029-.97-.671-.427.565-1.314 1.853v-3.725l-1.31-1.068v7.37h1.31v-1.98Zm5.367.792a.963.963 0 1 1 0-1.927h.009a.941.941 0 0 1 .679.29.897.897 0 0 1 .29.668.978.978 0 0 1-.977.967Z"/></symbol>
+  <symbol id="i-kubernetes" viewBox="0 0 24 24"><path d="M10.204 14.35l.007.01-.999 2.413a5.171 5.171 0 0 1-2.075-2.597l2.578-.437.004.005a.44.44 0 0 1 .484.606zm-.833-2.129a.44.44 0 0 0 .173-.756l.002-.011L7.585 9.7a5.143 5.143 0 0 0-.73 3.255l2.514-.725.002-.009zm1.145-1.98a.44.44 0 0 0 .699-.337l.01-.005.15-2.62a5.144 5.144 0 0 0-3.01 1.442l2.147 1.523.004-.002zm.76 2.75l.723.349.722-.347.18-.78-.5-.623h-.804l-.5.623.179.779zm1.5-3.095a.44.44 0 0 0 .7.336l.008.003 2.134-1.513a5.188 5.188 0 0 0-2.992-1.442l.148 2.615.002.001zm10.876 5.97l-5.773 7.181a1.6 1.6 0 0 1-1.248.594l-9.261.003a1.6 1.6 0 0 1-1.247-.596l-5.776-7.18a1.583 1.583 0 0 1-.307-1.34L2.1 5.573c.108-.47.425-.864.863-1.073L11.305.513a1.606 1.606 0 0 1 1.385 0l8.345 3.985c.438.209.755.604.863 1.073l2.062 8.955c.108.47-.005.963-.308 1.34zm-3.289-2.057c-.042-.01-.103-.026-.145-.034-.174-.033-.315-.025-.479-.038-.35-.037-.638-.067-.895-.148-.105-.04-.18-.165-.216-.216l-.201-.059a6.45 6.45 0 0 0-.105-2.332 6.465 6.465 0 0 0-.936-2.163c.052-.047.15-.133.177-.159.008-.09.001-.183.094-.282.197-.185.444-.338.743-.522.142-.084.273-.137.415-.242.032-.024.076-.062.11-.089.24-.191.295-.52.123-.736-.172-.216-.506-.236-.745-.045-.034.027-.08.062-.111.088-.134.116-.217.23-.33.35-.246.25-.45.458-.673.609-.097.056-.239.037-.303.033l-.19.135a6.545 6.545 0 0 0-4.146-2.003l-.012-.223c-.065-.062-.143-.115-.163-.25-.022-.268.015-.557.057-.905.023-.163.061-.298.068-.475.001-.04-.001-.099-.001-.142 0-.306-.224-.555-.5-.555-.275 0-.499.249-.499.555l.001.014c0 .041-.002.092 0 .128.006.177.044.312.067.475.042.348.078.637.056.906a.545.545 0 0 1-.162.258l-.012.211a6.424 6.424 0 0 0-4.166 2.003 8.373 8.373 0 0 1-.18-.128c-.09.012-.18.04-.297-.029-.223-.15-.427-.358-.673-.608-.113-.12-.195-.234-.329-.349-.03-.026-.077-.062-.111-.088a.594.594 0 0 0-.348-.132.481.481 0 0 0-.398.176c-.172.216-.117.546.123.737l.007.005.104.083c.142.105.272.159.414.242.299.185.546.338.743.522.076.082.09.226.1.288l.16.143a6.462 6.462 0 0 0-1.02 4.506l-.208.06c-.055.072-.133.184-.215.217-.257.081-.546.11-.895.147-.164.014-.305.006-.48.039-.037.007-.09.02-.133.03l-.004.002-.007.002c-.295.071-.484.342-.423.608.061.267.349.429.645.365l.007-.001.01-.003.129-.029c.17-.046.294-.113.448-.172.33-.118.604-.217.87-.256.112-.009.23.069.288.101l.217-.037a6.5 6.5 0 0 0 2.88 3.596l-.09.218c.033.084.069.199.044.282-.097.252-.263.517-.452.813-.091.136-.185.242-.268.399-.02.037-.045.095-.064.134-.128.275-.034.591.213.71.248.12.556-.007.69-.282v-.002c.02-.039.046-.09.062-.127.07-.162.094-.301.144-.458.132-.332.205-.68.387-.897.05-.06.13-.082.215-.105l.113-.205a6.453 6.453 0 0 0 4.609.012l.106.192c.086.028.18.042.256.155.136.232.229.507.342.84.05.156.074.295.145.457.016.037.043.09.062.129.133.276.442.402.69.282.247-.118.341-.435.213-.71-.02-.039-.045-.096-.065-.134-.083-.156-.177-.261-.268-.398-.19-.296-.346-.541-.443-.793-.04-.13.007-.21.038-.294-.018-.022-.059-.144-.083-.202a6.499 6.499 0 0 0 2.88-3.622c.064.01.176.03.213.038.075-.05.144-.114.28-.104.266.039.54.138.87.256.154.06.277.128.448.173.036.01.088.019.13.028l.009.003.007.001c.297.064.584-.098.645-.365.06-.266-.128-.537-.423-.608zM16.4 9.701l-1.95 1.746v.005a.44.44 0 0 0 .173.757l.003.01 2.526.728a5.199 5.199 0 0 0-.108-1.674A5.208 5.208 0 0 0 16.4 9.7zm-4.013 5.325a.437.437 0 0 0-.404-.232.44.44 0 0 0-.372.233h-.002l-1.268 2.292a5.164 5.164 0 0 0 3.326.003l-1.27-2.296h-.01zm1.888-1.293a.44.44 0 0 0-.27.036.44.44 0 0 0-.214.572l-.003.004 1.01 2.438a5.15 5.15 0 0 0 2.081-2.615l-2.6-.44-.004.005z"/></symbol>
+  <symbol id="i-linux" viewBox="0 0 24 24"><path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.832-.41 1.684-.287 2.489a.424.424 0 00-.11.135c-.26.268-.45.6-.663.839-.199.199-.485.267-.797.4-.313.136-.658.269-.864.68-.09.189-.136.394-.132.602 0 .199.027.4.055.536.058.399.116.728.04.97-.249.68-.28 1.145-.106 1.484.174.334.535.47.94.601.81.2 1.91.135 2.774.6.926.466 1.866.67 2.616.47.526-.116.97-.464 1.208-.946.587-.003 1.23-.269 2.26-.334.699-.058 1.574.267 2.577.2.025.134.063.198.114.333l.003.003c.391.778 1.113 1.132 1.884 1.071.771-.06 1.592-.536 2.257-1.306.631-.765 1.683-1.084 2.378-1.503.348-.199.629-.469.649-.853.023-.4-.2-.811-.714-1.376v-.097l-.003-.003c-.17-.2-.25-.535-.338-.926-.085-.401-.182-.786-.492-1.046h-.003c-.059-.054-.123-.067-.188-.135a.357.357 0 00-.19-.064c.431-1.278.264-2.55-.173-3.694-.533-1.41-1.465-2.638-2.175-3.483-.796-1.005-1.576-1.957-1.56-3.368.026-2.152.236-6.133-3.544-6.139zm.529 3.405h.013c.213 0 .396.062.584.198.19.135.33.332.438.533.105.259.158.459.166.724 0-.02.006-.04.006-.06v.105a.086.086 0 01-.004-.021l-.004-.024a1.807 1.807 0 01-.15.706.953.953 0 01-.213.335.71.71 0 00-.088-.042c-.104-.045-.198-.064-.284-.133a1.312 1.312 0 00-.22-.066c.05-.06.146-.133.183-.198.053-.128.082-.264.088-.402v-.02a1.21 1.21 0 00-.061-.4c-.045-.134-.101-.2-.183-.333-.084-.066-.167-.132-.267-.132h-.016c-.093 0-.176.03-.262.132a.8.8 0 00-.205.334 1.18 1.18 0 00-.09.4v.019c.002.089.008.179.02.267-.193-.067-.438-.135-.607-.202a1.635 1.635 0 01-.018-.2v-.02a1.772 1.772 0 01.15-.768c.082-.22.232-.406.43-.533a.985.985 0 01.594-.2zm-2.962.059h.036c.142 0 .27.048.399.135.146.129.264.288.344.465.09.199.14.4.153.667v.004c.007.134.006.2-.002.266v.08c-.03.007-.056.018-.083.024-.152.055-.274.135-.393.2.012-.09.013-.18.003-.267v-.015c-.012-.133-.04-.2-.082-.333a.613.613 0 00-.166-.267.248.248 0 00-.183-.064h-.021c-.071.006-.13.04-.186.132a.552.552 0 00-.12.27.944.944 0 00-.023.33v.015c.012.135.037.2.08.334.046.134.098.2.166.268.01.009.02.018.034.024-.07.057-.117.07-.176.136a.304.304 0 01-.131.068 2.62 2.62 0 01-.275-.402 1.772 1.772 0 01-.155-.667 1.759 1.759 0 01.08-.668 1.43 1.43 0 01.283-.535c.128-.133.26-.2.418-.2zm1.37 1.706c.332 0 .733.065 1.216.399.293.2.523.269 1.052.468h.003c.255.136.405.266.478.399v-.131a.571.571 0 01.016.47c-.123.31-.516.643-1.063.842v.002c-.268.135-.501.333-.775.465-.276.135-.588.292-1.012.267a1.139 1.139 0 01-.448-.067 3.566 3.566 0 01-.322-.198c-.195-.135-.363-.332-.612-.465v-.005h-.005c-.4-.246-.616-.512-.686-.71-.07-.268-.005-.47.193-.6.224-.135.38-.271.483-.336.104-.074.143-.102.176-.131h.002v-.003c.169-.202.436-.47.839-.601.139-.036.294-.065.466-.065zm2.8 2.142c.358 1.417 1.196 3.475 1.735 4.473.286.534.855 1.659 1.102 3.024.156-.005.33.018.513.064.646-1.671-.546-3.467-1.089-3.966-.22-.2-.232-.335-.123-.335.59.534 1.365 1.572 1.646 2.757.13.535.16 1.104.021 1.67.067.028.135.06.205.067 1.032.534 1.413.938 1.23 1.537v-.043c-.06-.003-.12 0-.18 0h-.016c.151-.467-.182-.825-1.065-1.224-.915-.4-1.646-.336-1.77.465-.008.043-.013.066-.018.135-.068.023-.139.053-.209.064-.43.268-.662.669-.793 1.187-.13.533-.17 1.156-.205 1.869v.003c-.02.334-.17.838-.319 1.35-1.5 1.072-3.58 1.538-5.348.334a2.645 2.645 0 00-.402-.533 1.45 1.45 0 00-.275-.333c.182 0 .338-.03.465-.067a.615.615 0 00.314-.334c.108-.267 0-.697-.345-1.163-.345-.467-.931-.995-1.788-1.521-.63-.4-.986-.87-1.15-1.396-.165-.534-.143-1.085-.015-1.645.245-1.07.873-2.11 1.274-2.763.107-.065.037.135-.408.974-.396.751-1.14 2.497-.122 3.854a8.123 8.123 0 01.647-2.876c.564-1.278 1.743-3.504 1.836-5.268.048.036.217.135.289.202.218.133.38.333.59.465.21.201.477.335.876.335.039.003.075.006.11.006.412 0 .73-.134.997-.268.29-.134.52-.334.74-.4h.005c.467-.135.835-.402 1.044-.7zm2.185 8.958c.037.6.343 1.245.882 1.377.588.134 1.434-.333 1.791-.765l.211-.01c.315-.007.577.01.847.268l.003.003c.208.199.305.53.391.876.085.4.154.78.409 1.066.486.527.645.906.636 1.14l.003-.007v.018l-.003-.012c-.015.262-.185.396-.498.595-.63.401-1.746.712-2.457 1.57-.618.737-1.37 1.14-2.036 1.191-.664.053-1.237-.2-1.574-.898l-.005-.003c-.21-.4-.12-1.025.056-1.69.176-.668.428-1.344.463-1.897.037-.714.076-1.335.195-1.814.12-.465.308-.797.641-.984l.045-.022zm-10.814.049h.01c.053 0 .105.005.157.014.376.055.706.333 1.023.752l.91 1.664.003.003c.243.533.754 1.064 1.189 1.637.434.598.77 1.131.729 1.57v.006c-.057.744-.48 1.148-1.125 1.294-.645.135-1.52.002-2.395-.464-.968-.536-2.118-.469-2.857-.602-.369-.066-.61-.2-.723-.4-.11-.2-.113-.602.123-1.23v-.004l.002-.003c.117-.334.03-.752-.027-1.118-.055-.401-.083-.71.043-.94.16-.334.396-.4.69-.533.294-.135.64-.202.915-.47h.002v-.002c.256-.268.445-.601.668-.838.19-.201.38-.336.663-.336zm7.159-9.074c-.435.201-.945.535-1.488.535-.542 0-.97-.267-1.28-.466-.154-.134-.28-.268-.373-.335-.164-.134-.144-.333-.074-.333.109.016.129.134.199.2.096.066.215.2.36.333.292.2.68.467 1.167.467.485 0 1.053-.267 1.398-.466.195-.135.445-.334.648-.467.156-.136.149-.267.279-.267.128.016.034.134-.147.332a8.097 8.097 0 01-.69.468zm-1.082-1.583V5.64c-.006-.02.013-.042.029-.05.074-.043.18-.027.26.004.063 0 .16.067.15.135-.006.049-.085.066-.135.066-.055 0-.092-.043-.141-.068-.052-.018-.146-.008-.163-.065zm-.551 0c-.02.058-.113.049-.166.066-.047.025-.086.068-.14.068-.05 0-.13-.02-.136-.068-.01-.066.088-.133.15-.133.08-.031.184-.047.259-.005.019.009.036.03.03.05v.02h.003z"/></symbol>
+  <symbol id="i-mysql" viewBox="13.78 3.36 10.6 10.6"><path clip-path="url(#cp-mysql)" stroke="currentColor" stroke-width=".4" stroke-linejoin="round" d="M16.405 5.501c-.115 0-.193.014-.274.033v.013h.014c.054.104.146.18.214.273.054.107.1.214.154.32l.014-.015c.094-.066.14-.172.14-.333-.04-.047-.046-.094-.08-.14-.04-.067-.126-.1-.18-.153zM5.77 18.695h-.927a50.854 50.854 0 00-.27-4.41h-.008l-1.41 4.41H2.45l-1.4-4.41h-.01a72.892 72.892 0 00-.195 4.41H0c.055-1.966.192-3.81.41-5.53h1.15l1.335 4.064h.008l1.347-4.064h1.095c.242 2.015.384 3.86.428 5.53zm4.017-4.08c-.378 2.045-.876 3.533-1.492 4.46-.482.716-1.01 1.073-1.583 1.073-.153 0-.34-.046-.566-.138v-.494c.11.017.24.026.386.026.268 0 .483-.075.647-.222.197-.18.295-.382.295-.605 0-.155-.077-.47-.23-.944L6.23 14.615h.91l.727 2.36c.164.536.233.91.205 1.123.4-1.064.678-2.227.835-3.483zm12.325 4.08h-2.63v-5.53h.885v4.85h1.745zm-3.32.135l-1.016-.5c.09-.076.177-.158.255-.25.433-.506.648-1.258.648-2.253 0-1.83-.718-2.746-2.155-2.746-.704 0-1.254.232-1.65.697-.43.508-.646 1.256-.646 2.245 0 .972.19 1.686.574 2.14.35.41.877.615 1.583.615.264 0 .506-.033.725-.098l1.325.772.36-.622zM15.5 17.588c-.225-.36-.337-.94-.337-1.736 0-1.393.424-2.09 1.27-2.09.443 0 .77.167.977.5.224.362.336.936.336 1.723 0 1.404-.424 2.108-1.27 2.108-.445 0-.77-.167-.978-.5zm-1.658-.425c0 .47-.172.856-.516 1.156-.344.3-.803.45-1.384.45-.543 0-1.064-.172-1.573-.515l.237-.476c.438.22.833.328 1.19.328.332 0 .593-.073.783-.22a.754.754 0 00.3-.615c0-.33-.23-.61-.648-.845-.388-.213-1.163-.657-1.163-.657-.422-.307-.632-.636-.632-1.177 0-.45.157-.81.47-1.085.315-.278.72-.415 1.22-.415.512 0 .98.136 1.4.41l-.213.476a2.726 2.726 0 00-1.064-.23c-.283 0-.502.068-.654.206a.685.685 0 00-.248.524c0 .328.234.61.666.85.393.215 1.187.67 1.187.67.433.305.648.63.648 1.168zm9.382-5.852c-.535-.014-.95.04-1.297.188-.1.04-.26.04-.274.167.055.053.063.14.11.214.08.134.218.313.346.407.14.11.28.216.427.31.26.16.555.255.81.416.145.094.293.213.44.313.073.05.12.14.214.172v-.02c-.046-.06-.06-.147-.105-.214-.067-.067-.134-.127-.2-.193a3.223 3.223 0 00-.695-.675c-.214-.146-.682-.35-.77-.595l-.013-.014c.146-.013.32-.066.46-.106.227-.06.435-.047.67-.106.106-.027.213-.06.32-.094v-.06c-.12-.12-.21-.283-.334-.395a8.867 8.867 0 00-1.104-.823c-.21-.134-.476-.22-.697-.334-.08-.04-.214-.06-.26-.127-.12-.146-.19-.34-.275-.514a17.69 17.69 0 01-.547-1.163c-.12-.262-.193-.523-.34-.763-.69-1.137-1.437-1.826-2.586-2.5-.247-.14-.543-.2-.856-.274-.167-.008-.334-.02-.5-.027-.11-.047-.216-.174-.31-.235-.38-.24-1.364-.76-1.644-.072-.18.434.267.862.422 1.082.115.153.26.328.34.5.047.116.06.235.107.356.106.294.207.622.347.897.073.14.153.287.247.413.054.073.146.107.167.227-.094.136-.1.334-.154.5-.24.757-.146 1.693.194 2.25.107.166.362.534.703.393.3-.12.234-.5.32-.835.02-.08.007-.133.048-.187v.015c.094.188.188.367.274.555.206.328.566.668.867.895.16.12.287.328.487.402v-.02h-.015c-.043-.058-.1-.086-.154-.133a3.445 3.445 0 01-.35-.4 8.76 8.76 0 01-.747-1.218c-.11-.21-.202-.436-.29-.643-.04-.08-.04-.2-.107-.24-.1.146-.247.273-.32.453-.127.288-.14.642-.188 1.01-.027.007-.014 0-.027.014-.214-.052-.287-.274-.367-.46-.2-.475-.233-1.238-.06-1.785.047-.14.247-.582.167-.716-.042-.127-.174-.2-.247-.303a2.478 2.478 0 01-.24-.427c-.16-.374-.24-.788-.414-1.162-.08-.173-.22-.354-.334-.513-.127-.18-.267-.307-.368-.52-.033-.073-.08-.194-.027-.274.014-.054.042-.075.094-.09.088-.072.335.022.422.062.247.1.455.194.662.334.094.066.195.193.315.226h.14c.214.047.455.014.655.073.355.114.675.28.962.46a5.953 5.953 0 012.085 2.286c.08.154.115.295.188.455.14.33.313.663.455.982.14.315.275.636.476.897.1.14.502.213.682.286.133.06.34.115.46.188.23.14.454.3.67.454.11.076.443.243.463.378z"/></symbol>
+  <symbol id="i-nginx" viewBox="0 0 24 24"><path d="M12 0L1.605 6v12L12 24l10.395-6V6L12 0zm6 16.59c0 .705-.646 1.29-1.529 1.29-.631 0-1.351-.255-1.801-.81l-6-7.141v6.66c0 .721-.57 1.29-1.274 1.29H7.32c-.721 0-1.29-.6-1.29-1.29V7.41c0-.705.63-1.29 1.5-1.29.646 0 1.38.255 1.83.81l5.97 7.141V7.41c0-.721.6-1.29 1.29-1.29h.075c.72 0 1.29.6 1.29 1.29v9.18H18z"/></symbol>
+  <symbol id="i-nvidia" viewBox="0 0 24 24"><path d="M8.948 8.798v-1.43a6.7 6.7 0 0 1 .424-.018c3.922-.124 6.493 3.374 6.493 3.374s-2.774 3.851-5.75 3.851c-.398 0-.787-.062-1.158-.185v-4.346c1.528.185 1.837.857 2.747 2.385l2.04-1.714s-1.492-1.952-4-1.952a6.016 6.016 0 0 0-.796.035m0-4.735v2.138l.424-.027c5.45-.185 9.01 4.47 9.01 4.47s-4.08 4.964-8.33 4.964c-.37 0-.733-.035-1.095-.097v1.325c.3.035.61.062.91.062 3.957 0 6.82-2.023 9.593-4.408.459.371 2.34 1.263 2.73 1.652-2.633 2.208-8.772 3.984-12.253 3.984-.335 0-.653-.018-.971-.053v1.864H24V4.063zm0 10.326v1.131c-3.657-.654-4.673-4.46-4.673-4.46s1.758-1.944 4.673-2.262v1.237H8.94c-1.528-.186-2.73 1.245-2.73 1.245s.68 2.412 2.739 3.11M2.456 10.9s2.164-3.197 6.5-3.533V6.201C4.153 6.59 0 10.653 0 10.653s2.35 6.802 8.948 7.42v-1.237c-4.84-.6-6.492-5.936-6.492-5.936z"/></symbol>
+  <symbol id="i-postgresql" viewBox="0 0 24 24"><path d="M23.5594 14.7228a.5269.5269 0 0 0-.0563-.1191c-.139-.2632-.4768-.3418-1.0074-.2321-1.6533.3411-2.2935.1312-2.5256-.0191 1.342-2.0482 2.445-4.522 3.0411-6.8297.2714-1.0507.7982-3.5237.1222-4.7316a1.5641 1.5641 0 0 0-.1509-.235C21.6931.9086 19.8007.0248 17.5099.0005c-1.4947-.0158-2.7705.3461-3.1161.4794a9.449 9.449 0 0 0-.5159-.0816 8.044 8.044 0 0 0-1.3114-.1278c-1.1822-.0184-2.2038.2642-3.0498.8406-.8573-.3211-4.7888-1.645-7.2219.0788C.9359 2.1526.3086 3.8733.4302 6.3043c.0409.818.5069 3.334 1.2423 5.7436.4598 1.5065.9387 2.7019 1.4334 3.582.553.9942 1.1259 1.5933 1.7143 1.7895.4474.1491 1.1327.1441 1.8581-.7279.8012-.9635 1.5903-1.8258 1.9446-2.2069.4351.2355.9064.3625 1.39.3772a.0569.0569 0 0 0 .0004.0041 11.0312 11.0312 0 0 0-.2472.3054c-.3389.4302-.4094.5197-1.5002.7443-.3102.064-1.1344.2339-1.1464.8115-.0025.1224.0329.2309.0919.3268.2269.4231.9216.6097 1.015.6331 1.3345.3335 2.5044.092 3.3714-.6787-.017 2.231.0775 4.4174.3454 5.0874.2212.5529.7618 1.9045 2.4692 1.9043.2505 0 .5263-.0291.8296-.0941 1.7819-.3821 2.5557-1.1696 2.855-2.9059.1503-.8707.4016-2.8753.5388-4.1012.0169-.0703.0357-.1207.057-.1362.0007-.0005.0697-.0471.4272.0307a.3673.3673 0 0 0 .0443.0068l.2539.0223.0149.001c.8468.0384 1.9114-.1426 2.5312-.4308.6438-.2988 1.8057-1.0323 1.5951-1.6698zM2.371 11.8765c-.7435-2.4358-1.1779-4.8851-1.2123-5.5719-.1086-2.1714.4171-3.6829 1.5623-4.4927 1.8367-1.2986 4.8398-.5408 6.108-.13-.0032.0032-.0066.0061-.0098.0094-2.0238 2.044-1.9758 5.536-1.9708 5.7495-.0002.0823.0066.1989.0162.3593.0348.5873.0996 1.6804-.0735 2.9184-.1609 1.1504.1937 2.2764.9728 3.0892.0806.0841.1648.1631.2518.2374-.3468.3714-1.1004 1.1926-1.9025 2.1576-.5677.6825-.9597.5517-1.0886.5087-.3919-.1307-.813-.5871-1.2381-1.3223-.4796-.839-.9635-2.0317-1.4155-3.5126zm6.0072 5.0871c-.1711-.0428-.3271-.1132-.4322-.1772.0889-.0394.2374-.0902.4833-.1409 1.2833-.2641 1.4815-.4506 1.9143-1.0002.0992-.126.2116-.2687.3673-.4426a.3549.3549 0 0 0 .0737-.1298c.1708-.1513.2724-.1099.4369-.0417.156.0646.3078.26.3695.4752.0291.1016.0619.2945-.0452.4444-.9043 1.2658-2.2216 1.2494-3.1676 1.0128zm2.094-3.988-.0525.141c-.133.3566-.2567.6881-.3334 1.003-.6674-.0021-1.3168-.2872-1.8105-.8024-.6279-.6551-.9131-1.5664-.7825-2.5004.1828-1.3079.1153-2.4468.079-3.0586-.005-.0857-.0095-.1607-.0122-.2199.2957-.2621 1.6659-.9962 2.6429-.7724.4459.1022.7176.4057.8305.928.5846 2.7038.0774 3.8307-.3302 4.7363-.084.1866-.1633.3629-.2311.5454zm7.3637 4.5725c-.0169.1768-.0358.376-.0618.5959l-.146.4383a.3547.3547 0 0 0-.0182.1077c-.0059.4747-.054.6489-.115.8693-.0634.2292-.1353.4891-.1794 1.0575-.11 1.4143-.8782 2.2267-2.4172 2.5565-1.5155.3251-1.7843-.4968-2.0212-1.2217a6.5824 6.5824 0 0 0-.0769-.2266c-.2154-.5858-.1911-1.4119-.1574-2.5551.0165-.5612-.0249-1.9013-.3302-2.6462.0044-.2932.0106-.5909.019-.8918a.3529.3529 0 0 0-.0153-.1126 1.4927 1.4927 0 0 0-.0439-.208c-.1226-.4283-.4213-.7866-.7797-.9351-.1424-.059-.4038-.1672-.7178-.0869.067-.276.1831-.5875.309-.9249l.0529-.142c.0595-.16.134-.3257.213-.5012.4265-.9476 1.0106-2.2453.3766-5.1772-.2374-1.0981-1.0304-1.6343-2.2324-1.5098-.7207.0746-1.3799.3654-1.7088.5321a5.6716 5.6716 0 0 0-.1958.1041c.0918-1.1064.4386-3.1741 1.7357-4.4823a4.0306 4.0306 0 0 1 .3033-.276.3532.3532 0 0 0 .1447-.0644c.7524-.5706 1.6945-.8506 2.802-.8325.4091.0067.8017.0339 1.1742.081 1.939.3544 3.2439 1.4468 4.0359 2.3827.8143.9623 1.2552 1.9315 1.4312 2.4543-1.3232-.1346-2.2234.1268-2.6797.779-.9926 1.4189.543 4.1729 1.2811 5.4964.1353.2426.2522.4522.2889.5413.2403.5825.5515.9713.7787 1.2552.0696.087.1372.1714.1885.245-.4008.1155-1.1208.3825-1.0552 1.717-.0123.1563-.0423.4469-.0834.8148-.0461.2077-.0702.4603-.0994.7662zm.8905-1.6211c-.0405-.8316.2691-.9185.5967-1.0105a2.8566 2.8566 0 0 0 .135-.0406 1.202 1.202 0 0 0 .1342.103c.5703.3765 1.5823.4213 3.0068.1344-.2016.1769-.5189.3994-.9533.6011-.4098.1903-1.0957.333-1.7473.3636-.7197.0336-1.0859-.0807-1.1721-.151zm.5695-9.2712c-.0059.3508-.0542.6692-.1054 1.0017-.055.3576-.112.7274-.1264 1.1762-.0142.4368.0404.8909.0932 1.3301.1066.887.216 1.8003-.2075 2.7014a3.5272 3.5272 0 0 1-.1876-.3856c-.0527-.1276-.1669-.3326-.3251-.6162-.6156-1.1041-2.0574-3.6896-1.3193-4.7446.3795-.5427 1.3408-.5661 2.1781-.463zm.2284 7.0137a12.3762 12.3762 0 0 0-.0853-.1074l-.0355-.0444c.7262-1.1995.5842-2.3862.4578-3.4385-.0519-.4318-.1009-.8396-.0885-1.2226.0129-.4061.0666-.7543.1185-1.0911.0639-.415.1288-.8443.1109-1.3505.0134-.0531.0188-.1158.0118-.1902-.0457-.4855-.5999-1.938-1.7294-3.253-.6076-.7073-1.4896-1.4972-2.6889-2.0395.5251-.1066 1.2328-.2035 2.0244-.1859 2.0515.0456 3.6746.8135 4.8242 2.2824a.908.908 0 0 1 .0667.1002c.7231 1.3556-.2762 6.2751-2.9867 10.5405zm-8.8166-6.1162c-.025.1794-.3089.4225-.6211.4225a.5821.5821 0 0 1-.0809-.0056c-.1873-.026-.3765-.144-.5059-.3156-.0458-.0605-.1203-.178-.1055-.2844.0055-.0401.0261-.0985.0925-.1488.1182-.0894.3518-.1226.6096-.0867.3163.0441.6426.1938.6113.4186zm7.9305-.4114c.0111.0792-.049.201-.1531.3102-.0683.0717-.212.1961-.4079.2232a.5456.5456 0 0 1-.075.0052c-.2935 0-.5414-.2344-.5607-.3717-.024-.1765.2641-.3106.5611-.352.297-.0414.6111.0088.6356.1851z"/></symbol>
+  <symbol id="i-python" viewBox="0 0 24 24"><path d="M14.25.18l.9.2.73.26.59.3.45.32.34.34.25.34.16.33.1.3.04.26.02.2-.01.13V8.5l-.05.63-.13.55-.21.46-.26.38-.3.31-.33.25-.35.19-.35.14-.33.1-.3.07-.26.04-.21.02H8.77l-.69.05-.59.14-.5.22-.41.27-.33.32-.27.35-.2.36-.15.37-.1.35-.07.32-.04.27-.02.21v3.06H3.17l-.21-.03-.28-.07-.32-.12-.35-.18-.36-.26-.36-.36-.35-.46-.32-.59-.28-.73-.21-.88-.14-1.05-.05-1.23.06-1.22.16-1.04.24-.87.32-.71.36-.57.4-.44.42-.33.42-.24.4-.16.36-.1.32-.05.24-.01h.16l.06.01h8.16v-.83H6.18l-.01-2.75-.02-.37.05-.34.11-.31.17-.28.25-.26.31-.23.38-.2.44-.18.51-.15.58-.12.64-.1.71-.06.77-.04.84-.02 1.27.05zm-6.3 1.98l-.23.33-.08.41.08.41.23.34.33.22.41.09.41-.09.33-.22.23-.34.08-.41-.08-.41-.23-.33-.33-.22-.41-.09-.41.09zm13.09 3.95l.28.06.32.12.35.18.36.27.36.35.35.47.32.59.28.73.21.88.14 1.04.05 1.23-.06 1.23-.16 1.04-.24.86-.32.71-.36.57-.4.45-.42.33-.42.24-.4.16-.36.09-.32.05-.24.02-.16-.01h-8.22v.82h5.84l.01 2.76.02.36-.05.34-.11.31-.17.29-.25.25-.31.24-.38.2-.44.17-.51.15-.58.13-.64.09-.71.07-.77.04-.84.01-1.27-.04-1.07-.14-.9-.2-.73-.25-.59-.3-.45-.33-.34-.34-.25-.34-.16-.33-.1-.3-.04-.25-.02-.2.01-.13v-5.34l.05-.64.13-.54.21-.46.26-.38.3-.32.33-.24.35-.2.35-.14.33-.1.3-.06.26-.04.21-.02.13-.01h5.84l.69-.05.59-.14.5-.21.41-.28.33-.32.27-.35.2-.36.15-.36.1-.35.07-.32.04-.28.02-.21V6.07h2.09l.14.01zm-6.47 14.25l-.23.33-.08.41.08.41.23.33.33.23.41.08.41-.08.33-.23.23-.33.08-.41-.08-.41-.23-.33-.33-.23-.41-.08-.41.08z"/></symbol>
+  <symbol id="i-redis" viewBox="0 0 24 24"><path d="M22.71 13.145c-1.66 2.092-3.452 4.483-7.038 4.483-3.203 0-4.397-2.825-4.48-5.12.701 1.484 2.073 2.685 4.214 2.63 4.117-.133 6.94-3.852 6.94-7.239 0-4.05-3.022-6.972-8.268-6.972-3.752 0-8.4 1.428-11.455 3.685C2.59 6.937 3.885 9.958 4.35 9.626c2.648-1.904 4.748-3.13 6.784-3.744C8.12 9.244.886 17.05 0 18.425c.1 1.261 1.66 4.648 2.424 4.648.232 0 .431-.133.664-.365a100.49 100.49 0 0 0 5.54-6.765c.222 3.104 1.748 6.898 6.014 6.898 3.819 0 7.604-2.756 9.33-8.965.2-.764-.73-1.361-1.261-.73zm-4.349-5.013c0 1.959-1.926 2.922-3.685 2.922-.941 0-1.664-.247-2.235-.568 1.051-1.592 2.092-3.225 3.21-4.973 1.972.334 2.71 1.43 2.71 2.619z"/></symbol>
+  <symbol id="i-terraform" viewBox="0 0 24 24"><path d="M1.44 0v7.575l6.561 3.79V3.787zm21.12 4.227l-6.561 3.791v7.574l6.56-3.787zM8.72 4.23v7.575l6.561 3.787V8.018zm0 8.405v7.575L15.28 24v-7.578z"/></symbol>
+  <symbol id="i-claude" viewBox="0 0 24 24"><path d="m4.7144 15.9555 4.7174-2.6471.079-.2307-.079-.1275h-.2307l-.7893-.0486-2.6956-.0729-2.3375-.0971-2.2646-.1214-.5707-.1215-.5343-.7042.0546-.3522.4797-.3218.686.0608 1.5179.1032 2.2767.1578 1.6514.0972 2.4468.255h.3886l.0546-.1579-.1336-.0971-.1032-.0972L6.973 9.8356l-2.55-1.6879-1.3356-.9714-.7225-.4918-.3643-.4614-.1578-1.0078.6557-.7225.8803.0607.2246.0607.8925.686 1.9064 1.4754 2.4893 1.8336.3643.3035.1457-.1032.0182-.0728-.164-.2733-1.3539-2.4467-1.445-2.4893-.6435-1.032-.17-.6194c-.0607-.255-.1032-.4674-.1032-.7285L6.287.1335 6.6997 0l.9957.1336.419.3642.6192 1.4147 1.0018 2.2282 1.5543 3.0296.4553.8985.2429.8318.091.255h.1579v-.1457l.1275-1.706.2368-2.0947.2307-2.6957.0789-.7589.3764-.9107.7468-.4918.5828.2793.4797.686-.0668.4433-.2853 1.8517-.5586 2.9021-.3643 1.9429h.2125l.2429-.2429.9835-1.3053 1.6514-2.0643.7286-.8196.85-.9046.5464-.4311h1.0321l.759 1.1293-.34 1.1657-1.0625 1.3478-.8804 1.1414-1.2628 1.7-.7893 1.36.0729.1093.1882-.0183 2.8535-.607 1.5421-.2794 1.8396-.3157.8318.3886.091.3946-.3278.8075-1.967.4857-2.3072.4614-3.4364.8136-.0425.0304.0486.0607 1.5482.1457.6618.0364h1.621l3.0175.2247.7892.522.4736.6376-.079.4857-1.2142.6193-1.6393-.3886-3.825-.9107-1.3113-.3279h-.1822v.1093l1.0929 1.0686 2.0035 1.8092 2.5075 2.3314.1275.5768-.3218.4554-.34-.0486-2.2039-1.6575-.85-.7468-1.9246-1.621h-.1275v.17l.4432.6496 2.3436 3.5214.1214 1.0807-.17.3521-.6071.2125-.6679-.1214-1.3721-1.9246L14.38 17.959l-1.1414-1.9428-.1397.079-.674 7.2552-.3156.3703-.7286.2793-.6071-.4614-.3218-.7468.3218-1.4753.3886-1.9246.3157-1.53.2853-1.9004.17-.6314-.0121-.0425-.1397.0182-1.4328 1.9672-2.1796 2.9446-1.7243 1.8456-.4128.164-.7164-.3704.0667-.6618.4008-.5889 2.386-3.0357 1.4389-1.882.929-1.0868-.0062-.1579h-.0546l-6.3385 4.1164-1.1293.1457-.4857-.4554.0608-.7467.2307-.2429 1.9064-1.3114Z"/></symbol>
+  <symbol id="i-network" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="6" rx="1.5"/><rect x="2" y="16" width="6" height="6" rx="1.5"/><rect x="16" y="16" width="6" height="6" rx="1.5"/><path d="M11 8h2v3h5a2 2 0 0 1 2 2v3h-2v-3H6v3H4v-3a2 2 0 0 1 2-2h5z"/></symbol>
+</svg>
+<div class="progress" aria-hidden="true"><i></i></div>
+<div class="page">
+<div class="frame">
+  <header class="top">
+    <a class="logo" href="#top"><i aria-hidden="true"></i>ahmar rahmani</a>
+    <nav aria-label="Sections">
+      <a href="#work">work</a>
+      <a href="#platform">platform</a>
+      <a href="#stack">stack</a>
+      <a href="#resume">resume</a>
+      <a href="#contact">contact</a>
+    </nav>
+    <div class="top-end">
+      <div class="tools">
+      <button id="motion-btn" class="icon-btn motion-btn" type="button" aria-pressed="false" aria-label="Pause animations" title="Pause animations" hidden>
+        <svg class="pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 3.5v9M10.5 3.5v9"/></svg>
+        <svg class="play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.3v9.4L12.5 8z"/></svg>
+      </button>
+      <button id="theme-btn" class="icon-btn theme-btn" type="button" aria-pressed="false" aria-label="Dark theme" title="Dark theme" hidden>
+        <svg class="moon" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.3 9.7A5.5 5.5 0 0 1 6.3 2.7a5.5 5.5 0 1 0 7 7z"/></svg>
+        <svg class="sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="2.9"/><path d="M8 1.5v1.6M8 12.9v1.6M1.5 8h1.6M12.9 8h1.6M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M3.4 12.6l1.1-1.1M11.5 4.5l1.1-1.1"/></svg>
+      </button>
+      </div>
+      <span class="avail">open to DevOps, Cloud &amp; SRE roles</span>
+    </div>
+  </header>
+
+  <section id="top" class="hero" aria-labelledby="hello">
+    <div>
+      <h1 id="hello" class="headline">
+        <span class="line">hi, i'm <span class="hl">Ahmar</span></span>
+        <span class="line">a <span class="hl sky">DevOps Intern</span> at BytePe</span>
+        <span class="line tail">and here's where my move to Kubernetes stands</span>
+      </h1>
+      <p class="lede">I run services on Google Cloud with GKE, Helm, Terraform and GitLab CI/CD. I moved the dev environment first, then staging, and now I'm moving production with my lead.</p>
+      <ul class="actions">
+        <li><a class="btn primary" href="#contact">say hi</a></li>
+        <li><a class="btn" href="Ahmar-Rahmani-Resume.pdf" target="_blank" rel="noopener">resume (PDF)</a></li>
+        <li><a class="btn" href="https://linkedin.com/in/ahmarrahmani">LinkedIn</a></li>
+        <li><a class="btn" href="https://github.com/ehmerr">GitHub</a></li>
+      </ul>
+      <ul class="daily" aria-label="Tools I use every day">
+        <li class="label" aria-hidden="true">every day:</li>
+        <li title="Google Cloud"><svg class="ic b-googlecloud" aria-hidden="true"><use href="#i-googlecloud"/></svg><span class="sr">Google Cloud</span></li>
+        <li title="Kubernetes"><svg class="ic b-kubernetes" aria-hidden="true"><use href="#i-kubernetes"/></svg><span class="sr">Kubernetes</span></li>
+        <li title="Helm"><svg class="ic b-helm" aria-hidden="true"><use href="#i-helm"/></svg><span class="sr">Helm</span></li>
+        <li title="Terraform"><svg class="ic b-terraform" aria-hidden="true"><use href="#i-terraform"/></svg><span class="sr">Terraform</span></li>
+        <li title="Docker"><svg class="ic b-docker" aria-hidden="true"><use href="#i-docker"/></svg><span class="sr">Docker</span></li>
+        <li title="GitLab CI/CD"><svg class="ic b-gitlab" aria-hidden="true"><use href="#i-gitlab"/></svg><span class="sr">GitLab CI/CD</span></li>
+        <li title="Linux"><svg class="ic b-linux" aria-hidden="true"><use href="#i-linux"/></svg><span class="sr">Linux</span></li>
+        <li title="Bash"><svg class="ic b-gnubash" aria-hidden="true"><use href="#i-gnubash"/></svg><span class="sr">Bash</span></li>
+        <li title="Python"><svg class="ic b-python" aria-hidden="true"><use href="#i-python"/></svg><span class="sr">Python</span></li>
+      </ul>
+    </div>
+    <div class="deck" aria-label="Where the move from VMs to GKE stands">
+      <article class="env env-dev">
+        <div class="env-top"><span class="env-name">dev</span><span class="state done">done</span></div>
+        <p class="env-big">on GKE</p>
+        <p class="env-note">10 backend services on one shared Helm chart, plus the web front ends.</p>
+        <p class="env-foot">step 1 · moved first</p>
+      </article>
+      <article class="env env-stage">
+        <div class="env-top"><span class="env-name">staging</span><span class="state done">done</span></div>
+        <p class="env-big">on GKE</p>
+        <p class="env-note">Backend plus the web, admin and seller front ends, in their own namespaces.</p>
+        <p class="env-foot">step 2 · moved next</p>
+      </article>
+      <article class="env env-prod">
+        <div class="env-top"><span class="env-name">production</span><span class="state busy">in progress</span></div>
+        <p class="env-big">moving now</p>
+        <p class="env-note">Off VMs and onto GKE with my lead, the last step of the migration.</p>
+        <p class="env-foot">step 3 · happening now</p>
+      </article>
+    </div>
+  </section>
+
+  <div class="band-wrap" aria-hidden="true">
+    <div class="band band-back">
+      <div class="band-track">
+        <div class="band-group"><span>dev · done</span><i></i><span>staging · done</span><i></i><span>production · in progress</span><i></i><span>monitoring · up next</span><i></i><span>VMs → GKE</span><i></i><span>dev · done</span><i></i><span>staging · done</span><i></i><span>production · in progress</span><i></i><span>monitoring · up next</span><i></i><span>VMs → GKE</span><i></i></div>
+      </div>
+    </div>
+    <div class="band band-front">
+      <div class="band-track">
+        <div class="band-group">
+          <span><svg class="ic"><use href="#i-googlecloud"/></svg>Google Cloud</span><i></i>
+          <span><svg class="ic"><use href="#i-kubernetes"/></svg>Kubernetes</span><i></i>
+          <span><svg class="ic"><use href="#i-helm"/></svg>Helm</span><i></i>
+          <span><svg class="ic"><use href="#i-terraform"/></svg>Terraform</span><i></i>
+          <span><svg class="ic"><use href="#i-gitlab"/></svg>GitLab CI/CD</span><i></i>
+          <span><svg class="ic"><use href="#i-docker"/></svg>Docker</span><i></i>
+          <span><svg class="ic"><use href="#i-grafana"/></svg>Grafana</span><i></i>
+          <span><svg class="ic"><use href="#i-linux"/></svg>Linux</span><i></i>
+          <span><svg class="ic"><use href="#i-nginx"/></svg>Nginx</span><i></i>
+          <span><svg class="ic"><use href="#i-k6"/></svg>k6</span><i></i>
+          <span><svg class="ic"><use href="#i-python"/></svg>Python</span><i></i>
+          <span><svg class="ic"><use href="#i-gnubash"/></svg>Bash</span><i></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section id="work" class="sec" aria-labelledby="work-title">
+    <p class="eyebrow">work</p>
+    <h2 id="work-title">what i do at BytePe</h2>
+    <p class="intro">BytePe is a fintech startup. I work on its move from VMs to Kubernetes on Google Cloud, and on everything that ships code to it.</p>
+    <div class="work">
+      <dl class="facts">
+        <div><dt>role</dt><dd>DevOps Intern</dd></div>
+        <div><dt>company</dt><dd>BytePe, fintech</dd></div>
+        <div><dt>since</dt><dd>June 2026</dd></div>
+        <div><dt>office</dt><dd>Noida</dd></div>
+      </dl>
+      <div>
+        <div class="stats">
+          <div><b>10</b><span>services moved from VMs to GKE</span></div>
+          <div><b>~64%</b><span>fewer non-production compute hours</span></div>
+          <div><b>3</b><span>environments managed in Terraform</span></div>
+        </div>
+        <ul class="ruled">
+          <li>Moved the <strong>dev environment</strong> from VMs to <strong>GKE Autopilot</strong> first, packaging all 10 backend services with one shared <strong>Helm</strong> chart.</li>
+          <li>Then moved the whole <strong>staging environment</strong>, backend and front ends, into the shared cluster, with namespace-scoped <strong>RBAC</strong> for the CI deployer and credentials in protected GitLab variables and Kubernetes Secrets.</li>
+          <li>Now moving <strong>production</strong> off VMs onto GKE with my lead.</li>
+          <li>Built <strong>GitLab CI/CD</strong> pipelines for dev and staging, with migration Jobs, immutable image tags and automatic rollback.</li>
+          <li>Managed GCP infrastructure with <strong>Terraform</strong> across dev, stage and prod: GKE Gateway, Cloud Armor, Workload Identity and IAM.</li>
+          <li>Cut non-production compute hours by about 64% by scaling workloads to zero outside working hours.</li>
+          <li>Tuned HPA autoscaling and health probes, and wrote <strong>k6</strong> load tests for the platform and its Cloud Armor rules.</li>
+          <li>Self-hosted <strong>NVIDIA Nemotron on vLLM</strong> on a GKE GPU node, with a RAG proof of concept behind an internal chat UI.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="platform" class="sec" aria-labelledby="platform-title">
+    <p class="eyebrow">platform</p>
+    <h2 id="platform-title">how a change ships</h2>
+    <p class="intro">A simplified view. GitLab CI/CD builds the image and upgrades the Helm release. Users reach the cluster through the GKE Gateway and Cloud Armor, and Terraform provisions both.</p>
+    <div class="diagram">
+      <svg viewBox="0 0 916 300" role="img" aria-labelledby="diagram-title">
+        <title id="diagram-title">git push goes through GitLab CI/CD, which pushes an image to Artifact Registry and runs helm upgrade on GKE Autopilot. Users reach GKE through the GKE Gateway and Cloud Armor. Terraform provisions the Gateway and the cluster.</title>
+        <defs>
+          <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path class="d-arrow" d="M0 0L10 5L0 10z"/>
+          </marker>
+        </defs>
+        <path class="d-edge" data-e="push-ci" d="M136 86 H183" marker-end="url(#arw)"/>
+        <path class="d-edge" data-e="ci-ar" d="M356 86 H403" marker-end="url(#arw)"/>
+        <text class="d-label" x="380" y="76" text-anchor="middle">image</text>
+        <path class="d-edge" data-e="ar-gke" d="M590 86 H647" marker-end="url(#arw)"/>
+        <text class="d-label" x="618" y="76" text-anchor="middle">pull</text>
+        <path class="d-edge" data-e="ci-gke" d="M271 60 V34 H775 V57" marker-end="url(#arw)"/>
+        <text class="d-label" x="523" y="26" text-anchor="middle">helm upgrade</text>
+        <path class="d-edge" data-e="users-gw" d="M136 196 H183" marker-end="url(#arw)"/>
+        <path class="d-edge" data-e="gw-gke" d="M430 196 H647" marker-end="url(#arw)"/>
+        <text class="d-label" x="160" y="186" text-anchor="middle">HTTPS</text>
+        <path class="d-edge d-dash" data-e="tf-gw" d="M450 266 H308 V225" marker-end="url(#arw)"/>
+        <text class="d-label" x="379" y="286" text-anchor="middle">provisions</text>
+        <path class="d-edge d-dash" data-e="tf-gke" d="M600 266 H775 V225" marker-end="url(#arw)"/>
+        <text class="d-label" x="688" y="286" text-anchor="middle">provisions</text>
+        <g class="d-n" data-n="push"><rect class="d-node" x="16" y="60" width="120" height="52" rx="10"/><text class="d-text" x="76" y="90" text-anchor="middle">git push</text></g>
+        <g class="d-n" data-n="ci"><rect class="d-node" x="186" y="60" width="170" height="52" rx="10"/><text class="d-text" x="271" y="90" text-anchor="middle">GitLab CI/CD</text></g>
+        <g class="d-n" data-n="ar"><rect class="d-node" x="406" y="60" width="184" height="52" rx="10"/><text class="d-text" x="498" y="90" text-anchor="middle">Artifact Registry</text></g>
+        <g class="d-n" data-n="gke">
+          <rect class="d-ring" x="650" y="60" width="250" height="162" rx="14"/>
+          <rect class="d-key" x="650" y="60" width="250" height="162" rx="14"/>
+          <text class="d-title" x="775" y="128" text-anchor="middle">GKE Autopilot</text>
+          <text class="d-sub" x="775" y="152" text-anchor="middle">dev · staging · production next</text>
+          <text class="d-sub" x="775" y="172" text-anchor="middle">one Helm chart · Workload Identity</text>
+        </g>
+        <g class="d-n" data-n="users"><rect class="d-node" x="16" y="170" width="120" height="52" rx="10"/><text class="d-text" x="76" y="200" text-anchor="middle">Users</text></g>
+        <g class="d-n" data-n="gw"><rect class="d-node" x="186" y="170" width="244" height="52" rx="10"/><text class="d-text" x="308" y="200" text-anchor="middle">GKE Gateway + Cloud Armor</text></g>
+        <g class="d-n" data-n="tf"><rect class="d-node" x="450" y="246" width="150" height="40" rx="10"/><text class="d-text" x="525" y="270" text-anchor="middle">Terraform</text></g>
+        <circle class="d-dot" cx="76" cy="86" r="6"/>
+      </svg>
+    </div>
+    <div class="ship" hidden>
+      <button type="button" class="btn primary" id="ship-btn"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 2.8v10.4L13 8z"/></svg>ship a change</button>
+      <p class="ship-log" id="ship-log" aria-hidden="true">press play to watch a change go from git push to users</p>
+      <p class="sr" id="ship-status" role="status"></p>
+    </div>
+    <p class="swipe" aria-hidden="true">swipe sideways to see the whole diagram →</p>
+  </section>
+
+  <section id="next" class="sec" aria-labelledby="next-title">
+    <p class="eyebrow">up next</p>
+    <h2 id="next-title">after production</h2>
+    <div class="next">
+      <div class="next-text">
+        <h3>Platform monitoring</h3>
+        <p>Grafana on GKE, backed by Google Cloud Managed Service for Prometheus: request, error and latency dashboards for every service, plus alerts. The plan is agreed with my lead.</p>
+      </div>
+      <ol class="track" aria-label="Monitoring progress">
+        <li class="done">plan</li>
+        <li>build</li>
+        <li>live</li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="stack" class="sec" aria-labelledby="stack-title">
+    <p class="eyebrow">stack</p>
+    <h2 id="stack-title">what i work with</h2>
+    <div class="cats">
+      <div>
+        <p class="cat-name">cloud &amp; containers</p>
+        <ul class="tiles">
+          <li class="tile"><span class="tile-ic b-googlecloud"><svg class="ic" aria-hidden="true"><use href="#i-googlecloud"/></svg></span><b>Google Cloud</b><small>GKE Autopilot, Compute Engine, Cloud SQL, Memorystore, Artifact Registry, Cloud Armor, IAM</small></li>
+          <li class="tile"><span class="tile-ic b-kubernetes"><svg class="ic" aria-hidden="true"><use href="#i-kubernetes"/></svg></span><b>Kubernetes</b><small>HPA, probes, RBAC, Gateway API</small></li>
+          <li class="tile"><span class="tile-ic b-helm"><svg class="ic" aria-hidden="true"><use href="#i-helm"/></svg></span><b>Helm</b><small>one shared chart for 10 services</small></li>
+          <li class="tile"><span class="tile-ic b-docker"><svg class="ic" aria-hidden="true"><use href="#i-docker"/></svg></span><b>Docker</b><small>images and Docker Compose</small></li>
+        </ul>
+      </div>
+      <div>
+        <p class="cat-name">automation</p>
+        <ul class="tiles">
+          <li class="tile"><span class="tile-ic b-terraform"><svg class="ic" aria-hidden="true"><use href="#i-terraform"/></svg></span><b>Terraform</b><small>GKE Gateway, Cloud Armor, Workload Identity, IAM</small></li>
+          <li class="tile"><span class="tile-ic b-gitlab"><svg class="ic" aria-hidden="true"><use href="#i-gitlab"/></svg></span><b>GitLab CI/CD</b><small>dev and staging pipelines, auto-rollback</small></li>
+          <li class="tile"><span class="tile-ic b-githubactions"><svg class="ic" aria-hidden="true"><use href="#i-githubactions"/></svg></span><b>GitHub Actions</b><small>workflows</small></li>
+          <li class="tile"><span class="tile-ic b-git"><svg class="ic" aria-hidden="true"><use href="#i-git"/></svg></span><b>Git</b><small>branches, submodules</small></li>
+        </ul>
+      </div>
+      <div>
+        <p class="cat-name">operate &amp; observe</p>
+        <ul class="tiles">
+          <li class="tile"><span class="tile-ic b-grafana"><svg class="ic" aria-hidden="true"><use href="#i-grafana"/></svg></span><b>Grafana</b><small>dashboards, Loki, Alloy, LogQL</small></li>
+          <li class="tile"><span class="tile-ic b-k6"><svg class="ic" aria-hidden="true"><use href="#i-k6"/></svg></span><b>k6</b><small>load tests for the platform</small></li>
+          <li class="tile"><span class="tile-ic b-linux"><svg class="ic" aria-hidden="true"><use href="#i-linux"/></svg></span><b>Linux</b><small>Ubuntu, SSH</small></li>
+          <li class="tile"><span class="tile-ic b-nginx"><svg class="ic" aria-hidden="true"><use href="#i-nginx"/></svg></span><b>Nginx</b><small>front-end serving</small></li>
+        </ul>
+      </div>
+      <div>
+        <p class="cat-name">networking &amp; data</p>
+        <ul class="tiles">
+          <li class="tile"><span class="tile-ic b-network"><svg class="ic" aria-hidden="true"><use href="#i-network"/></svg></span><b>Networking</b><small>TCP/IP, DNS, TLS, CIDR, NAT, L4/L7, VPC</small></li>
+          <li class="tile"><span class="tile-ic b-postgresql"><svg class="ic" aria-hidden="true"><use href="#i-postgresql"/></svg></span><b>PostgreSQL</b><small>Cloud SQL, pgvector</small></li>
+          <li class="tile"><span class="tile-ic b-mysql"><svg class="ic" aria-hidden="true"><use href="#i-mysql"/></svg></span><b>MySQL</b><small>Cloud SQL</small></li>
+          <li class="tile"><span class="tile-ic b-redis"><svg class="ic" aria-hidden="true"><use href="#i-redis"/></svg></span><b>Redis</b><small>Memorystore</small></li>
+        </ul>
+      </div>
+      <div>
+        <p class="cat-name">AI &amp; scripting</p>
+        <ul class="tiles">
+          <li class="tile"><span class="tile-ic b-nvidia"><svg class="ic" aria-hidden="true"><use href="#i-nvidia"/></svg></span><b>NVIDIA GPUs</b><small>vLLM and Nemotron on GKE</small></li>
+          <li class="tile"><span class="tile-ic b-claude"><svg class="ic" aria-hidden="true"><use href="#i-claude"/></svg></span><b>Claude Code</b><small>AI-assisted Terraform, manifests and pipelines</small></li>
+          <li class="tile"><span class="tile-ic b-gnubash"><svg class="ic" aria-hidden="true"><use href="#i-gnubash"/></svg></span><b>Bash</b><small>scripts and automation</small></li>
+          <li class="tile"><span class="tile-ic b-python"><svg class="ic" aria-hidden="true"><use href="#i-python"/></svg></span><b>Python</b><small>scripts and tooling</small></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="education" class="sec" aria-labelledby="education-title">
+    <p class="eyebrow">education</p>
+    <h2 id="education-title">where i studied</h2>
+    <dl class="rows">
+      <div><dt>Nov 2022 – Jun 2026</dt><dd><strong>B.Tech, Computer Science and Engineering (Data Science)</strong><br>ITS Engineering College · CGPA 7.98</dd></div>
+      <div><dt>Apr 2020 – Aug 2021</dt><dd><strong>Class XII, Senior Secondary (CBSE)</strong><br>Sadhana Devi Vidyapith · 91%</dd></div>
+    </dl>
+  </section>
+
+  <section id="resume" class="sec" aria-labelledby="resume-title">
+    <div class="cv">
+      <div>
+        <p class="eyebrow">resume</p>
+        <h2 id="resume-title">the whole story, <span class="hl sky">on one page</span></h2>
+        <p class="intro">Short on time? Here's the condensed version for your hiring team: my DevOps internship at BytePe, the move from VMs to GKE, and the pipelines and Terraform behind it.</p>
+        <ul class="cv-tags" aria-label="What the resume covers">
+          <li>DevOps Intern · BytePe</li>
+          <li>VMs → GKE</li>
+          <li>GitLab CI/CD</li>
+          <li>Terraform</li>
+          <li>skills &amp; education</li>
+        </ul>
+        <dl class="cv-meta">
+          <div><dt>format</dt><dd>PDF, 1 page</dd></div>
+          <div><dt>updated</dt><dd>17 October 2026</dd></div>
+        </dl>
+        <ul class="actions">
+          <li><a class="btn primary" href="Ahmar-Rahmani-Resume.pdf" target="_blank" rel="noopener">read the resume</a></li>
+        </ul>
+      </div>
+      <div class="sheet-wrap">
+        <a class="sheet" href="Ahmar-Rahmani-Resume.pdf" target="_blank" rel="noopener" aria-label="Open Ahmar Rahmani's resume, PDF, in a new tab">
+          <img src="resume-preview.webp" width="1100" height="1424" alt="First page of Ahmar Rahmani's resume" loading="lazy" decoding="async">
+          <span class="sheet-tag" aria-hidden="true">PDF · 1 page</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer id="contact" class="sec foot" aria-labelledby="contact-title">
+    <p class="eyebrow">say hi</p>
+    <h2 id="contact-title">open to DevOps, Cloud, Platform and SRE roles. <span class="hl">let's talk.</span></h2>
+    <p class="intro">Based in New Delhi, and open to roles anywhere in India or remote.</p>
+    <div class="reach">
+      <code id="email">ahmarrahmanicse@gmail.com</code>
+      <button type="button" data-copy="email" hidden>copy email</button>
+      <a id="phone" class="tel" href="tel:+917979966812">+91 79799 66812</a>
+      <button type="button" data-copy="phone" data-value="+917979966812" hidden>copy number</button>
+    </div>
+    <ul class="actions">
+      <li><a class="btn primary" href="mailto:ahmarrahmanicse@gmail.com">send an email</a></li>
+      <li><a class="btn" href="Ahmar-Rahmani-Resume.pdf" target="_blank" rel="noopener">resume</a></li>
+      <li><a class="btn" href="https://linkedin.com/in/ahmarrahmani">LinkedIn</a></li>
+      <li><a class="btn" href="https://github.com/ehmerr">GitHub</a></li>
+    </ul>
+    <p id="wordmark" class="wordmark" aria-label="Ahmar Rahmani">ahmar rahmani</p>
+    <p class="fine"><span>© 2026 Ahmar Rahmani · New Delhi</span><span>updated October 2026</span></p>
+  </footer>
+</div>
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var fineMq = window.matchMedia('(hover: hover) and (pointer: fine)');
+  var darkMq = window.matchMedia('(prefers-color-scheme: dark)');
+  var hasIO = 'IntersectionObserver' in window;
+  var each = function (list, fn) { Array.prototype.forEach.call(list, fn); };
+
+  // Motion that runs on its own is off when the system asks for less motion or the visitor paused it.
+  function calm() { return reduceMq.matches || root.classList.contains('still'); }
+  function recall(key) { try { return window.localStorage.getItem(key); } catch (e) { return null; } }
+  function store(key, value) {
+    try { if (value === null) window.localStorage.removeItem(key); else window.localStorage.setItem(key, value); } catch (e) {}
+  }
+  function belowFold(el) { return el.getBoundingClientRect().top > window.innerHeight * 0.95; }
+  function whenSeen(el, threshold, fn) {
+    var io = new IntersectionObserver(function (entries) {
+      for (var n = 0; n < entries.length; n++) {
+        if (entries[n].isIntersecting) { io.disconnect(); fn(); return; }
+      }
+    }, { threshold: threshold });
+    io.observe(el);
+  }
+
+  // Pause button: stops the marquee and the pulsing dots, and remembers the choice.
+  var motionBtn = document.getElementById('motion-btn');
+  function setStill(on) {
+    root.classList.toggle('still', on);
+    if (motionBtn) motionBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+  if (recall('ar-still') === '1') setStill(true);
+  if (motionBtn) {
+    motionBtn.hidden = false;
+    motionBtn.addEventListener('click', function () {
+      var on = !root.classList.contains('still');
+      setStill(on);
+      store('ar-still', on ? '1' : null);
+      if (on) resetDeck();
+    });
+  }
+
+  // Theme switch: follows the system until the visitor picks one, then remembers it.
+  var themeBtn = document.getElementById('theme-btn');
+  function currentTheme() {
+    var t = root.getAttribute('data-theme');
+    return t === 'dark' || t === 'light' ? t : (darkMq.matches ? 'dark' : 'light');
+  }
+  function syncTheme() { if (themeBtn) themeBtn.setAttribute('aria-pressed', currentTheme() === 'dark' ? 'true' : 'false'); }
+  var savedTheme = recall('ar-theme');
+  if (savedTheme === 'dark' || savedTheme === 'light') root.setAttribute('data-theme', savedTheme);
+  if (themeBtn) {
+    themeBtn.hidden = false;
+    syncTheme();
+    if (darkMq.addEventListener) darkMq.addEventListener('change', syncTheme);
+    if (window.MutationObserver) new MutationObserver(syncTheme).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+    themeBtn.addEventListener('click', function () {
+      var next = currentTheme() === 'dark' ? 'light' : 'dark';
+      function apply() { root.setAttribute('data-theme', next); store('ar-theme', next); syncTheme(); }
+      if (!document.startViewTransition || calm()) { apply(); return; }
+      var r = themeBtn.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+      var radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+      try {
+        document.startViewTransition(apply).ready.then(function () {
+          root.animate({ clipPath: ['circle(0px at ' + x + 'px ' + y + 'px)', 'circle(' + radius + 'px at ' + x + 'px ' + y + 'px)'] },
+            { duration: 600, easing: 'cubic-bezier(0.2, 0.7, 0.2, 1)', pseudoElement: '::view-transition-new(root)' });
+        }).catch(function () {});
+      } catch (e) { apply(); }
+    });
+  }
+
+  // Wordmark: one span per letter for the hover wave; letters rise in when the footer arrives.
+  var mark = document.getElementById('wordmark');
+  if (mark) {
+    var text = mark.textContent;
+    mark.textContent = '';
+    for (var i = 0; i < text.length; i++) {
+      var s = document.createElement('span');
+      s.setAttribute('aria-hidden', 'true');
+      s.style.setProperty('--i', i);
+      s.textContent = text[i] === ' ' ? ' ' : text[i];
+      mark.appendChild(s);
+    }
+    if (hasIO && !calm() && belowFold(mark)) {
+      mark.classList.add('pre');
+      whenSeen(mark, 0.3, function () { mark.classList.remove('pre'); });
+    }
+  }
+
+  // Copy buttons (email, phone). data-value overrides the shown text, so the number copies without
+  // spaces. Where the clipboard is blocked, the text is selected for the visitor to copy instead.
+  each(document.querySelectorAll('[data-copy]'), function (btn) {
+    var target = document.getElementById(btn.getAttribute('data-copy'));
+    if (!target) return;
+    btn.hidden = false;
+    var label = btn.textContent, timer = 0;
+    function show(text, ms) {
+      btn.textContent = text;
+      clearTimeout(timer);
+      timer = setTimeout(function () { btn.textContent = label; }, ms);
+    }
+    function selectIt() {
+      var range = document.createRange();
+      range.selectNodeContents(target);
+      var selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      show('selected, copy it now', 4000);
+    }
+    btn.addEventListener('click', function () {
+      var value = btn.getAttribute('data-value') || target.textContent.trim();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(value).then(function () { show('copied', 2000); }, selectIt);
+      } else {
+        selectIt();
+      }
+    });
+  });
+
+  // Hero icons pop in one after another.
+  each(document.querySelectorAll('.daily li'), function (li, n) { li.style.setProperty('--i', n); });
+
+  // Marquee: clone each tape's group so translating by half the track loops seamlessly.
+  each(document.querySelectorAll('.band'), function (band) {
+    var track = band.querySelector('.band-track'), group = track && track.firstElementChild;
+    if (!group) return;
+    track.appendChild(group.cloneNode(true));
+    band.classList.add('loop');
+  });
+
+  // Deck: cards lean toward the pointer, the front card most.
+  var hero = document.querySelector('.hero'), deck = document.querySelector('.deck');
+  var px = 0, py = 0, deckQueued = false;
+  function paintDeck() {
+    deckQueued = false;
+    if (!deck) return;
+    deck.style.setProperty('--px', px.toFixed(3));
+    deck.style.setProperty('--py', py.toFixed(3));
+  }
+  function queueDeck() { if (!deckQueued) { deckQueued = true; requestAnimationFrame(paintDeck); } }
+  function resetDeck() { px = 0; py = 0; queueDeck(); }
+  if (hero && deck) {
+    hero.addEventListener('pointermove', function (e) {
+      if (!fineMq.matches || calm()) return;
+      var r = deck.getBoundingClientRect();
+      px = Math.max(-1, Math.min(1, (e.clientX - r.left - r.width / 2) / (r.width / 2 + 160)));
+      py = Math.max(-1, Math.min(1, (e.clientY - r.top - r.height / 2) / (r.height / 2 + 160)));
+      queueDeck();
+    });
+    hero.addEventListener('pointerleave', resetDeck);
+  }
+
+  // Stack tiles: the spotlight follows the pointer.
+  var cats = document.querySelector('.cats');
+  if (cats) {
+    cats.addEventListener('pointermove', function (e) {
+      if (!fineMq.matches) return;
+      var tile = e.target.closest ? e.target.closest('.tile') : null;
+      if (!tile) return;
+      var r = tile.getBoundingClientRect();
+      tile.style.setProperty('--mx', Math.round(e.clientX - r.left) + 'px');
+      tile.style.setProperty('--my', Math.round(e.clientY - r.top) + 'px');
+    });
+  }
+
+  // Resume sheet: tilts toward the pointer. Measured on the wrapper, which never transforms.
+  var sheetWrap = document.querySelector('.sheet-wrap'), sheet = sheetWrap && sheetWrap.querySelector('.sheet');
+  if (sheetWrap && sheet) {
+    sheetWrap.addEventListener('pointermove', function (e) {
+      if (!fineMq.matches || calm()) return;
+      var r = sheetWrap.getBoundingClientRect();
+      var x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+      sheet.classList.add('tilting');
+      sheet.style.setProperty('--ry', (x * 16).toFixed(2) + 'deg');
+      sheet.style.setProperty('--rx', (-y * 12).toFixed(2) + 'deg');
+    });
+    sheetWrap.addEventListener('pointerleave', function () {
+      sheet.classList.remove('tilting');
+      sheet.style.removeProperty('--rx');
+      sheet.style.removeProperty('--ry');
+    });
+  }
+
+  // Ship a change: walk the diagram hop by hop, moving a pulse along each edge.
+  var diagram = document.querySelector('.diagram');
+  var svg = diagram && diagram.querySelector('svg');
+  var dot = svg && svg.querySelector('.d-dot');
+  var shipBox = document.querySelector('.ship');
+  var shipBtn = document.getElementById('ship-btn');
+  var shipLog = document.getElementById('ship-log');
+  var shipStatus = document.getElementById('ship-status');
+  var HOPS = [
+    { node: 'tf', edges: ['tf-gw', 'tf-gke'], say: 'Terraform has the Gateway and the cluster in place' },
+    { node: 'push', say: 'git push: a change lands' },
+    { edge: 'push-ci', node: 'ci', say: 'GitLab CI/CD builds and tags the image' },
+    { edge: 'ci-ar', node: 'ar', say: 'the image goes to Artifact Registry' },
+    { edge: 'ci-gke', node: 'gke', say: 'helm upgrade rolls the release out on GKE' },
+    { edge: 'ar-gke', say: 'GKE pulls the new image' },
+    { from: 'users', edge: 'users-gw', node: 'gw', say: 'users come in through the GKE Gateway and Cloud Armor' },
+    { edge: 'gw-gke', say: 'and reach the new version' }
+  ];
+  var DONE = 'shipped. this is how dev and staging deploy today';
+  var shipRun = 0, shipTimer = 0;
+  function light(sel) { var el = svg.querySelector(sel); if (el) el.classList.add('lit'); return el; }
+  function clearShip() {
+    each(svg.querySelectorAll('.lit'), function (el) { el.classList.remove('lit'); });
+    if (dot) dot.classList.remove('on');
+  }
+  function travel(path, run, done) {
+    var len = path.getTotalLength(), dur = Math.max(260, Math.min(720, len / 0.8)), start = 0;
+    dot.classList.add('on');
+    requestAnimationFrame(function tick(ts) {
+      if (run !== shipRun) return;
+      if (!start) start = ts;
+      var k = Math.min(1, (ts - start) / dur);
+      var e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+      var p = path.getPointAtLength(len * e);
+      dot.setAttribute('cx', p.x.toFixed(1));
+      dot.setAttribute('cy', p.y.toFixed(1));
+      if (k < 1) requestAnimationFrame(tick); else done();
+    });
+  }
+  function ship(byUser) {
+    shipRun++;
+    clearTimeout(shipTimer);
+    clearShip();
+    var run = shipRun, quiet = reduceMq.matches, n = 0;
+    shipBox.classList.add('busy');
+    if (byUser && shipStatus) {
+      shipStatus.textContent = '';
+      setTimeout(function () {
+        shipStatus.textContent = 'Shipping a change: ' + HOPS.map(function (h) { return h.say; }).join(', ') + '. Shipped: this is how dev and staging deploy today.';
+      }, 60);
+    }
+    (function step() {
+      if (run !== shipRun) return;
+      if (n === HOPS.length) {
+        if (dot) dot.classList.remove('on');
+        shipBox.classList.remove('busy');
+        shipLog.textContent = DONE;
+        shipTimer = setTimeout(function () { if (run === shipRun) clearShip(); }, 2600);
+        return;
+      }
+      var hop = HOPS[n++];
+      shipLog.textContent = hop.say;
+      if (hop.from) light('[data-n="' + hop.from + '"]');
+      (hop.edges || []).forEach(function (id) { light('[data-e="' + id + '"]'); });
+      var arrive = function () {
+        if (run !== shipRun) return;
+        if (hop.node) light('[data-n="' + hop.node + '"]');
+        setTimeout(step, quiet ? 450 : 230);
+      };
+      var edge = hop.edge ? light('[data-e="' + hop.edge + '"]') : null;
+      if (edge && dot && !quiet && edge.getTotalLength) travel(edge, run, arrive); else arrive();
+    })();
+  }
+  if (svg && shipBox && shipBtn && shipLog) {
+    shipBox.hidden = false;
+    shipBtn.addEventListener('click', function () { ship(true); });
+    // Play it once by itself the first time the diagram is in view (about four seconds).
+    if (hasIO && !calm()) {
+      // Skipped if the visitor already pressed the button.
+      whenSeen(diagram, 0.55, function () { setTimeout(function () { if (!calm() && shipRun === 0) ship(false); }, 400); });
+    }
+  }
+
+  // Stats count up the first time they are in view.
+  var stats = document.querySelector('.stats');
+  function countUp(el, delay) {
+    var m = /^(\D*)(\d+)(\D*)$/.exec(el.textContent.trim());
+    if (!m) return;
+    var target = parseInt(m[2], 10), start = 0;
+    el.textContent = m[1] + '0' + m[3];
+    setTimeout(function () {
+      requestAnimationFrame(function tick(ts) {
+        if (!start) start = ts;
+        var k = Math.min(1, (ts - start) / 1200), eased = 1 - Math.pow(1 - k, 3);
+        el.textContent = m[1] + Math.round(target * eased) + m[3];
+        if (k < 1) requestAnimationFrame(tick);
+      });
+    }, delay);
+  }
+  if (stats && hasIO && !calm()) {
+    whenSeen(stats, 0.4, function () {
+      each(stats.querySelectorAll('b'), function (b, n) { countUp(b, n * 120); });
+    });
+  }
+
+  // Monitoring track: the finished step fills in when the card arrives.
+  var nextCard = document.querySelector('.next');
+  if (nextCard && hasIO && !calm() && belowFold(nextCard)) {
+    nextCard.classList.add('pending');
+    whenSeen(nextCard, 0.5, function () { setTimeout(function () { nextCard.classList.remove('pending'); }, 250); });
+  }
+
+  // Scroll reveal for blocks that start below the fold. Blocks that arrive together are staggered.
+  if (hasIO && !calm()) {
+    var revealIO = new IntersectionObserver(function (entries) {
+      var k = 0;
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var el = en.target, d = Math.min(k++, 5);
+        revealIO.unobserve(el);
+        el.style.setProperty('--ri', d);
+        el.classList.add('in');
+        setTimeout(function () { el.classList.remove('reveal', 'in'); el.style.removeProperty('--ri'); }, 1500 + d * 80);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -5% 0px' });
+    each(document.querySelectorAll('.sec .eyebrow, .sec h2, .sec .intro, .facts > div, .stats > div, .ruled li, .diagram, .ship, .next, .cat-name, .tile, .rows > div, .cv-tags, .cv-meta, .cv .actions, .sheet-wrap, .reach, .foot .actions'), function (el) {
+      if (el.hidden || !belowFold(el)) return;
+      el.classList.add('reveal');
+      revealIO.observe(el);
+    });
+  }
+
+  // Header: scroll progress, a shadow once the page moves, and the current section underlined.
+  var header = document.querySelector('.top');
+  var bar = document.querySelector('.progress i');
+  var navLinks = {};
+  each(document.querySelectorAll('.top nav a[href^="#"]'), function (a) { navLinks[a.getAttribute('href').slice(1)] = a; });
+  var SPY = { work: 'work', platform: 'platform', next: 'platform', stack: 'stack', resume: 'resume', contact: 'contact' };
+  var spySecs = ['top', 'work', 'platform', 'next', 'stack', 'education', 'resume', 'contact']
+    .map(function (id) { return document.getElementById(id); }).filter(Boolean);
+  var active, scrollQueued = false;
+  function onScroll() {
+    scrollQueued = false;
+    var doc = document.documentElement, y = window.pageYOffset || doc.scrollTop, max = doc.scrollHeight - window.innerHeight;
+    var line = window.innerHeight * 0.4, hit = null;
+    for (var n = 0; n < spySecs.length; n++) if (spySecs[n].getBoundingClientRect().top <= line) hit = spySecs[n].id;
+    if (max > 0 && y >= max - 2) hit = 'contact';
+    if (bar) bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, Math.max(0, y / max)) : 0).toFixed(4) + ')';
+    if (header) header.classList.toggle('stuck', y > 8);
+    var key = SPY[hit] || null;
+    if (key !== active) {
+      active = key;
+      for (var id in navLinks) navLinks[id].classList.toggle('on', id === key);
+    }
+  }
+  window.addEventListener('scroll', function () {
+    if (!scrollQueued) { scrollQueued = true; requestAnimationFrame(onScroll); }
+  }, { passive: true });
+  window.addEventListener('resize', onScroll);
+  onScroll();
+})();
+</script>
+</body>
+</html>
