@@ -4,10 +4,28 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Ahmar Rahmani</title>
-<meta name="description" content="Ahmar Rahmani, DevOps Intern at BytePe. Moving dev, staging and production from VMs to GKE with Helm, Terraform and GitLab CI/CD.">
+<meta name="description" content="Ahmar Rahmani, DevOps Intern at BytePe. Moved dev, staging and production from VMs to GKE with Helm, Terraform and GitLab CI/CD, and built the monitoring with Grafana, Prometheus and OpenTelemetry.">
 <meta property="og:title" content="Ahmar Rahmani">
-<meta property="og:description" content="DevOps Intern at BytePe. Moving dev, staging and production from VMs to GKE.">
+<meta property="og:description" content="DevOps Intern at BytePe. Moved dev, staging and production from VMs to GKE, and built the monitoring that watches them.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://ehmerr.github.io/">
+<meta property="og:image" content="https://ehmerr.github.io/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Ahmar Rahmani, DevOps Intern at BytePe. GKE, Helm, Terraform, Grafana.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://ehmerr.github.io/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 17 17'%3E%3Crect x='5' y='5' width='12' height='12' rx='3' fill='%23b9e3ff'/%3E%3Crect width='12' height='12' rx='3' fill='%23e4fb7a'/%3E%3C/svg%3E">
+<script>
+// Apply the saved theme and pause choice before first paint, so a returning visitor sees no flash.
+try {
+  (function (root, saved) {
+    var theme = saved.getItem('ar-theme');
+    if (theme === 'dark' || theme === 'light') root.setAttribute('data-theme', theme);
+    if (saved.getItem('ar-still') === '1') root.classList.add('still');
+  })(document.documentElement, window.localStorage);
+} catch (e) {}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Averia+Serif+Libre:ital,wght@0,300;0,400;0,700;1,400&family=Geist+Mono:wght@400;500&family=Mona+Sans:wght@400;500;600;700&display=swap">
@@ -15,8 +33,8 @@
 /* Layout: a ruled paper column (max 1180px) with hairline side rules and section rules. A friendly
    serif carries a lowercase, conversational voice; pastel highlighter chips mark the key words, and
    the hero's card deck tells the dev -> staging -> production story.
-   Motion sits on top: a load-in sequence, scroll reveals, a marquee band and a playable deploy
-   diagram. All of it switches off under prefers-reduced-motion, and the header's pause button
+   Motion sits on top: a load-in sequence, scroll reveals, a marquee band and two playable
+   diagrams. All of it switches off under prefers-reduced-motion, and the header's pause button
    stops everything that loops. */
 :root {
   --paper: #f5f6f3;
@@ -34,7 +52,6 @@
   --card-glass: rgb(255 255 255 / 0.62);
   --card-line: rgb(31 35 40 / 0.22);
   --card-ok: #1a7f37;
-  --card-busy: #9a4b00;
   --ok: #1f883d;
   --busy: #b25a00;
   --wait: #8c959f;
@@ -48,7 +65,8 @@
   --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --b-googlecloud: #4285f4; --b-kubernetes: #326ce5; --b-helm: #0f1689; --b-terraform: #844fba;
   --b-docker: #2496ed; --b-gitlab: #fc6d26; --b-githubactions: #2088ff; --b-git: #f05032;
-  --b-grafana: #f46800; --b-linux: #1b2430; --b-ubuntu: #e95420; --b-nginx: #009639;
+  --b-grafana: #f46800; --b-linux: #1b2430; --b-nginx: #009639;
+  --b-prometheus: #e6522c; --b-opentelemetry: #000000; --b-logs: #9a6700;
   --b-postgresql: #4169e1; --b-mysql: #4479a1; --b-redis: #ff4438; --b-python: #3776ab;
   --b-gnubash: #3f9a1f; --b-nvidia: #6aa600; --b-k6: #7d64ff; --b-claude: #d97757; --b-network: #0b7b8f;
 }
@@ -68,6 +86,7 @@
     --header: rgb(18 20 23 / 0.84);
     --shadow: 0 22px 40px -26px rgb(0 0 0 / 0.8);
     --b-helm: #8f9bff; --b-linux: #e8eaed; --b-python: #5b9bd8; --b-mysql: #6a9fcc; --b-gnubash: #5cc23a; --b-nvidia: #76b900; --b-network: #4cc4d6;
+    --b-opentelemetry: #e8eaed; --b-logs: #d29922;
     color-scheme: dark;
   }
 }
@@ -86,6 +105,7 @@
   --header: rgb(18 20 23 / 0.84);
   --shadow: 0 22px 40px -26px rgb(0 0 0 / 0.8);
   --b-helm: #8f9bff; --b-linux: #e8eaed; --b-python: #5b9bd8; --b-mysql: #6a9fcc; --b-gnubash: #5cc23a; --b-nvidia: #76b900; --b-network: #4cc4d6;
+  --b-opentelemetry: #e8eaed; --b-logs: #d29922;
   color-scheme: dark;
 }
 
@@ -102,10 +122,11 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
 .b-googlecloud { color: var(--b-googlecloud); } .b-kubernetes { color: var(--b-kubernetes); } .b-helm { color: var(--b-helm); }
 .b-terraform { color: var(--b-terraform); } .b-docker { color: var(--b-docker); } .b-gitlab { color: var(--b-gitlab); }
 .b-githubactions { color: var(--b-githubactions); } .b-git { color: var(--b-git); } .b-grafana { color: var(--b-grafana); }
-.b-linux { color: var(--b-linux); } .b-ubuntu { color: var(--b-ubuntu); } .b-nginx { color: var(--b-nginx); }
+.b-linux { color: var(--b-linux); } .b-nginx { color: var(--b-nginx); }
 .b-postgresql { color: var(--b-postgresql); } .b-mysql { color: var(--b-mysql); } .b-redis { color: var(--b-redis); }
 .b-python { color: var(--b-python); } .b-gnubash { color: var(--b-gnubash); } .b-nvidia { color: var(--b-nvidia); } .b-k6 { color: var(--b-k6); } .b-claude { color: var(--b-claude); }
-.b-network { color: var(--b-network); }
+.b-network { color: var(--b-network); } .b-prometheus { color: var(--b-prometheus); } .b-opentelemetry { color: var(--b-opentelemetry); }
+.b-logs { color: var(--b-logs); }
 
 /* Scroll progress: a hairline across the top of the viewport */
 .progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 60; pointer-events: none; }
@@ -189,9 +210,6 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
 .state { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 11.5px; padding: 2px 9px; border-radius: 999px; background: var(--card-glass); }
 .state::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 .state.done { color: var(--card-ok); }
-.state.busy { color: var(--card-busy); }
-.state.busy::before { animation: beat 1.8s ease-out infinite; }
-@keyframes beat { 0% { box-shadow: 0 0 0 0 currentColor; } 70%, 100% { box-shadow: 0 0 0 6px transparent; } }
 .env-big { font-family: var(--serif); font-size: 1.7rem; line-height: 1.05; margin: 6px 0 0; }
 .env-note { margin: 0; font-size: 0.875rem; line-height: 1.45; }
 .env-foot { margin: auto 0 0; padding-top: 10px; border-top: 1px dashed var(--card-line); font-family: var(--mono); font-size: 11.5px; }
@@ -226,8 +244,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
 .facts div { display: grid; gap: 2px; }
 .facts dt { font-family: var(--mono); font-size: 12px; color: var(--muted); }
 .facts dd { margin: 0; font-weight: 500; }
-.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--rule); border-radius: 14px; background: var(--surface); margin: 0 0 28px; overflow: hidden; }
-.stats div { padding: 20px 22px; min-width: 0; }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--rule); border-radius: 14px; background: var(--surface); margin: 0 0 28px; overflow: hidden; }
+.stats div { padding: 20px; min-width: 0; }
 .stats div + div { border-left: 1px solid var(--rule); }
 .stats b { display: block; font-family: var(--serif); font-weight: 700; font-size: 2.4rem; line-height: 1; margin-bottom: 8px; font-variant-numeric: tabular-nums; }
 .stats span { color: var(--muted); font-size: 0.9375rem; }
@@ -235,8 +253,10 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
 .ruled li { padding: 15px 0; border-top: 1px solid var(--rule); }
 .ruled li:last-child { border-bottom: 1px solid var(--rule); }
 .ruled strong { font-weight: 600; }
+.work .ruled + .cat-name { margin-top: 34px; } /* space between the owned / team / improved groups */
 
-/* Platform diagram, with a playable deploy: nodes light up as a pulse travels the edges */
+/* Diagrams (platform and monitoring), each with a playable walk: nodes light up as a pulse travels
+   the edges */
 .diagram { overflow-x: auto; border: 1px solid var(--rule); border-radius: 14px; padding: 18px; background: var(--surface); }
 .diagram svg { display: block; width: 100%; min-width: 720px; height: auto; }
 .d-node { fill: var(--paper); stroke: var(--rule); stroke-width: 1.5; }
@@ -266,11 +286,17 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
 .ship.busy .ship-log::before { background: var(--ok); animation: blink 0.9s ease-in-out infinite alternate; }
 @keyframes blink { to { opacity: 0.25; } }
 
+/* Monitoring: the headline numbers sit in a row of chips between the intro and the diagram */
+.mon-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: -16px 0 28px; padding: 0; list-style: none; }
+.mon-chips li { display: inline-flex; align-items: baseline; gap: 7px; padding: 4px 13px; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+.mon-chips b { font-family: var(--serif); font-weight: 700; font-size: 1.125rem; color: var(--ink); font-variant-numeric: tabular-nums; }
+
 /* Up next */
 .next { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 18px 48px; padding: 28px; border-radius: 16px; background: var(--blush); border: 1px solid var(--card-edge); }
 .next-text { flex: 1 1 360px; min-width: 0; }
 .next h3 { font-family: var(--serif); font-weight: 400; font-size: 1.75rem; line-height: 1.15; margin: 0 0 8px; }
 .next p { margin: 0; }
+.next p + p { margin-top: 10px; font-size: 0.9375rem; color: var(--muted); }
 .track { flex: 0 1 320px; display: flex; list-style: none; margin: 0; padding: 0; }
 .track li { flex: 1; position: relative; padding-top: 24px; font-family: var(--mono); font-size: 12px; color: var(--muted); min-width: 0; }
 .track li::before { content: ""; position: absolute; top: 3px; left: 0; width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--wait); background: var(--paper); z-index: 1; transition: scale 0.5s cubic-bezier(0.3, 1.6, 0.5, 1) 0.2s; }
@@ -356,11 +382,11 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
 ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
 
 /* Paused: everything that loops stops */
-.still .avail::before, .still .state.busy::before, .still .ship.busy .ship-log::before, .still .d-n.lit .d-ring { animation: none; }
+.still .avail::before, .still .ship.busy .ship-log::before, .still .d-n.lit .d-ring { animation: none; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .headline .line, .headline .hl, .lede, .hero .actions, .daily li, .env, .avail::before, .state.busy::before, .ship.busy .ship-log::before, .d-n.lit .d-ring { animation: none; }
+  .headline .line, .headline .hl, .lede, .hero .actions, .daily li, .env, .avail::before, .ship.busy .ship-log::before, .d-n.lit .d-ring { animation: none; }
   .band-track { animation: none !important; }
   .motion-btn { display: none; }
   .env { transition: none; translate: none; }
@@ -375,6 +401,9 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
   .hero { grid-template-columns: 1fr; gap: 12px; padding: 48px 44px 56px; }
   .work { grid-template-columns: 1fr; gap: 24px; }
   .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stats div:nth-child(odd) { border-left: 0; }
+  .stats div:nth-child(n+3) { border-top: 1px solid var(--rule); }
   .cv { grid-template-columns: 1fr; gap: 36px; }
   .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
@@ -394,8 +423,6 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
   .top, .sec { padding-left: 20px; padding-right: 20px; }
   .hero { padding: 40px 20px 48px; }
   .sec { padding-top: 52px; padding-bottom: 52px; }
-  .stats { grid-template-columns: 1fr; }
-  .stats div + div { border-left: 0; border-top: 1px solid var(--rule); }
   .rows > div { grid-template-columns: 1fr; }
   .deck { flex-direction: column; gap: 14px; padding: 8px 0 20px; }
   .env { flex: none; width: 100%; max-width: 360px; min-height: 0; margin: 0; translate: none; }
@@ -410,6 +437,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
 }
 @media (max-width: 520px) {
   .tiles { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: 1fr; }
+  .stats div + div { border-left: 0; border-top: 1px solid var(--rule); }
   .reach { grid-template-columns: minmax(0, 1fr); row-gap: 6px; }
   .reach button { margin-bottom: 10px; }
 }
@@ -446,6 +475,9 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
   <symbol id="i-redis" viewBox="0 0 24 24"><path d="M22.71 13.145c-1.66 2.092-3.452 4.483-7.038 4.483-3.203 0-4.397-2.825-4.48-5.12.701 1.484 2.073 2.685 4.214 2.63 4.117-.133 6.94-3.852 6.94-7.239 0-4.05-3.022-6.972-8.268-6.972-3.752 0-8.4 1.428-11.455 3.685C2.59 6.937 3.885 9.958 4.35 9.626c2.648-1.904 4.748-3.13 6.784-3.744C8.12 9.244.886 17.05 0 18.425c.1 1.261 1.66 4.648 2.424 4.648.232 0 .431-.133.664-.365a100.49 100.49 0 0 0 5.54-6.765c.222 3.104 1.748 6.898 6.014 6.898 3.819 0 7.604-2.756 9.33-8.965.2-.764-.73-1.361-1.261-.73zm-4.349-5.013c0 1.959-1.926 2.922-3.685 2.922-.941 0-1.664-.247-2.235-.568 1.051-1.592 2.092-3.225 3.21-4.973 1.972.334 2.71 1.43 2.71 2.619z"/></symbol>
   <symbol id="i-terraform" viewBox="0 0 24 24"><path d="M1.44 0v7.575l6.561 3.79V3.787zm21.12 4.227l-6.561 3.791v7.574l6.56-3.787zM8.72 4.23v7.575l6.561 3.787V8.018zm0 8.405v7.575L15.28 24v-7.578z"/></symbol>
   <symbol id="i-claude" viewBox="0 0 24 24"><path d="m4.7144 15.9555 4.7174-2.6471.079-.2307-.079-.1275h-.2307l-.7893-.0486-2.6956-.0729-2.3375-.0971-2.2646-.1214-.5707-.1215-.5343-.7042.0546-.3522.4797-.3218.686.0608 1.5179.1032 2.2767.1578 1.6514.0972 2.4468.255h.3886l.0546-.1579-.1336-.0971-.1032-.0972L6.973 9.8356l-2.55-1.6879-1.3356-.9714-.7225-.4918-.3643-.4614-.1578-1.0078.6557-.7225.8803.0607.2246.0607.8925.686 1.9064 1.4754 2.4893 1.8336.3643.3035.1457-.1032.0182-.0728-.164-.2733-1.3539-2.4467-1.445-2.4893-.6435-1.032-.17-.6194c-.0607-.255-.1032-.4674-.1032-.7285L6.287.1335 6.6997 0l.9957.1336.419.3642.6192 1.4147 1.0018 2.2282 1.5543 3.0296.4553.8985.2429.8318.091.255h.1579v-.1457l.1275-1.706.2368-2.0947.2307-2.6957.0789-.7589.3764-.9107.7468-.4918.5828.2793.4797.686-.0668.4433-.2853 1.8517-.5586 2.9021-.3643 1.9429h.2125l.2429-.2429.9835-1.3053 1.6514-2.0643.7286-.8196.85-.9046.5464-.4311h1.0321l.759 1.1293-.34 1.1657-1.0625 1.3478-.8804 1.1414-1.2628 1.7-.7893 1.36.0729.1093.1882-.0183 2.8535-.607 1.5421-.2794 1.8396-.3157.8318.3886.091.3946-.3278.8075-1.967.4857-2.3072.4614-3.4364.8136-.0425.0304.0486.0607 1.5482.1457.6618.0364h1.621l3.0175.2247.7892.522.4736.6376-.079.4857-1.2142.6193-1.6393-.3886-3.825-.9107-1.3113-.3279h-.1822v.1093l1.0929 1.0686 2.0035 1.8092 2.5075 2.3314.1275.5768-.3218.4554-.34-.0486-2.2039-1.6575-.85-.7468-1.9246-1.621h-.1275v.17l.4432.6496 2.3436 3.5214.1214 1.0807-.17.3521-.6071.2125-.6679-.1214-1.3721-1.9246L14.38 17.959l-1.1414-1.9428-.1397.079-.674 7.2552-.3156.3703-.7286.2793-.6071-.4614-.3218-.7468.3218-1.4753.3886-1.9246.3157-1.53.2853-1.9004.17-.6314-.0121-.0425-.1397.0182-1.4328 1.9672-2.1796 2.9446-1.7243 1.8456-.4128.164-.7164-.3704.0667-.6618.4008-.5889 2.386-3.0357 1.4389-1.882.929-1.0868-.0062-.1579h-.0546l-6.3385 4.1164-1.1293.1457-.4857-.4554.0608-.7467.2307-.2429 1.9064-1.3114Z"/></symbol>
+  <symbol id="i-prometheus" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.372 0 12c0 6.627 5.373 12 12 12s12-5.373 12-12c0-6.628-5.373-12-12-12zm0 22.46c-1.885 0-3.414-1.26-3.414-2.814h6.828c0 1.553-1.528 2.813-3.414 2.813zm5.64-3.745H6.36v-2.046h11.28v2.046zm-.04-3.098H6.391c-.037-.043-.075-.086-.111-.13-1.155-1.401-1.427-2.133-1.69-2.879-.005-.025 1.4.287 2.395.511 0 0 .513.119 1.262.255-.72-.843-1.147-1.915-1.147-3.01 0-2.406 1.845-4.508 1.18-6.207.648.053 1.34 1.367 1.387 3.422.689-.951.977-2.69.977-3.755 0-1.103.727-2.385 1.454-2.429-.648 1.069.168 1.984.894 4.256.272.854.237 2.29.447 3.201.07-1.892.395-4.652 1.595-5.605-.529 1.2.079 2.702.494 3.424.671 1.164 1.078 2.047 1.078 3.716a4.642 4.642 0 01-1.11 2.996c.792-.149 1.34-.283 1.34-.283l2.573-.502s-.374 1.538-1.81 3.019z"/></symbol>
+  <symbol id="i-opentelemetry" viewBox="0 0 24 24"><path d="M12.6974 13.1173c-1.0224 1.0224-1.0224 2.68 0 3.7024 1.0224 1.0224 2.68 1.0224 3.7024 0 1.0224-1.0223 1.0224-2.68 0-3.7024-1.0223-1.0223-2.68-1.0223-3.7024 0zm2.7677 2.7701c-.5063.5063-1.3267.5063-1.833 0s-.5063-1.3266 0-1.833c.5063-.5062 1.3267-.5062 1.833 0 .5063.504.5063 1.3267 0 1.833zM16.356.2355l-1.6041 1.6042c-.314.314-.314.83 0 1.144L21.015 9.247c.314.314.83.314 1.144 0l1.6042-1.6041c.314-.314.314-.83 0-1.144L17.4976.2354c-.314-.314-.8276-.314-1.1416 0zM5.1173 20.734c.2848-.2848.2848-.7497 0-1.0345l-.8155-.8155c-.2848-.2848-.7497-.2848-1.0345 0l-1.6845 1.6845-.0024.0024-.4625-.4625c-.2556-.2556-.6718-.2556-.925 0-.2556.2556-.2556.6718 0 .925l2.775 2.775c.2556.2556.6718.2556.925 0 .2532-.2556.2556-.6718 0-.925l-.4625-.4625.0024-.0024zm8.4856-15.893-3.5637 3.5637c-.3164.3164-.3164.8374 0 1.1538l2.2006 2.2005c1.5554-1.1197 3.7365-.981 5.1361.4187l1.7819-1.7818c.3164-.3165.3164-.8374 0-1.1538l-4.401-4.401c-.3165-.319-.8374-.319-1.1539 0zm-2.2881 7.8455-1.2999-1.2999c-.3043-.3043-.8033-.3043-1.1076 0l-4.5836 4.586c-.3042.3043-.3042.8033 0 1.1076l2.5973 2.5973c.3043.3043.8033.3043 1.1076 0l2.9478-2.9527c-.6231-1.2877-.5112-2.8431.3384-4.0383z"/></symbol>
+  <symbol id="i-logs" viewBox="0 0 24 24"><rect x="2" y="3" width="4" height="4" rx="1"/><rect x="8" y="3.5" width="14" height="3" rx="1.5"/><rect x="2" y="10" width="4" height="4" rx="1"/><rect x="8" y="10.5" width="9" height="3" rx="1.5"/><rect x="2" y="17" width="4" height="4" rx="1"/><rect x="8" y="17.5" width="12" height="3" rx="1.5"/></symbol>
   <symbol id="i-network" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="6" rx="1.5"/><rect x="2" y="16" width="6" height="6" rx="1.5"/><rect x="16" y="16" width="6" height="6" rx="1.5"/><path d="M11 8h2v3h5a2 2 0 0 1 2 2v3h-2v-3H6v3H4v-3a2 2 0 0 1 2-2h5z"/></symbol>
 </svg>
 <div class="progress" aria-hidden="true"><i></i></div>
@@ -456,6 +488,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
     <nav aria-label="Sections">
       <a href="#work">work</a>
       <a href="#platform">platform</a>
+      <a href="#monitoring">monitoring</a>
       <a href="#stack">stack</a>
       <a href="#resume">resume</a>
       <a href="#contact">contact</a>
@@ -471,7 +504,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
         <svg class="sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="2.9"/><path d="M8 1.5v1.6M8 12.9v1.6M1.5 8h1.6M12.9 8h1.6M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M3.4 12.6l1.1-1.1M11.5 4.5l1.1-1.1"/></svg>
       </button>
       </div>
-      <span class="avail">open to DevOps, Cloud &amp; SRE roles</span>
+      <span class="avail">open to DevOps &amp; SRE</span>
     </div>
   </header>
 
@@ -480,9 +513,9 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
       <h1 id="hello" class="headline">
         <span class="line">hi, i'm <span class="hl">Ahmar</span></span>
         <span class="line">a <span class="hl sky">DevOps Intern</span> at BytePe</span>
-        <span class="line tail">and here's where my move to Kubernetes stands</span>
+        <span class="line tail">and here's how our move to Kubernetes went</span>
       </h1>
-      <p class="lede">I run services on Google Cloud with GKE, Helm, Terraform and GitLab CI/CD. I moved the dev environment first, then staging, and now I'm moving production with my lead.</p>
+      <p class="lede">I run services on Google Cloud with GKE, Helm, Terraform and GitLab CI/CD. I moved dev first, then staging, then production with my lead, and I built the monitoring that watches all three.</p>
       <ul class="actions">
         <li><a class="btn primary" href="#contact">say hi</a></li>
         <li><a class="btn" href="Ahmar-Rahmani-Resume.pdf" target="_blank" rel="noopener">resume (PDF)</a></li>
@@ -497,29 +530,31 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
         <li title="Terraform"><svg class="ic b-terraform" aria-hidden="true"><use href="#i-terraform"/></svg><span class="sr">Terraform</span></li>
         <li title="Docker"><svg class="ic b-docker" aria-hidden="true"><use href="#i-docker"/></svg><span class="sr">Docker</span></li>
         <li title="GitLab CI/CD"><svg class="ic b-gitlab" aria-hidden="true"><use href="#i-gitlab"/></svg><span class="sr">GitLab CI/CD</span></li>
+        <li title="Grafana"><svg class="ic b-grafana" aria-hidden="true"><use href="#i-grafana"/></svg><span class="sr">Grafana</span></li>
+        <li title="Prometheus"><svg class="ic b-prometheus" aria-hidden="true"><use href="#i-prometheus"/></svg><span class="sr">Prometheus</span></li>
         <li title="Linux"><svg class="ic b-linux" aria-hidden="true"><use href="#i-linux"/></svg><span class="sr">Linux</span></li>
         <li title="Bash"><svg class="ic b-gnubash" aria-hidden="true"><use href="#i-gnubash"/></svg><span class="sr">Bash</span></li>
         <li title="Python"><svg class="ic b-python" aria-hidden="true"><use href="#i-python"/></svg><span class="sr">Python</span></li>
       </ul>
     </div>
-    <div class="deck" aria-label="Where the move from VMs to GKE stands">
+    <div class="deck" role="group" aria-label="How the move from VMs to GKE went">
       <article class="env env-dev">
         <div class="env-top"><span class="env-name">dev</span><span class="state done">done</span></div>
         <p class="env-big">on GKE</p>
-        <p class="env-note">10 backend services on one shared Helm chart, plus the web front ends.</p>
+        <p class="env-note">10 backend services, 6 workers, 3 crons and 4 front ends on shared Helm charts.</p>
         <p class="env-foot">step 1 · moved first</p>
       </article>
       <article class="env env-stage">
         <div class="env-top"><span class="env-name">staging</span><span class="state done">done</span></div>
         <p class="env-big">on GKE</p>
-        <p class="env-note">Backend plus the web, admin and seller front ends, in their own namespaces.</p>
+        <p class="env-note">Its own namespace in the shared non-production cluster, on a pipeline I built.</p>
         <p class="env-foot">step 2 · moved next</p>
       </article>
       <article class="env env-prod">
-        <div class="env-top"><span class="env-name">production</span><span class="state busy">in progress</span></div>
-        <p class="env-big">moving now</p>
-        <p class="env-note">Off VMs and onto GKE with my lead, the last step of the migration.</p>
-        <p class="env-foot">step 3 · happening now</p>
+        <div class="env-top"><span class="env-name">production</span><span class="state done">done</span></div>
+        <p class="env-big">on GKE</p>
+        <p class="env-note">9 services, 6 workers, 2 crons and 3 front ends behind two Gateways and Cloud Armor.</p>
+        <p class="env-foot">step 3 · live since Oct 2026</p>
       </article>
     </div>
   </section>
@@ -527,7 +562,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
   <div class="band-wrap" aria-hidden="true">
     <div class="band band-back">
       <div class="band-track">
-        <div class="band-group"><span>dev · done</span><i></i><span>staging · done</span><i></i><span>production · in progress</span><i></i><span>monitoring · up next</span><i></i><span>VMs → GKE</span><i></i><span>dev · done</span><i></i><span>staging · done</span><i></i><span>production · in progress</span><i></i><span>monitoring · up next</span><i></i><span>VMs → GKE</span><i></i></div>
+        <div class="band-group"><span>dev · live</span><i></i><span>staging · live</span><i></i><span>production · live</span><i></i><span>monitoring · live</span><i></i><span>VMs → GKE</span><i></i><span>dev · live</span><i></i><span>staging · live</span><i></i><span>production · live</span><i></i><span>monitoring · live</span><i></i><span>VMs → GKE</span><i></i></div>
       </div>
     </div>
     <div class="band band-front">
@@ -540,6 +575,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
           <span><svg class="ic"><use href="#i-gitlab"/></svg>GitLab CI/CD</span><i></i>
           <span><svg class="ic"><use href="#i-docker"/></svg>Docker</span><i></i>
           <span><svg class="ic"><use href="#i-grafana"/></svg>Grafana</span><i></i>
+          <span><svg class="ic"><use href="#i-prometheus"/></svg>Prometheus</span><i></i>
+          <span><svg class="ic"><use href="#i-opentelemetry"/></svg>OpenTelemetry</span><i></i>
           <span><svg class="ic"><use href="#i-linux"/></svg>Linux</span><i></i>
           <span><svg class="ic"><use href="#i-nginx"/></svg>Nginx</span><i></i>
           <span><svg class="ic"><use href="#i-k6"/></svg>k6</span><i></i>
@@ -553,7 +590,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
   <section id="work" class="sec" aria-labelledby="work-title">
     <p class="eyebrow">work</p>
     <h2 id="work-title">what i do at BytePe</h2>
-    <p class="intro">BytePe is a fintech startup. I work on its move from VMs to Kubernetes on Google Cloud, and on everything that ships code to it.</p>
+    <p class="intro">BytePe is a fintech startup, and I've worked on its platform since June 2026. With my lead I moved all three environments from VMs to Kubernetes on Google Cloud. I built the monitoring that watches them, and I made the platform cheaper to run.</p>
     <div class="work">
       <dl class="facts">
         <div><dt>role</dt><dd>DevOps Intern</dd></div>
@@ -563,19 +600,36 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
       </dl>
       <div>
         <div class="stats">
-          <div><b>10</b><span>services moved from VMs to GKE</span></div>
-          <div><b>~64%</b><span>fewer non-production compute hours</span></div>
-          <div><b>3</b><span>environments managed in Terraform</span></div>
+          <div><b>3</b><span>environments moved to GKE</span></div>
+          <div><b>58</b><span>production alert rules</span></div>
+          <div><b>~55%</b><span>fewer non-production compute hours</span></div>
+          <div><b>~64%</b><span>lower production compute cost</span></div>
         </div>
+        <p class="cat-name">what i owned</p>
         <ul class="ruled">
-          <li>Moved the <strong>dev environment</strong> from VMs to <strong>GKE Autopilot</strong> first, packaging all 10 backend services with one shared <strong>Helm</strong> chart.</li>
-          <li>Then moved the whole <strong>staging environment</strong>, backend and front ends, into the shared cluster, with namespace-scoped <strong>RBAC</strong> for the CI deployer and credentials in protected GitLab variables and Kubernetes Secrets.</li>
-          <li>Now moving <strong>production</strong> off VMs onto GKE with my lead.</li>
-          <li>Built <strong>GitLab CI/CD</strong> pipelines for dev and staging, with migration Jobs, immutable image tags and automatic rollback.</li>
-          <li>Managed GCP infrastructure with <strong>Terraform</strong> across dev, stage and prod: GKE Gateway, Cloud Armor, Workload Identity and IAM.</li>
-          <li>Cut non-production compute hours by about 64% by scaling workloads to zero outside working hours.</li>
-          <li>Tuned HPA autoscaling and health probes, and wrote <strong>k6</strong> load tests for the platform and its Cloud Armor rules.</li>
-          <li>Self-hosted <strong>NVIDIA Nemotron on vLLM</strong> on a GKE GPU node, with a RAG proof of concept behind an internal chat UI.</li>
+          <li><strong>Monitoring, end to end.</strong> One Grafana for dev, staging and production on Managed Prometheus, Cloud Logging and Cloud Trace; OpenTelemetry tracing with PII redaction; 58 production alert rules with SLO burn-rate alerts; a dead man's switch; and 11 dashboards as code, all deployed from git with one script. <a href="#monitoring">Here's how it works.</a></li>
+          <li><strong>The staging pipeline.</strong> It deploys staging into its own namespace of the shared non-production cluster.</li>
+          <li><strong>Production approval gate.</strong> The manual approval step that every production deploy has to pass.</li>
+          <li><strong>Scaling and load tests.</strong> Tuned HPA autoscaling, health probes and PodDisruptionBudgets, and wrote <strong>k6</strong> load tests for the platform and its Cloud Armor rules.</li>
+          <li><strong>OSRM on GKE.</strong> Moved our routing engine onto Kubernetes in all three environments, fixed a startup bug that had quietly disabled its out-of-memory handling, and made its map data rebuild by itself on version changes.</li>
+          <li><strong>Typesense off its VM.</strong> Dev moved to GKE with a snapshot-based cutover and a data-parity check; staging and production are next.</li>
+          <li><strong>AI proof of concept.</strong> NVIDIA Nemotron on vLLM on a spot GPU in Autopilot that scales to zero when idle, with RAG over bge-m3 embeddings and pgvector, hybrid search, and a secret-scanning check on ingestion, behind Open WebUI.</li>
+        </ul>
+        <p class="cat-name">built with the team</p>
+        <ul class="ruled">
+          <li><strong>VMs to GKE.</strong> With my lead, I moved dev, then staging, then production to <strong>GKE Autopilot</strong>. For production I planned the cutover order and set up its pipeline. It now runs 9 services, 6 workers, 2 crons and 3 front ends on its own cluster, behind <strong>GKE Gateways</strong> and <strong>Cloud Armor</strong>.</li>
+          <li><strong>Front ends on Kubernetes.</strong> I adapted our backend Helm chart for the web front ends and extended their pipeline to staging and production.</li>
+          <li><strong>Off-hours scale-to-zero.</strong> I built the first scheduler that put dev to sleep at night and over weekends; it became the per-service version that now does this for dev and staging.</li>
+          <li><strong>GitLab CI/CD</strong> for the backend and front ends: immutable image tags (no <code>latest</code>), a server-side dry run and a migration Job before each upgrade, automatic rollback when an upgrade fails, and manual rollback jobs.</li>
+          <li><strong>Terraform</strong> across dev, staging and production: Workload Identity so most pods use short-lived credentials instead of key files, IAM, GKE Gateways, Cloud Armor rules and the monitoring side.</li>
+          <li><strong>Docs and runbooks</strong> for the platform and the monitoring stack.</li>
+        </ul>
+        <p class="cat-name">what improved</p>
+        <ul class="ruled">
+          <li><strong>Cost.</strong> Production compute cost is down ~64%. Dev and staging sleep 93 of 168 hours a week, so about 55% fewer non-production compute hours. After the cutover I right-sized production from real usage, cutting its CPU requests by about 31%.</li>
+          <li><strong>Safer releases.</strong> Every production deploy has an approval step, a dry run, immutable versions and automatic rollback.</li>
+          <li><strong>Faster detection.</strong> SLO-based alerts cover all three environments, and one click takes you from an error count on a dashboard to the matching logs.</li>
+          <li><strong>Less alert noise.</strong> After go-live I removed rules that fired on known behaviour and kept those signals on dashboards, so a Slack alert means something needs attention.</li>
         </ul>
       </div>
     </div>
@@ -584,10 +638,10 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
   <section id="platform" class="sec" aria-labelledby="platform-title">
     <p class="eyebrow">platform</p>
     <h2 id="platform-title">how a change ships</h2>
-    <p class="intro">A simplified view. GitLab CI/CD builds the image and upgrades the Helm release. Users reach the cluster through the GKE Gateway and Cloud Armor, and Terraform provisions both.</p>
+    <p class="intro">A simplified view of how every environment deploys today. GitLab CI/CD builds the image and upgrades the Helm release, and production waits for a manual approval first. Users reach the cluster through the GKE Gateway and Cloud Armor, and Terraform provisions both.</p>
     <div class="diagram">
       <svg viewBox="0 0 916 300" role="img" aria-labelledby="diagram-title">
-        <title id="diagram-title">git push goes through GitLab CI/CD, which pushes an image to Artifact Registry and runs helm upgrade on GKE Autopilot. Users reach GKE through the GKE Gateway and Cloud Armor. Terraform provisions the Gateway and the cluster.</title>
+        <title id="diagram-title">git push goes through GitLab CI/CD, which pushes an image to Artifact Registry and runs helm upgrade on GKE Autopilot, with a manual approval for production. Users reach GKE through the GKE Gateway and Cloud Armor. Terraform provisions the Gateway and the cluster.</title>
         <defs>
           <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
             <path class="d-arrow" d="M0 0L10 5L0 10z"/>
@@ -599,7 +653,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
         <path class="d-edge" data-e="ar-gke" d="M590 86 H647" marker-end="url(#arw)"/>
         <text class="d-label" x="618" y="76" text-anchor="middle">pull</text>
         <path class="d-edge" data-e="ci-gke" d="M271 60 V34 H775 V57" marker-end="url(#arw)"/>
-        <text class="d-label" x="523" y="26" text-anchor="middle">helm upgrade</text>
+        <text class="d-label" x="523" y="26" text-anchor="middle">helm upgrade · approval for prod</text>
         <path class="d-edge" data-e="users-gw" d="M136 196 H183" marker-end="url(#arw)"/>
         <path class="d-edge" data-e="gw-gke" d="M430 196 H647" marker-end="url(#arw)"/>
         <text class="d-label" x="160" y="186" text-anchor="middle">HTTPS</text>
@@ -614,7 +668,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
           <rect class="d-ring" x="650" y="60" width="250" height="162" rx="14"/>
           <rect class="d-key" x="650" y="60" width="250" height="162" rx="14"/>
           <text class="d-title" x="775" y="128" text-anchor="middle">GKE Autopilot</text>
-          <text class="d-sub" x="775" y="152" text-anchor="middle">dev · staging · production next</text>
+          <text class="d-sub" x="775" y="152" text-anchor="middle">dev · staging · production</text>
           <text class="d-sub" x="775" y="172" text-anchor="middle">one Helm chart · Workload Identity</text>
         </g>
         <g class="d-n" data-n="users"><rect class="d-node" x="16" y="170" width="120" height="52" rx="10"/><text class="d-text" x="76" y="200" text-anchor="middle">Users</text></g>
@@ -624,25 +678,89 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
       </svg>
     </div>
     <div class="ship" hidden>
-      <button type="button" class="btn primary" id="ship-btn"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 2.8v10.4L13 8z"/></svg>ship a change</button>
-      <p class="ship-log" id="ship-log" aria-hidden="true">press play to watch a change go from git push to users</p>
-      <p class="sr" id="ship-status" role="status"></p>
+      <button type="button" class="btn primary ship-btn"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 2.8v10.4L13 8z"/></svg>ship a change</button>
+      <p class="ship-log" aria-hidden="true">press play to watch a change go from git push to users</p>
+      <p class="sr ship-status" role="status"></p>
+    </div>
+    <p class="swipe" aria-hidden="true">swipe sideways to see the whole diagram →</p>
+  </section>
+
+  <section id="monitoring" class="sec" aria-labelledby="monitoring-title">
+    <p class="eyebrow">monitoring</p>
+    <h2 id="monitoring-title">how i know it's working</h2>
+    <p class="intro">One Grafana watches dev, staging and production. OpenTelemetry traces the main API with no app code changes, redacts PII and samples what it keeps. Managed Service for Prometheus, Cloud Logging and Cloud Trace store what it sees, and SLO burn-rate alerts reach Slack. A dead man's switch checks that the alerting itself is alive.</p>
+    <ul class="mon-chips" aria-label="Monitoring in numbers">
+      <li><b>11</b> dashboards as code</li>
+      <li><b>58</b> prod alert rules</li>
+      <li><b>6</b> SLOs</li>
+      <li><b>3</b> environments</li>
+    </ul>
+    <div class="diagram">
+      <svg viewBox="0 20 916 330" role="img" aria-labelledby="mon-diagram-title">
+        <title id="mon-diagram-title">Services on GKE send spans to the OpenTelemetry collector, which turns them into metrics for Managed Prometheus. Alert rules there fire into Alertmanager, which posts to Slack and sends a heartbeat to a dead man's switch. Logs go to Cloud Logging and traces to Cloud Trace. Grafana queries Prometheus, Cloud Logging and Cloud Trace.</title>
+        <defs>
+          <marker id="arw-mon" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path class="d-arrow" d="M0 0L10 5L0 10z"/>
+          </marker>
+        </defs>
+        <path class="d-edge" data-e="svc-otel" d="M156 66 H215" marker-end="url(#arw-mon)"/>
+        <text class="d-label" x="187" y="56" text-anchor="middle">spans</text>
+        <path class="d-edge" data-e="otel-prom" d="M350 66 H409" marker-end="url(#arw-mon)"/>
+        <text class="d-label" x="381" y="56" text-anchor="middle">metrics</text>
+        <path class="d-edge" data-e="prom-am" d="M578 66 H637" marker-end="url(#arw-mon)"/>
+        <text class="d-label" x="609" y="56" text-anchor="middle">alerts</text>
+        <path class="d-edge" data-e="am-slack" d="M760 66 H821" marker-end="url(#arw-mon)"/>
+        <path class="d-edge" data-e="svc-log" d="M86 92 V147" marker-end="url(#arw-mon)"/>
+        <text class="d-label" x="94" y="124">logs</text>
+        <path class="d-edge" data-e="otel-trace" d="M284 92 V147" marker-end="url(#arw-mon)"/>
+        <text class="d-label" x="292" y="124">traces</text>
+        <path class="d-edge d-dash" data-e="am-dms" d="M700 92 V147" marker-end="url(#arw-mon)"/>
+        <text class="d-label" x="708" y="124">heartbeat</text>
+        <path class="d-edge d-dash" data-e="graf-prom" d="M495 246 V95" marker-end="url(#arw-mon)"/>
+        <text class="d-label" x="503" y="124">queries</text>
+        <path class="d-edge d-dash" data-e="graf-trace" d="M412 280 H284 V205" marker-end="url(#arw-mon)"/>
+        <text class="d-label" x="348" y="272" text-anchor="middle">queries</text>
+        <path class="d-edge d-dash" data-e="graf-log" d="M412 310 H86 V205" marker-end="url(#arw-mon)"/>
+        <text class="d-label" x="185" y="302" text-anchor="middle">queries</text>
+        <g class="d-n" data-n="svc"><rect class="d-node" x="16" y="40" width="140" height="52" rx="10"/><text class="d-text" x="86" y="70" text-anchor="middle">services on GKE</text></g>
+        <g class="d-n" data-n="otel"><rect class="d-node" x="218" y="40" width="132" height="52" rx="10"/><text class="d-text" x="284" y="70" text-anchor="middle">OTel collector</text></g>
+        <g class="d-n" data-n="prom"><rect class="d-node" x="412" y="40" width="166" height="52" rx="10"/><text class="d-text" x="495" y="70" text-anchor="middle">Managed Prometheus</text></g>
+        <g class="d-n" data-n="am"><rect class="d-node" x="640" y="40" width="120" height="52" rx="10"/><text class="d-text" x="700" y="70" text-anchor="middle">Alertmanager</text></g>
+        <g class="d-n" data-n="slack"><rect class="d-node" x="824" y="40" width="76" height="52" rx="10"/><text class="d-text" x="862" y="70" text-anchor="middle">Slack</text></g>
+        <g class="d-n" data-n="logging"><rect class="d-node" x="16" y="150" width="140" height="52" rx="10"/><text class="d-text" x="86" y="180" text-anchor="middle">Cloud Logging</text></g>
+        <g class="d-n" data-n="trace"><rect class="d-node" x="218" y="150" width="132" height="52" rx="10"/><text class="d-text" x="284" y="180" text-anchor="middle">Cloud Trace</text></g>
+        <g class="d-n" data-n="dms"><rect class="d-node" x="622" y="150" width="156" height="52" rx="10"/><text class="d-text" x="700" y="180" text-anchor="middle">dead man's switch</text></g>
+        <g class="d-n" data-n="graf">
+          <rect class="d-ring" x="412" y="246" width="260" height="88" rx="14"/>
+          <rect class="d-key" x="412" y="246" width="260" height="88" rx="14"/>
+          <text class="d-title" x="542" y="278" text-anchor="middle">Grafana</text>
+          <text class="d-sub" x="542" y="302" text-anchor="middle">dev · staging · production</text>
+          <text class="d-sub" x="542" y="320" text-anchor="middle">11 dashboards as code</text>
+        </g>
+        <circle class="d-dot" cx="86" cy="66" r="6"/>
+      </svg>
+    </div>
+    <div class="ship" hidden>
+      <button type="button" class="btn primary ship-btn"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 2.8v10.4L13 8z"/></svg>trip an alert</button>
+      <p class="ship-log" aria-hidden="true">press play to watch an error go from a service to Slack</p>
+      <p class="sr ship-status" role="status"></p>
     </div>
     <p class="swipe" aria-hidden="true">swipe sideways to see the whole diagram →</p>
   </section>
 
   <section id="next" class="sec" aria-labelledby="next-title">
     <p class="eyebrow">up next</p>
-    <h2 id="next-title">after production</h2>
+    <h2 id="next-title">what's next</h2>
     <div class="next">
       <div class="next-text">
-        <h3>Platform monitoring</h3>
-        <p>Grafana on GKE, backed by Google Cloud Managed Service for Prometheus: request, error and latency dashboards for every service, plus alerts. The plan is agreed with my lead.</p>
+        <h3>Retire the last VMs</h3>
+        <p>Typesense search already runs on GKE in dev, on a persistent disk with daily snapshots. Staging and production are still on VMs, and they move next.</p>
+        <p>Also on the list: the AWS Cloud Practitioner exam, in December 2026.</p>
       </div>
-      <ol class="track" aria-label="Monitoring progress">
-        <li class="done">plan</li>
-        <li>build</li>
-        <li>live</li>
+      <ol class="track" aria-label="Search on GKE, by environment">
+        <li class="done">dev<span class="sr"> (done)</span></li>
+        <li>staging</li>
+        <li>production</li>
       </ol>
     </div>
   </section>
@@ -654,25 +772,33 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
       <div>
         <p class="cat-name">cloud &amp; containers</p>
         <ul class="tiles">
-          <li class="tile"><span class="tile-ic b-googlecloud"><svg class="ic" aria-hidden="true"><use href="#i-googlecloud"/></svg></span><b>Google Cloud</b><small>GKE Autopilot, Compute Engine, Cloud SQL, Memorystore, Artifact Registry, Cloud Armor, IAM</small></li>
-          <li class="tile"><span class="tile-ic b-kubernetes"><svg class="ic" aria-hidden="true"><use href="#i-kubernetes"/></svg></span><b>Kubernetes</b><small>HPA, probes, RBAC, Gateway API</small></li>
-          <li class="tile"><span class="tile-ic b-helm"><svg class="ic" aria-hidden="true"><use href="#i-helm"/></svg></span><b>Helm</b><small>one shared chart for 10 services</small></li>
+          <li class="tile"><span class="tile-ic b-googlecloud"><svg class="ic" aria-hidden="true"><use href="#i-googlecloud"/></svg></span><b>Google Cloud</b><small>GKE Autopilot, Artifact Registry, Cloud Armor, Workload Identity, IAM, Cloud Logging, Cloud Trace, Compute Engine</small></li>
+          <li class="tile"><span class="tile-ic b-kubernetes"><svg class="ic" aria-hidden="true"><use href="#i-kubernetes"/></svg></span><b>Kubernetes</b><small>HPA, probes, PDBs, RBAC, Jobs, CronJobs, Gateway API</small></li>
+          <li class="tile"><span class="tile-ic b-helm"><svg class="ic" aria-hidden="true"><use href="#i-helm"/></svg></span><b>Helm</b><small>shared charts for services and front ends, migration Jobs before each upgrade</small></li>
           <li class="tile"><span class="tile-ic b-docker"><svg class="ic" aria-hidden="true"><use href="#i-docker"/></svg></span><b>Docker</b><small>images and Docker Compose</small></li>
         </ul>
       </div>
       <div>
         <p class="cat-name">automation</p>
         <ul class="tiles">
-          <li class="tile"><span class="tile-ic b-terraform"><svg class="ic" aria-hidden="true"><use href="#i-terraform"/></svg></span><b>Terraform</b><small>GKE Gateway, Cloud Armor, Workload Identity, IAM</small></li>
-          <li class="tile"><span class="tile-ic b-gitlab"><svg class="ic" aria-hidden="true"><use href="#i-gitlab"/></svg></span><b>GitLab CI/CD</b><small>dev and staging pipelines, auto-rollback</small></li>
+          <li class="tile"><span class="tile-ic b-terraform"><svg class="ic" aria-hidden="true"><use href="#i-terraform"/></svg></span><b>Terraform</b><small>GKE Gateway, Cloud Armor, Workload Identity, IAM, monitoring</small></li>
+          <li class="tile"><span class="tile-ic b-gitlab"><svg class="ic" aria-hidden="true"><use href="#i-gitlab"/></svg></span><b>GitLab CI/CD</b><small>backend and front-end pipelines, approval gate, rollback jobs</small></li>
           <li class="tile"><span class="tile-ic b-githubactions"><svg class="ic" aria-hidden="true"><use href="#i-githubactions"/></svg></span><b>GitHub Actions</b><small>workflows</small></li>
           <li class="tile"><span class="tile-ic b-git"><svg class="ic" aria-hidden="true"><use href="#i-git"/></svg></span><b>Git</b><small>branches, submodules</small></li>
         </ul>
       </div>
       <div>
-        <p class="cat-name">operate &amp; observe</p>
+        <p class="cat-name">observability</p>
         <ul class="tiles">
-          <li class="tile"><span class="tile-ic b-grafana"><svg class="ic" aria-hidden="true"><use href="#i-grafana"/></svg></span><b>Grafana</b><small>dashboards, Loki, Alloy, LogQL</small></li>
+          <li class="tile"><span class="tile-ic b-grafana"><svg class="ic" aria-hidden="true"><use href="#i-grafana"/></svg></span><b>Grafana</b><small>dashboards as code, LogQL</small></li>
+          <li class="tile"><span class="tile-ic b-prometheus"><svg class="ic" aria-hidden="true"><use href="#i-prometheus"/></svg></span><b>Prometheus</b><small>Managed Service for Prometheus, PromQL, Alertmanager</small></li>
+          <li class="tile"><span class="tile-ic b-opentelemetry"><svg class="ic" aria-hidden="true"><use href="#i-opentelemetry"/></svg></span><b>OpenTelemetry</b><small>auto-instrumentation, tail sampling, span metrics</small></li>
+          <li class="tile"><span class="tile-ic b-logs"><svg class="ic" aria-hidden="true"><use href="#i-logs"/></svg></span><b>Loki &amp; Alloy</b><small>self-hosted log stack, side project</small></li>
+        </ul>
+      </div>
+      <div>
+        <p class="cat-name">operate &amp; test</p>
+        <ul class="tiles">
           <li class="tile"><span class="tile-ic b-k6"><svg class="ic" aria-hidden="true"><use href="#i-k6"/></svg></span><b>k6</b><small>load tests for the platform</small></li>
           <li class="tile"><span class="tile-ic b-linux"><svg class="ic" aria-hidden="true"><use href="#i-linux"/></svg></span><b>Linux</b><small>Ubuntu, SSH</small></li>
           <li class="tile"><span class="tile-ic b-nginx"><svg class="ic" aria-hidden="true"><use href="#i-nginx"/></svg></span><b>Nginx</b><small>front-end serving</small></li>
@@ -682,7 +808,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
         <p class="cat-name">networking &amp; data</p>
         <ul class="tiles">
           <li class="tile"><span class="tile-ic b-network"><svg class="ic" aria-hidden="true"><use href="#i-network"/></svg></span><b>Networking</b><small>TCP/IP, DNS, TLS, CIDR, NAT, L4/L7, VPC</small></li>
-          <li class="tile"><span class="tile-ic b-postgresql"><svg class="ic" aria-hidden="true"><use href="#i-postgresql"/></svg></span><b>PostgreSQL</b><small>Cloud SQL, pgvector</small></li>
+          <li class="tile"><span class="tile-ic b-postgresql"><svg class="ic" aria-hidden="true"><use href="#i-postgresql"/></svg></span><b>PostgreSQL</b><small>Cloud SQL, plus pgvector in the cluster</small></li>
           <li class="tile"><span class="tile-ic b-mysql"><svg class="ic" aria-hidden="true"><use href="#i-mysql"/></svg></span><b>MySQL</b><small>Cloud SQL</small></li>
           <li class="tile"><span class="tile-ic b-redis"><svg class="ic" aria-hidden="true"><use href="#i-redis"/></svg></span><b>Redis</b><small>Memorystore</small></li>
         </ul>
@@ -690,7 +816,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
       <div>
         <p class="cat-name">AI &amp; scripting</p>
         <ul class="tiles">
-          <li class="tile"><span class="tile-ic b-nvidia"><svg class="ic" aria-hidden="true"><use href="#i-nvidia"/></svg></span><b>NVIDIA GPUs</b><small>vLLM and Nemotron on GKE</small></li>
+          <li class="tile"><span class="tile-ic b-nvidia"><svg class="ic" aria-hidden="true"><use href="#i-nvidia"/></svg></span><b>NVIDIA GPUs</b><small>Nemotron on vLLM, RAG with pgvector, spot GPUs that scale to zero</small></li>
           <li class="tile"><span class="tile-ic b-claude"><svg class="ic" aria-hidden="true"><use href="#i-claude"/></svg></span><b>Claude Code</b><small>AI-assisted Terraform, manifests and pipelines</small></li>
           <li class="tile"><span class="tile-ic b-gnubash"><svg class="ic" aria-hidden="true"><use href="#i-gnubash"/></svg></span><b>Bash</b><small>scripts and automation</small></li>
           <li class="tile"><span class="tile-ic b-python"><svg class="ic" aria-hidden="true"><use href="#i-python"/></svg></span><b>Python</b><small>scripts and tooling</small></li>
@@ -754,8 +880,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
       <li><a class="btn" href="https://linkedin.com/in/ahmarrahmani">LinkedIn</a></li>
       <li><a class="btn" href="https://github.com/ehmerr">GitHub</a></li>
     </ul>
-    <p id="wordmark" class="wordmark" aria-label="Ahmar Rahmani">ahmar rahmani</p>
-    <p class="fine"><span>© 2026 Ahmar Rahmani · New Delhi</span><span>updated October 2026</span></p>
+    <p id="wordmark" class="wordmark" aria-hidden="true">ahmar rahmani</p>
+    <p class="fine"><span>© 2026 Ahmar Rahmani · New Delhi</span><span>updated November 2026</span></p>
   </footer>
 </div>
 </div>
@@ -771,7 +897,6 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
 
   // Motion that runs on its own is off when the system asks for less motion or the visitor paused it.
   function calm() { return reduceMq.matches || root.classList.contains('still'); }
-  function recall(key) { try { return window.localStorage.getItem(key); } catch (e) { return null; } }
   function store(key, value) {
     try { if (value === null) window.localStorage.removeItem(key); else window.localStorage.setItem(key, value); } catch (e) {}
   }
@@ -785,13 +910,14 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
     io.observe(el);
   }
 
-  // Pause button: stops the marquee and the pulsing dots, and remembers the choice.
+  // Pause button: stops the marquee and the pulsing dots, and remembers the choice. The saved choice
+  // was already applied in <head>; this only brings the button in line with it.
   var motionBtn = document.getElementById('motion-btn');
   function setStill(on) {
     root.classList.toggle('still', on);
     if (motionBtn) motionBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
   }
-  if (recall('ar-still') === '1') setStill(true);
+  setStill(root.classList.contains('still'));
   if (motionBtn) {
     motionBtn.hidden = false;
     motionBtn.addEventListener('click', function () {
@@ -802,15 +928,14 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
     });
   }
 
-  // Theme switch: follows the system until the visitor picks one, then remembers it.
+  // Theme switch: follows the system until the visitor picks one, then remembers it. A saved theme
+  // was already applied in <head>, before first paint.
   var themeBtn = document.getElementById('theme-btn');
   function currentTheme() {
     var t = root.getAttribute('data-theme');
     return t === 'dark' || t === 'light' ? t : (darkMq.matches ? 'dark' : 'light');
   }
   function syncTheme() { if (themeBtn) themeBtn.setAttribute('aria-pressed', currentTheme() === 'dark' ? 'true' : 'false'); }
-  var savedTheme = recall('ar-theme');
-  if (savedTheme === 'dark' || savedTheme === 'light') root.setAttribute('data-theme', savedTheme);
   if (themeBtn) {
     themeBtn.hidden = false;
     syncTheme();
@@ -943,91 +1068,114 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
     });
   }
 
-  // Ship a change: walk the diagram hop by hop, moving a pulse along each edge.
-  var diagram = document.querySelector('.diagram');
-  var svg = diagram && diagram.querySelector('svg');
-  var dot = svg && svg.querySelector('.d-dot');
-  var shipBox = document.querySelector('.ship');
-  var shipBtn = document.getElementById('ship-btn');
-  var shipLog = document.getElementById('ship-log');
-  var shipStatus = document.getElementById('ship-status');
-  var HOPS = [
-    { node: 'tf', edges: ['tf-gw', 'tf-gke'], say: 'Terraform has the Gateway and the cluster in place' },
-    { node: 'push', say: 'git push: a change lands' },
-    { edge: 'push-ci', node: 'ci', say: 'GitLab CI/CD builds and tags the image' },
-    { edge: 'ci-ar', node: 'ar', say: 'the image goes to Artifact Registry' },
-    { edge: 'ci-gke', node: 'gke', say: 'helm upgrade rolls the release out on GKE' },
-    { edge: 'ar-gke', say: 'GKE pulls the new image' },
-    { from: 'users', edge: 'users-gw', node: 'gw', say: 'users come in through the GKE Gateway and Cloud Armor' },
-    { edge: 'gw-gke', say: 'and reach the new version' }
-  ];
-  var DONE = 'shipped. this is how dev and staging deploy today';
-  var shipRun = 0, shipTimer = 0;
-  function light(sel) { var el = svg.querySelector(sel); if (el) el.classList.add('lit'); return el; }
-  function clearShip() {
-    each(svg.querySelectorAll('.lit'), function (el) { el.classList.remove('lit'); });
-    if (dot) dot.classList.remove('on');
-  }
-  function travel(path, run, done) {
-    var len = path.getTotalLength(), dur = Math.max(260, Math.min(720, len / 0.8)), start = 0;
-    dot.classList.add('on');
-    requestAnimationFrame(function tick(ts) {
-      if (run !== shipRun) return;
-      if (!start) start = ts;
-      var k = Math.min(1, (ts - start) / dur);
-      var e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
-      var p = path.getPointAtLength(len * e);
-      dot.setAttribute('cx', p.x.toFixed(1));
-      dot.setAttribute('cy', p.y.toFixed(1));
-      if (k < 1) requestAnimationFrame(tick); else done();
-    });
-  }
-  function ship(byUser) {
-    shipRun++;
-    clearTimeout(shipTimer);
-    clearShip();
-    var run = shipRun, quiet = reduceMq.matches, n = 0;
-    shipBox.classList.add('busy');
-    if (byUser && shipStatus) {
-      shipStatus.textContent = '';
-      setTimeout(function () {
-        shipStatus.textContent = 'Shipping a change: ' + HOPS.map(function (h) { return h.say; }).join(', ') + '. Shipped: this is how dev and staging deploy today.';
-      }, 60);
+  // Diagram walks: light a diagram hop by hop, moving a pulse along each edge. "ship a change" plays
+  // on the platform diagram, "trip an alert" on the monitoring one. Each walk keeps its own run
+  // counter, timer and pulse, so starting one never stops the other.
+  var WALKS = {
+    platform: {
+      autoplay: true,
+      hops: [
+        { node: 'tf', edges: ['tf-gw', 'tf-gke'], say: 'Terraform has the Gateway and the cluster in place' },
+        { node: 'push', say: 'git push: a change lands' },
+        { edge: 'push-ci', node: 'ci', say: 'GitLab CI/CD builds and tags the image' },
+        { edge: 'ci-ar', node: 'ar', say: 'the image goes to Artifact Registry' },
+        { edge: 'ci-gke', node: 'gke', say: 'helm upgrade rolls it out on GKE; production waits for a manual approval' },
+        { edge: 'ar-gke', say: 'GKE pulls the new image' },
+        { from: 'users', edge: 'users-gw', node: 'gw', say: 'users come in through the GKE Gateway and Cloud Armor' },
+        { edge: 'gw-gke', say: 'and reach the new version' }
+      ],
+      done: 'shipped. this is how every environment deploys today',
+      told: ['Shipping a change: ', '. Shipped: this is how every environment deploys today.']
+    },
+    alert: {
+      hops: [
+        { node: 'svc', say: 'a route starts returning 5xx errors' },
+        { edge: 'svc-otel', node: 'otel', say: 'the collector turns its spans into per-route metrics' },
+        { edge: 'otel-prom', node: 'prom', say: 'Managed Prometheus stores them, and the SLO burn-rate rule crosses its line' },
+        { edge: 'prom-am', node: 'am', say: 'Alertmanager groups the alert' },
+        { edge: 'am-slack', node: 'slack', say: 'Slack gets the alert, with the route and its error rate' },
+        { from: 'graf', edge: 'graf-log', node: 'logging', say: 'one click on the error count opens the filtered error logs in Grafana' }
+      ],
+      done: 'caught. this is how production is watched today',
+      told: ['Tripping an alert: ', '. Caught: this is how production is watched today.']
     }
-    (function step() {
-      if (run !== shipRun) return;
-      if (n === HOPS.length) {
-        if (dot) dot.classList.remove('on');
-        shipBox.classList.remove('busy');
-        shipLog.textContent = DONE;
-        shipTimer = setTimeout(function () { if (run === shipRun) clearShip(); }, 2600);
-        return;
+  };
+  function makeWalk(section, cfg) {
+    var diagram = section && section.querySelector('.diagram');
+    var svg = diagram && diagram.querySelector('svg');
+    var dot = svg && svg.querySelector('.d-dot');
+    var box = section && section.querySelector('.ship');
+    var btn = box && box.querySelector('.ship-btn');
+    var log = box && box.querySelector('.ship-log');
+    var status = box && box.querySelector('.ship-status');
+    if (!svg || !btn || !log) return;
+    var hops = cfg.hops, walkRun = 0, walkTimer = 0;
+    function light(sel) { var el = svg.querySelector(sel); if (el) el.classList.add('lit'); return el; }
+    function clearShip() {
+      each(svg.querySelectorAll('.lit'), function (el) { el.classList.remove('lit'); });
+      if (dot) dot.classList.remove('on');
+    }
+    function travel(path, run, done) {
+      var len = path.getTotalLength(), dur = Math.max(260, Math.min(720, len / 0.8)), start = 0;
+      dot.classList.add('on');
+      requestAnimationFrame(function tick(ts) {
+        if (run !== walkRun) return;
+        if (!start) start = ts;
+        var k = Math.min(1, (ts - start) / dur);
+        var e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+        var p = path.getPointAtLength(len * e);
+        dot.setAttribute('cx', p.x.toFixed(1));
+        dot.setAttribute('cy', p.y.toFixed(1));
+        if (k < 1) requestAnimationFrame(tick); else done();
+      });
+    }
+    function walk(byUser) {
+      walkRun++;
+      clearTimeout(walkTimer);
+      clearShip();
+      var run = walkRun, quiet = reduceMq.matches, n = 0;
+      box.classList.add('busy');
+      // Screen readers hear the whole walk as one summary, and only when the visitor asked for it.
+      if (byUser && status) {
+        status.textContent = '';
+        setTimeout(function () {
+          status.textContent = cfg.told[0] + hops.map(function (h) { return h.say; }).join(', ') + cfg.told[1];
+        }, 60);
       }
-      var hop = HOPS[n++];
-      shipLog.textContent = hop.say;
-      if (hop.from) light('[data-n="' + hop.from + '"]');
-      (hop.edges || []).forEach(function (id) { light('[data-e="' + id + '"]'); });
-      var arrive = function () {
-        if (run !== shipRun) return;
-        if (hop.node) light('[data-n="' + hop.node + '"]');
-        setTimeout(step, quiet ? 450 : 230);
-      };
-      var edge = hop.edge ? light('[data-e="' + hop.edge + '"]') : null;
-      if (edge && dot && !quiet && edge.getTotalLength) travel(edge, run, arrive); else arrive();
-    })();
-  }
-  if (svg && shipBox && shipBtn && shipLog) {
-    shipBox.hidden = false;
-    shipBtn.addEventListener('click', function () { ship(true); });
-    // Play it once by itself the first time the diagram is in view (about four seconds).
-    if (hasIO && !calm()) {
-      // Skipped if the visitor already pressed the button.
-      whenSeen(diagram, 0.55, function () { setTimeout(function () { if (!calm() && shipRun === 0) ship(false); }, 400); });
+      (function step() {
+        if (run !== walkRun) return;
+        if (n === hops.length) {
+          if (dot) dot.classList.remove('on');
+          box.classList.remove('busy');
+          log.textContent = cfg.done;
+          walkTimer = setTimeout(function () { if (run === walkRun) clearShip(); }, 2600);
+          return;
+        }
+        var hop = hops[n++];
+        log.textContent = hop.say;
+        if (hop.from) light('[data-n="' + hop.from + '"]');
+        (hop.edges || []).forEach(function (id) { light('[data-e="' + id + '"]'); });
+        var arrive = function () {
+          if (run !== walkRun) return;
+          if (hop.node) light('[data-n="' + hop.node + '"]');
+          setTimeout(step, quiet ? 450 : 230);
+        };
+        var edge = hop.edge ? light('[data-e="' + hop.edge + '"]') : null;
+        if (edge && dot && !quiet && edge.getTotalLength) travel(edge, run, arrive); else arrive();
+      })();
+    }
+    box.hidden = false;
+    btn.addEventListener('click', function () { walk(true); });
+    // Autoplay walks play once by themselves the first time their diagram is in view (about four
+    // seconds), skipped if the visitor already pressed the button.
+    if (cfg.autoplay && hasIO && !calm()) {
+      whenSeen(diagram, 0.55, function () { setTimeout(function () { if (!calm() && walkRun === 0) walk(false); }, 400); });
     }
   }
+  makeWalk(document.getElementById('platform'), WALKS.platform);
+  makeWalk(document.getElementById('monitoring'), WALKS.alert);
 
-  // Stats count up the first time they are in view.
-  var stats = document.querySelector('.stats');
+  // Numbers count up the first time they are in view: the work stats and the monitoring chips.
   function countUp(el, delay) {
     var m = /^(\D*)(\d+)(\D*)$/.exec(el.textContent.trim());
     if (!m) return;
@@ -1042,13 +1190,15 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
       });
     }, delay);
   }
-  if (stats && hasIO && !calm()) {
-    whenSeen(stats, 0.4, function () {
-      each(stats.querySelectorAll('b'), function (b, n) { countUp(b, n * 120); });
+  if (hasIO && !calm()) {
+    each(document.querySelectorAll('.stats, .mon-chips'), function (group) {
+      whenSeen(group, 0.4, function () {
+        each(group.querySelectorAll('b'), function (b, n) { countUp(b, n * 120); });
+      });
     });
   }
 
-  // Monitoring track: the finished step fills in when the card arrives.
+  // Up-next track: the finished step fills in when the card arrives.
   var nextCard = document.querySelector('.next');
   if (nextCard && hasIO && !calm() && belowFold(nextCard)) {
     nextCard.classList.add('pending');
@@ -1068,7 +1218,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
         setTimeout(function () { el.classList.remove('reveal', 'in'); el.style.removeProperty('--ri'); }, 1500 + d * 80);
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -5% 0px' });
-    each(document.querySelectorAll('.sec .eyebrow, .sec h2, .sec .intro, .facts > div, .stats > div, .ruled li, .diagram, .ship, .next, .cat-name, .tile, .rows > div, .cv-tags, .cv-meta, .cv .actions, .sheet-wrap, .reach, .foot .actions'), function (el) {
+    each(document.querySelectorAll('.sec .eyebrow, .sec h2, .sec .intro, .facts > div, .stats > div, .ruled li, .mon-chips, .diagram, .ship, .next, .cat-name, .tile, .rows > div, .cv-tags, .cv-meta, .cv .actions, .sheet-wrap, .reach, .foot .actions'), function (el) {
       if (el.hidden || !belowFold(el)) return;
       el.classList.add('reveal');
       revealIO.observe(el);
@@ -1080,8 +1230,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-o
   var bar = document.querySelector('.progress i');
   var navLinks = {};
   each(document.querySelectorAll('.top nav a[href^="#"]'), function (a) { navLinks[a.getAttribute('href').slice(1)] = a; });
-  var SPY = { work: 'work', platform: 'platform', next: 'platform', stack: 'stack', resume: 'resume', contact: 'contact' };
-  var spySecs = ['top', 'work', 'platform', 'next', 'stack', 'education', 'resume', 'contact']
+  var SPY = { work: 'work', platform: 'platform', monitoring: 'monitoring', next: 'monitoring', stack: 'stack', resume: 'resume', contact: 'contact' };
+  var spySecs = ['top', 'work', 'platform', 'monitoring', 'next', 'stack', 'education', 'resume', 'contact']
     .map(function (id) { return document.getElementById(id); }).filter(Boolean);
   var active, scrollQueued = false;
   function onScroll() {
