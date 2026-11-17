@@ -1,0 +1,40 @@
+/* Design tokens. The accent is swapped at runtime by the accent cycler (--accent, --accent-rgb). */
+:root {
+  --bg: #0a0c0f;
+  --bg-2: #0e1217;
+  --panel: #11161c;
+  --panel-2: #141a21;
+  --line: #1f252d;
+  --line-2: #2a313b;
+  --text: #e7ecf2;
+  --text-2: #a9b3c1;
+  --text-3: #8b95a3;
+
+  --accent: #6ef0b4;
+  --accent-rgb: 110, 240, 180;
+
+  --c-cloud: #5cc8ff;
+  --c-iac: #ffb86b;
+  --c-containers: #c4a1ff;
+  --c-obs: #ff8a8a;
+  --c-data: #f5e663;
+  --c-code: #6ef0b4;
+
+  --ok: #6ef0b4;
+  --warn: #ffb86b;
+  --err: #ff7a7a;
+
+  --font-sans: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius: 16px;
+  --radius-sm: 10px;
+  --wrap: 1200px;
+  --gutter: 24px;
+
+  color-scheme: dark;
+}
+
+@media (max-width: 640px) {
+  :root { --gutter: 16px; }
+}
