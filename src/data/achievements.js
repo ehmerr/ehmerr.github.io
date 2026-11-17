@@ -1,0 +1,30 @@
+// 25 achievements. `hint` is shown while locked, `name` once found.
+export const achievements = [
+  { id: 'deploy', name: 'Green Pipeline', hint: 'Get a release all the way to production.' },
+  { id: 'approve', name: 'Change Approved', hint: 'Be the human in the production approval gate.' },
+  { id: 'rollback', name: 'Undo Button', hint: 'Ship a bad release and watch it roll back.' },
+  { id: 'kill', name: 'SIGKILL', hint: 'Terminate a pod.' },
+  { id: 'chaos', name: 'Chaos Monkey', hint: 'Let the monkey loose in the cluster.' },
+  { id: 'oncall', name: 'Holding the Pager', hint: 'Survive an on-call shift.' },
+  { id: 'flawless', name: 'Quiet Night', hint: 'Finish on-call without breaking the SLO.' },
+  { id: 'throw', name: 'Forced Eviction', hint: 'Throw a worker bot.' },
+  { id: 'strike', name: 'Industrial Action', hint: 'Annoy a bot until it walks off the job.' },
+  { id: 'hire', name: 'New Joiner', hint: 'Parachute in a new bot.' },
+  { id: 'coffee', name: 'Chai Break', hint: 'Give the bots a break.' },
+  { id: 'stretch', name: 'Rubber Band', hint: 'Stretch the bot hanging in the hero.' },
+  { id: 'wake', name: 'Night Shift', hint: 'Wake the bot sleeping in the footer.' },
+  { id: 'sudo', name: 'Root Access', hint: 'Ask the terminal nicely. With sudo.' },
+  { id: 'kubectl', name: 'Cluster Admin', hint: 'Run kubectl in the terminal.' },
+  { id: 'palette', name: 'Shortcut Person', hint: 'Open the command palette (⌘K / Ctrl+K).' },
+  { id: 'theme', name: 'Fresh Paint', hint: 'Change the accent colour.' },
+  { id: 'sound', name: 'Turn It Up', hint: 'Switch the sound on.' },
+  { id: 'element', name: 'Lab Coat', hint: 'Inspect an element in the periodic table.' },
+  { id: 'compound', name: 'Breaking Build', hint: 'Combine two elements into a compound.' },
+  { id: 'apply', name: 'terraform apply', hint: 'Approve the plan in the contact section.' },
+  { id: 'matrix', name: 'Follow the Rabbit', hint: 'There is a command for green rain.' },
+  { id: 'gravity', name: 'Zero G', hint: 'Up, up, down, down… you know the rest.' },
+  { id: 'destroy', name: 'Disaster Recovery', hint: 'Destroy the site, then restore it.' },
+  { id: 'bottom', name: 'Full Scroll', hint: 'Scroll all the way to the bottom.' },
+];
+
+export const achById = Object.fromEntries(achievements.map((a) => [a.id, a]));
