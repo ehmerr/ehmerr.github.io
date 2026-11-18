@@ -1,4 +1,4 @@
-import { education, profile } from '../data/profile.js';
+import { education, profile, text } from '../data/profile.js';
 
 // Education and the resume card, side by side.
 export default function Education() {
@@ -6,8 +6,8 @@ export default function Education() {
   return (
     <section id="education" className="sec wrap edu-sec" aria-labelledby="education-title">
       <div className="edu">
-        <p className="sec-kicker mono">EDUCATION</p>
-        <h2 id="education-title" className="edu-title">Where I studied</h2>
+        <p className="sec-kicker mono">{text.education.kicker}</p>
+        <h2 id="education-title" className="edu-title">{text.education.title}</h2>
         <dl className="edu-list">
           {education.map((e) => (
             <div key={e.key} className="edu-row">
@@ -15,7 +15,7 @@ export default function Education() {
               <dd>
                 <strong>{e.title}</strong>
                 <span className="edu-meta mono">
-                  {e.place} · {e.score}
+                  {e.place}{e.score ? ` · ${e.score}` : ''}
                 </span>
               </dd>
             </div>
@@ -25,8 +25,8 @@ export default function Education() {
 
       <div className="cv panel">
         <div className="cv-copy">
-          <p className="sec-kicker mono">RESUME</p>
-          <h2 className="edu-title">The whole story, on one page</h2>
+          <p className="sec-kicker mono">{text.resume.kicker}</p>
+          <h2 className="edu-title">{text.resume.title}</h2>
           <ul className="cv-tags">
             {r.covers.map((c) => (
               <li key={c} className="tag">{c}</li>
@@ -36,7 +36,7 @@ export default function Education() {
             {r.format} · updated {r.updated}
           </p>
           <a className="btn btn-primary" href={r.href} target="_blank" rel="noopener">
-            Read the resume
+            {text.resume.button || 'Read the resume'}
           </a>
         </div>
         <a className="cv-sheet" href={r.href} target="_blank" rel="noopener" aria-label={`Open ${profile.name}'s resume, PDF, in a new tab`}>

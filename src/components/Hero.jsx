@@ -18,10 +18,10 @@ export default function Hero({ terminal = null, bot = null }) {
         <p className="hero-tagline">{profile.tagline}</p>
         <p className="hero-summary">{profile.summary}</p>
         <div className="hero-cta">
-          <a className="btn btn-primary" href="#experience">See my work</a>
-          <a className="btn btn-ghost" href="#contact">Get in touch</a>
+          <a className="btn btn-primary" href="#experience">{profile.buttons.work}</a>
+          <a className="btn btn-ghost" href="#contact">{profile.buttons.contact}</a>
           <a className="btn btn-ghost" href={profile.resume.href} target="_blank" rel="noopener">
-            Resume
+            {profile.buttons.resume}
           </a>
         </div>
         <LocalTime />

@@ -1,14 +1,15 @@
 import { groups, elements } from '../data/elements.js';
 import SecHead from './SecHead.jsx';
+import { text } from '../data/profile.js';
+import { fill } from '../data/content.js';
 
 // 04 / STACK — skills as a periodic table. `onPick(el)` opens the element drawer (Step 8);
 // `extra` is the reactor (Step 8).
 export default function Stack({ onPick = null, filter = null, setFilter = null, extra = null }) {
   return (
     <section id="stack" className="sec wrap" aria-labelledby="stack-title">
-      <SecHead num="04" kicker="STACK" title="The periodic table" id="stack-title">
-        {elements.length} elements I work with, in {groups.length} groups.
-        {onPick ? ' Click one to see where I used it.' : ''}
+      <SecHead num="04" kicker={text.stack.kicker} title={text.stack.title} id="stack-title">
+        {text.stack.intro ? fill(text.stack.intro, { count: elements.length, groups: groups.length }) : null}
       </SecHead>
 
       {setFilter && (

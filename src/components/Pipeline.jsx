@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { stages, envs, badRelease } from '../data/pipeline.js';
 import { useGame } from '../game/GameProvider.jsx';
 import SecHead from './SecHead.jsx';
+import { text } from '../data/profile.js';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const randSha = () => Math.random().toString(16).slice(2, 9);
@@ -128,9 +129,8 @@ export default function Pipeline() {
 
   return (
     <section id="pipeline" className="sec wrap" aria-labelledby="pipeline-title">
-      <SecHead num="02" kicker="PIPELINE" title="How a change ships" id="pipeline-title">
-        This is how a change gets to production at BytePe: build, dry run, migrate, a human approval
-        for production, then a Helm upgrade that rolls back by itself if anything fails. Try it.
+      <SecHead num="02" kicker={text.pipeline.kicker} title={text.pipeline.title} id="pipeline-title">
+        {text.pipeline.intro}
       </SecHead>
 
       <div className="pipe panel">

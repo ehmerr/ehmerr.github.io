@@ -1,0 +1,576 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  Everything written on the website lives in this file.
+#
+#  How to edit:
+#   • Change the text after the colon. You don't need quotes.
+#   • Keep the indentation (spaces, never tabs) exactly as it is.
+#   • A line starting with "- " is one item in a list. Add or remove whole items.
+#   • Use quotes only if your text contains ": " (a colon followed by a space),
+#     starts with a special character like # [ { * & ! or ', or is a colour like '#5CC8FF'.
+#   • Lines starting with # are notes and don't appear on the site.
+#
+#  While `npm run dev` is running, saving this file updates the page instantly.
+#  If something is mistyped, you'll get a message saying which line to fix.
+# ─────────────────────────────────────────────────────────────────────────────
+
+site:
+  name: Ahmar Rahmani
+  first: Ahmar
+  handle: ahmar             # the big outlined word in the footer
+  host: ahmar.sh            # the fake hostname used by the terminal
+  role: DevOps Intern
+  company: BytePe
+  track: Platform / SRE
+  tagline: I move apps onto Kubernetes, then keep them awake.
+  summary: DevOps Intern at BytePe, a fintech startup. I run our platform on Google Cloud with GKE, Helm, Terraform and GitLab CI/CD.
+  city: New Delhi
+  timeZone: Asia/Kolkata    # used for the live clock in the hero
+  openTo:
+    - DevOps
+    - Cloud
+    - Platform
+    - SRE
+  openWhere: anywhere in India or remote
+  available: open to DevOps & SRE roles
+  buttons:
+    work: See my work
+    contact: Get in touch
+    resume: Resume
+
+contact:
+  email: ahmarrahmanicse@gmail.com
+  phone: +91 79799 66812
+  github: https://github.com/ehmerr
+  linkedin: https://linkedin.com/in/ahmarrahmani
+
+resume:
+  file: Ahmar-Rahmani-Resume.pdf       # the PDF inside the public/ folder
+  preview: resume-preview.webp         # image of page 1, inside public/
+  format: PDF, 1 page
+  updated: 17 October 2026
+  covers:
+    - DevOps Intern · BytePe
+    - VMs → GKE
+    - GitLab CI/CD
+    - Terraform
+    - skills & education
+
+# Headings and intro lines for each section of the page.
+# {count}, {groups}, {openTo}, {openWhere} and {city} are filled in automatically.
+sections:
+  experience:
+    nav: experience
+    kicker: EXPERIENCE
+    title: git log --career
+    intro: Where I have worked and what I shipped. Click a commit to see the diff.
+  pipeline:
+    nav: pipeline
+    kicker: PIPELINE
+    title: How a change ships
+    intro: "This is how a change gets to production at BytePe: build, dry run, migrate, a human approval for production, then a Helm upgrade that rolls back by itself if anything fails. Try it."
+  cluster:
+    nav: cluster
+    kicker: SELF-HEALING CLUSTER
+    title: Break it. It heals.
+    intro: A toy Kubernetes cluster running in your browser. Click a pod to kill it and watch it come back. Then turn auto-heal off, or take the pager yourself.
+  stack:
+    nav: stack
+    kicker: STACK
+    title: The periodic table
+    intro: "{count} elements I work with, in {groups} groups. Click one to see where I used it."
+  education:
+    kicker: EDUCATION
+    title: Where I studied
+  resume:
+    kicker: RESUME
+    title: The whole story, on one page
+    button: Read the resume
+  contact:
+    nav: contact
+    kicker: CONTACT
+    title: Let's ship something.
+    intro: "Open to {openTo} roles, {openWhere}. Based in {city}."
+  footer:
+    line: built with Vite, shipped by GitHub Actions, watched by nobody at 3am
+
+# Your jobs, newest first. Each one appears as a commit in the git log.
+#   groups → each heading becomes an "@@ heading @@" line, each point a "+ line".
+#   stats  → optional big numbers shown above the diff.
+#   hash / ref → optional; made up automatically if you leave them out.
+experience:
+  - title: DevOps Intern @ BytePe
+    when: Jun 2026 – present
+    place: Noida
+    summary: Fintech startup · I run the platform on Google Cloud with my lead
+    ref: HEAD → main
+    stats:
+      - value: '3'
+        label: environments moved to Kubernetes
+      - value: '~64%'
+        label: lower production compute cost
+      - value: '~55%'
+        label: fewer non-production compute hours
+    tags: [Google Cloud, GKE, Kubernetes, Helm, Terraform, GitLab CI/CD, Docker, Grafana, Prometheus, OpenTelemetry, k6, Python, Bash]
+    groups:
+      - heading: VMs → Kubernetes
+        points:
+          - Moved dev, staging and production from VMs to GKE Autopilot with my lead. All three are done.
+          - Set up the production pipeline and ran the cutover. Production has been live on GKE since Oct 2026.
+          - Put our web front ends on Kubernetes with Helm.
+      - heading: monitoring
+        points:
+          - "Set up the whole monitoring stack myself: Grafana, Prometheus, OpenTelemetry, Cloud Logging, Cloud Trace and Slack alerts, for all three environments."
+      - heading: CI/CD
+        points:
+          - Built the staging pipeline and the production approval gate in GitLab CI/CD.
+          - Made releases safe to ship, with automatic rollback when an upgrade fails.
+      - heading: cost
+        points:
+          - Cut production compute cost by ~64%.
+          - "Dev and staging now sleep on nights and weekends: ~55% fewer compute hours."
+      - heading: platform
+        points:
+          - Set up autoscaling and wrote k6 load tests for the platform.
+          - Moved OSRM (routing) and Typesense (search) onto GKE.
+          - Wrote Terraform for our infrastructure across all three environments.
+      - heading: AI
+        points:
+          - "Built an AI proof of concept: a self-hosted LLM that answers from our docs, on a GPU that scales to zero."
+
+  - title: "init: B.Tech CSE (Data Science)"
+    when: Nov 2022 – Jun 2026
+    place: ITS Engineering College
+    summary: Where it started
+    ref: "tag: v0.1"
+    tags: [Computer Science, Data Science]
+    groups:
+      - points:
+          - B.Tech in Computer Science and Engineering (Data Science).
+          - Graduated with a CGPA of 7.98.
+    link:
+      href: '#education'
+      label: see education
+
+education:
+  - title: B.Tech, Computer Science and Engineering (Data Science)
+    place: ITS Engineering College
+    when: Nov 2022 – Jun 2026
+    score: CGPA 7.98
+  - title: Class XII, Senior Secondary (CBSE)
+    place: Sadhana Devi Vidyapith
+    when: Apr 2020 – Aug 2021
+    score: 91%
+
+# The skills periodic table. Each group is a column.
+#   symbol → 1–2 letters shown big on the tile (must be unique)
+#   use    → one line shown when someone clicks the tile
+#   grep   → optional word; the tile lists experience lines that contain it
+skills:
+  - group: Cloud
+    color: '#5CC8FF'
+    elements:
+      - symbol: Gc
+        name: Google Cloud
+        use: Where everything I run lives.
+        grep: Google Cloud
+      - symbol: Gk
+        name: GKE Autopilot
+        use: Our clusters for dev, staging and production.
+        grep: GKE
+      - symbol: Ca
+        name: Cloud Armor
+        use: Security rules in front of production.
+        grep: production
+      - symbol: Ar
+        name: Artifact Registry
+        use: Where every image we build is stored.
+        grep: pipeline
+      - symbol: Wi
+        name: Workload Identity
+        use: Lets pods use short-lived credentials instead of key files.
+        grep: Terraform
+      - symbol: Nw
+        name: Networking
+        use: TCP/IP, DNS, TLS, VPCs and load balancers.
+
+  - group: IaC & CI/CD
+    color: '#FFB86B'
+    elements:
+      - symbol: Tf
+        name: Terraform
+        use: Our infrastructure for all three environments, as code.
+        grep: Terraform
+      - symbol: Gl
+        name: GitLab CI/CD
+        use: Backend and front-end pipelines, the approval gate and rollbacks.
+        grep: GitLab
+      - symbol: Ga
+        name: GitHub Actions
+        use: Workflows for side projects, including this site.
+      - symbol: Gt
+        name: Git
+        use: Branches, reviews and submodules.
+
+  - group: Containers
+    color: '#C4A1FF'
+    elements:
+      - symbol: Dk
+        name: Docker
+        use: Images for every service, plus Docker Compose locally.
+      - symbol: K8
+        name: Kubernetes
+        use: Autoscaling, health checks, Jobs and CronJobs.
+        grep: Kubernetes
+      - symbol: Hm
+        name: Helm
+        use: Shared charts for our services and front ends.
+        grep: Helm
+      - symbol: Gw
+        name: Gateway API
+        use: How users reach production on GKE.
+        grep: production
+
+  - group: Observability
+    color: '#FF8A8A'
+    elements:
+      - symbol: Pm
+        name: Prometheus
+        use: Metrics and alert rules for all three environments.
+        grep: Prometheus
+      - symbol: Gf
+        name: Grafana
+        use: One place to see dev, staging and production.
+        grep: Grafana
+      - symbol: Ot
+        name: OpenTelemetry
+        use: Traces from our services without changing app code.
+        grep: OpenTelemetry
+      - symbol: Lk
+        name: Loki & Alloy
+        use: A self-hosted log stack, as a side project.
+      - symbol: K6
+        name: k6
+        use: Load tests for the platform.
+        grep: k6
+
+  - group: Data
+    color: '#F5E663'
+    elements:
+      - symbol: Pg
+        name: PostgreSQL
+        use: Cloud SQL for our apps.
+      - symbol: My
+        name: MySQL
+        use: Cloud SQL for our apps.
+      - symbol: Rd
+        name: Redis
+        use: Memorystore for caching.
+      - symbol: Pv
+        name: pgvector
+        use: The search index behind the AI proof of concept.
+        grep: AI
+
+  - group: Code & AI
+    color: '#6EF0B4'
+    elements:
+      - symbol: Sh
+        name: Bash
+        use: Scripts and automation.
+      - symbol: Py
+        name: Python
+        use: Scripts and tooling.
+      - symbol: Lx
+        name: Linux
+        use: Ubuntu and SSH, every day.
+      - symbol: Nx
+        name: Nginx
+        use: Serving our front ends.
+        grep: front ends
+      - symbol: Vl
+        name: vLLM
+        use: Running a self-hosted LLM on a GPU.
+        grep: AI
+      - symbol: Cc
+        name: Claude Code
+        use: AI help with Terraform, manifests and pipelines.
+
+# The reactor: dropping two symbols (a and b) together makes a compound.
+compounds:
+  pairs:
+    - a: Tf
+      b: Gk
+      name: Cluster in a Commit
+      says: The whole cluster can be rebuilt from one repo.
+    - a: Tf
+      b: Ca
+      name: Policy as Code
+      says: Firewall rules reviewed in a merge request, not clicked in a console.
+    - a: Tf
+      b: Wi
+      name: Keyless Pods
+      says: Short-lived credentials. No key files sitting in a drawer.
+    - a: Gl
+      b: Hm
+      name: Release Train
+      says: Push, build, helm upgrade. All aboard.
+    - a: Gl
+      b: Ar
+      name: Immutable Tags
+      says: Every image is named after its commit. 'latest' is banned.
+    - a: Hm
+      b: K8
+      name: One Chart, Three Envs
+      says: Same chart everywhere. Only the values change.
+    - a: Dk
+      b: K8
+      name: Pod
+      says: A container that someone else restarts for you.
+    - a: Gk
+      b: Gw
+      name: Front Door
+      says: All traffic comes in through one well-lit entrance.
+    - a: Gw
+      b: Ca
+      name: Bouncer
+      says: Bad requests get turned away at the door.
+    - a: Ot
+      b: Pm
+      name: Span Metrics
+      says: Traces that also count things.
+    - a: Pm
+      b: Gf
+      name: Wall of Graphs
+      says: Green means sleep. Red means Slack.
+    - a: Gf
+      b: Gt
+      name: Dashboards as Code
+      says: Graphs that go through code review.
+    - a: Lk
+      b: Gf
+      name: Log Diving
+      says: One click from an error spike to the exact log line.
+    - a: K6
+      b: K8
+      name: Autoscale Drill
+      says: Throw fake users at it and watch the pods multiply.
+    - a: K6
+      b: Gw
+      name: Load Day
+      says: A thousand virtual users knock on the front door at once.
+    - a: Vl
+      b: Pv
+      name: RAG on a Budget
+      says: A private LLM that reads our docs before it answers.
+    - a: Vl
+      b: Gk
+      name: Scale-to-Zero GPU
+      says: The GPU sleeps until someone asks a question.
+    - a: Pg
+      b: Pv
+      name: Vector Store
+      says: Postgres learns what 'similar' means.
+    - a: Sh
+      b: Lx
+      name: Old Faithful
+      says: Every outage ends with someone SSHing in.
+    - a: Py
+      b: Gl
+      name: Pipeline Glue
+      says: Small scripts that keep the big pipeline in line.
+    - a: Nx
+      b: Dk
+      name: Front End in a Box
+      says: A tiny image that serves the site fast.
+    - a: Cc
+      b: Tf
+      name: Pair Programming
+      says: Terraform drafted with AI, reviewed by a human.
+    - a: Rd
+      b: K8
+      name: Cache Hit
+      says: Fast answers, right up until someone flushes it.
+  failed:
+    - "Reaction failed: CrashLoopBackOff."
+    - Rejected by the admission controller.
+    - Nothing happened. Like a cron job in the wrong time zone.
+    - Produced 400 lines of YAML and no output.
+    - "Error: resource already exists. Import it first."
+  self: Mixing an element with itself? That's just a replica.
+
+# Achievements. Change the name and hint freely, but don't change the id
+# (the id is how the site knows when each one is unlocked).
+achievements:
+  - id: deploy
+    name: Green Pipeline
+    hint: Get a release all the way to production.
+  - id: approve
+    name: Change Approved
+    hint: Be the human in the production approval gate.
+  - id: rollback
+    name: Undo Button
+    hint: Ship a bad release and watch it roll back.
+  - id: kill
+    name: SIGKILL
+    hint: Terminate a pod.
+  - id: chaos
+    name: Chaos Monkey
+    hint: Let the monkey loose in the cluster.
+  - id: oncall
+    name: Holding the Pager
+    hint: Survive an on-call shift.
+  - id: flawless
+    name: Quiet Night
+    hint: Finish on-call without breaking the SLO.
+  - id: throw
+    name: Forced Eviction
+    hint: Throw a worker bot.
+  - id: strike
+    name: Industrial Action
+    hint: Annoy a bot until it walks off the job.
+  - id: hire
+    name: New Joiner
+    hint: Parachute in a new bot.
+  - id: coffee
+    name: Chai Break
+    hint: Give the bots a break.
+  - id: stretch
+    name: Rubber Band
+    hint: Stretch the bot hanging in the hero.
+  - id: wake
+    name: Night Shift
+    hint: Wake the bot sleeping in the footer.
+  - id: sudo
+    name: Root Access
+    hint: Ask the terminal nicely. With sudo.
+  - id: kubectl
+    name: Cluster Admin
+    hint: Run kubectl in the terminal.
+  - id: palette
+    name: Shortcut Person
+    hint: Open the command palette (⌘K / Ctrl+K).
+  - id: theme
+    name: Fresh Paint
+    hint: Change the accent colour.
+  - id: sound
+    name: Turn It Up
+    hint: Switch the sound on.
+  - id: element
+    name: Lab Coat
+    hint: Inspect an element in the periodic table.
+  - id: compound
+    name: Breaking Build
+    hint: Combine two elements into a compound.
+  - id: apply
+    name: terraform apply
+    hint: Approve the plan in the contact section.
+  - id: matrix
+    name: Follow the Rabbit
+    hint: There is a command for green rain.
+  - id: gravity
+    name: Zero G
+    hint: Up, up, down, down… you know the rest.
+  - id: destroy
+    name: Disaster Recovery
+    hint: Destroy the site, then restore it.
+  - id: bottom
+    name: Full Scroll
+    hint: Scroll all the way to the bottom.
+
+# Jokes and small lines around the site.
+personality:
+  greetings:                  # first line in the terminal, by time of day
+    late: up late? same. production never sleeps.
+    morning: good morning. coffee first, kubectl second.
+    afternoon: good afternoon. all pipelines green, for now.
+    evening: good evening. no deploys after 6… unless?
+    night: late shift, huh? the pager and I say hi.
+  fortunes:                   # the terminal's `fortune` command
+    - It is never DNS. It was DNS.
+    - If you did it twice by hand, the third time is a script.
+    - A rollback you never tested is just a wish.
+    - Nothing is more permanent than a temporary VM.
+    - Every dashboard starts green and ends up as a Christmas tree.
+    - The cheapest server is the one that is asleep.
+    - Friday deploys are fine if you're on call for the weekend anyway.
+    - Monitoring is how you find out before the customer tweets.
+  monitoring: "I set up this monitoring myself: Grafana · Prometheus · OpenTelemetry · Slack alerts."
+  cluster:
+    chaos: Chaos monkey loose. Watch the cluster heal itself.
+    healOff: Auto-heal is off. Dead pods stay dead now.
+    healOn: Auto-heal back on. Kubernetes has it from here.
+    quota: "Quota reached: max {max} api replicas. Finance is watching."
+    oncallStart: You're on call. Auto-heal is off. Click the red pods to restart them!
+    flawless: Flawless shift. Now imagine doing that at 3am. That is why I automate it.
+    okay: Shift over with {n} SLO breaches. Automation exists for a reason.
+  bots:
+    names:
+      - HELM
+      - PODDY
+      - KUBO
+      - GREP
+      - CRON
+      - TAINT
+      - PROBE
+      - SHA
+      - YAML
+      - NOOP
+      - LINT
+      - REDIS
+    jobs:                     # shown in the HUD while a bot works
+      - rotating secrets
+      - tagging images
+      - fixing YAML indents
+      - reading logs
+      - resizing node pools
+      - renewing certs
+      - tuning HPA
+      - checking probes
+      - waiting on CI
+      - it was DNS
+      - chai.exe
+    poke:                     # when you click a bot
+      - Busy. Very busy.
+      - I am mid-rollout!
+      - That tickles my health check.
+      - Please file a ticket.
+      - Not in my runbook.
+      - Rude. Logging this.
+    thrown:                   # while being dragged
+      - WHEEEE
+      - I am not a load balancer!
+      - Unscheduled migration!
+      - PUT ME DOWN
+      - Evicted without notice!
+    landed:
+      - Rescheduled. Fine.
+      - New node, who dis?
+      - Okay, I work here now.
+      - That was… fun actually.
+      - "Readiness: questionable."
+    strike:
+      - ON STRIKE
+      - Union of Pods, Local 503.
+      - No more throwing!
+      - We want chai and uptime.
+    hire:
+      - Reporting for duty!
+      - Where is the kubeconfig?
+      - First day! Hi!
+    coffee:
+      - ahh, chai
+      - five-minute break
+      - refuelling…
+    gravity:
+      - I can see prod from here!
+      - who turned off gravity?
+      - floating point error
+    panic:                    # during self-destruct
+      - RUN!!
+      - NOT THE BUTTON!
+      - WHERE ARE THE BACKUPS?
+      - I just got promoted!
+    night:                    # the sleeping bot in the footer
+      - zzz… five more minutes
+      - Night shift. Go away.
+      - Alerts are quiet. Let me sleep.
+      - Only page me for prod.

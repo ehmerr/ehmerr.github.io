@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { career } from '../data/career.js';
 import SecHead from './SecHead.jsx';
+import { text } from '../data/profile.js';
 
 // 01 / EXPERIENCE — career as `git log`, each commit expands into a diff.
 export default function Experience() {
@@ -14,8 +15,8 @@ export default function Experience() {
 
   return (
     <section id="experience" className="sec wrap" aria-labelledby="experience-title">
-      <SecHead num="01" kicker="EXPERIENCE" title="git log --career" id="experience-title">
-        Where I have worked and what I shipped. Click a commit to see the diff.
+      <SecHead num="01" kicker={text.experience.kicker} title={text.experience.title} id="experience-title">
+        {text.experience.intro}
       </SecHead>
       <ol className="log">
         {career.map((c) => {
@@ -34,11 +35,11 @@ export default function Experience() {
                   <span className="commit-hash">{c.hash}</span>
                   <span className="commit-ref">({c.ref})</span>
                   <span className="commit-when">
-                    {c.when} · {c.place}
+                    {c.when}{c.place ? ` · ${c.place}` : ''}
                   </span>
                 </span>
                 <span className="commit-title">{c.title}</span>
-                <span className="commit-sub">{c.sub}</span>
+                {c.sub && <span className="commit-sub">{c.sub}</span>}
                 <span className="commit-toggle mono" aria-hidden="true">
                   {isOpen ? '− hide diff' : `+ git show ${c.hash}`}
                 </span>

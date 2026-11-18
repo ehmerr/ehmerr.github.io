@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { nodes, workloads, maxApiReplicas, onCallSeconds, monitoringLine, clusterQuips as Q } from '../data/cluster.js';
 import { useGame } from '../game/GameProvider.jsx';
 import SecHead from './SecHead.jsx';
+import { text } from '../data/profile.js';
 
 const suffix = () => Math.random().toString(36).slice(2, 6);
 const colorOf = Object.fromEntries(workloads.map((w) => [w.app, w.color]));
@@ -258,9 +259,8 @@ export default function Cluster() {
 
   return (
     <section id="cluster" className="sec wrap" aria-labelledby="cluster-title">
-      <SecHead num="03" kicker="SELF-HEALING CLUSTER" title="Break it. It heals." id="cluster-title">
-        A toy Kubernetes cluster running in your browser. Click a pod to kill it and watch it come back.
-        Then turn auto-heal off, or take the pager yourself.
+      <SecHead num="03" kicker={text.cluster.kicker} title={text.cluster.title} id="cluster-title">
+        {text.cluster.intro}
       </SecHead>
 
       <div className="cluster">
