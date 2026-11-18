@@ -74,6 +74,7 @@ export default function HangingBot() {
         className="hang-bot"
         style={{ transform: `translate(${pos.x - 20}px, ${pos.y - 2}px) rotate(${pos.x * 0.15}deg)` }}
         onPointerDown={onDown}
+        data-cur="stretch"
         aria-label="A small bot hanging on a cable. Click to swing it, or drag to stretch the cable."
       >
         <BotSprite color="var(--accent)" />

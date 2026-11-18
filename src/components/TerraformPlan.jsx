@@ -2,12 +2,14 @@ import { useRef, useState, useEffect } from 'react';
 import { profile } from '../data/profile.js';
 import { useGame } from '../game/GameProvider.jsx';
 import { ContactLinks } from './Contact.jsx';
+import { centerOf } from '../motion/motion.js';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // Contact as `terraform plan` → Approve → `terraform apply`, which reveals the contact details.
 export default function TerraformPlan() {
-  const { unlock, play, toast } = useGame();
+  const { unlock, play, toast, bus } = useGame();
+  const boxRef = useRef(null);
   const [phase, setPhase] = useState('plan'); // plan | applying | done
   const [applyLog, setApplyLog] = useState([]);
   const alive = useRef(true);
@@ -33,6 +35,9 @@ export default function TerraformPlan() {
     unlock('apply');
     play('ok');
     setPhase('done');
+    const at = centerOf(boxRef.current?.querySelector('.tf-actions'));
+    bus.emit('fx:burst', { ...at, kind: 'confetti' });
+    bus.emit('fx:pulse', { ...at, power: 1.2 });
   };
 
   const reset = () => {
@@ -41,7 +46,7 @@ export default function TerraformPlan() {
   };
 
   return (
-    <div className="tf">
+    <div className="tf" ref={boxRef} data-reveal>
       <div className="term tf-term">
         <div className="term-bar">
           <span className="term-dots" aria-hidden="true"><i /><i /><i /></span>
@@ -76,7 +81,7 @@ export default function TerraformPlan() {
         <div className="tf-actions">
           {phase === 'plan' && (
             <>
-              <button type="button" className="btn btn-primary" onClick={apply}>Approve &amp; apply</button>
+              <button type="button" className="btn btn-primary" onClick={apply} data-magnetic data-cur="apply">Approve &amp; apply</button>
               <button type="button" className="btn btn-ghost" onClick={async () => { try { await navigator.clipboard.writeText(profile.email); toast('email copied'); } catch { toast(profile.email); } }}>
                 skip, just copy email
               </button>

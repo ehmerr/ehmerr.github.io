@@ -1,7 +1,28 @@
+import { useEffect, useMemo, useState } from 'react';
 import { profile, sections } from '../data/profile.js';
+import { useActiveSection } from '../motion/useReveal.js';
 
-// Sticky top bar. Step 4 adds the status pill states, sound, accent and ⌘K tools via `tools`.
+// Sticky top bar with a scroll-progress line and an underline that follows the current section.
 export default function Nav({ status = 'ok', statusText = 'all systems operational', tools = null }) {
+  const [active, setActive] = useState('top');
+  const ids = useMemo(() => sections.map((s) => s.id), []);
+  useActiveSection(ids, setActive);
+
+  useEffect(() => {
+    let raf = 0;
+    const set = () => {
+      raf = 0;
+      const el = document.documentElement;
+      const max = el.scrollHeight - window.innerHeight;
+      el.style.setProperty('--sp', max > 0 ? (window.scrollY / max).toFixed(4) : '0');
+    };
+    const on = () => { if (!raf) raf = requestAnimationFrame(set); };
+    set();
+    window.addEventListener('scroll', on, { passive: true });
+    window.addEventListener('resize', on);
+    return () => { cancelAnimationFrame(raf); window.removeEventListener('scroll', on); window.removeEventListener('resize', on); };
+  }, []);
+
   return (
     <nav className="nav" aria-label="Sections">
       <div className="nav-in">
@@ -13,7 +34,7 @@ export default function Nav({ status = 'ok', statusText = 'all systems operation
           {sections
             .filter((s) => s.num)
             .map((s) => (
-              <a key={s.id} className="nav-link mono" href={`#${s.id}`}>
+              <a key={s.id} className={`nav-link mono${active === s.id ? ' on' : ''}`} href={`#${s.id}`} aria-current={active === s.id ? 'true' : undefined}>
                 <span className="nav-num">{s.num}</span>
                 {s.label}
               </a>
@@ -27,6 +48,7 @@ export default function Nav({ status = 'ok', statusText = 'all systems operation
           {tools}
         </div>
       </div>
+      <span className="nav-progress" aria-hidden="true" />
     </nav>
   );
 }

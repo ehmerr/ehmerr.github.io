@@ -109,6 +109,7 @@ export function validate(c) {
   ['late', 'morning', 'afternoon', 'evening', 'night'].forEach((k) => text(['personality', 'greetings', k]));
   textList(['personality', 'fortunes']);
   text(['personality', 'monitoring']);
+  if (get(['personality', 'marquee']) != null) textList(['personality', 'marquee'], { min: 0 });
   ['chaos', 'healOff', 'healOn', 'quota', 'oncallStart', 'flawless', 'okay'].forEach((k) => text(['personality', 'cluster', k]));
   ['names', 'jobs', 'poke', 'thrown', 'landed', 'strike', 'hire', 'coffee', 'gravity', 'panic', 'night']
     .forEach((k) => textList(['personality', 'bots', k]));

@@ -493,6 +493,15 @@ personality:
     - The cheapest server is the one that is asleep.
     - Friday deploys are fine if you're on call for the weekend anyway.
     - Monitoring is how you find out before the customer tweets.
+  marquee:                    # the moving band under the hero (your skills scroll in the other row)
+    - pods healthy
+    - pipeline green
+    - SLOs met
+    - alerts quiet
+    - auto-heal on
+    - zero pages
+    - rollbacks ready
+    - costs down
   monitoring: "I set up this monitoring myself: Grafana · Prometheus · OpenTelemetry · Slack alerts."
   cluster:
     chaos: Chaos monkey loose. Watch the cluster heal itself.

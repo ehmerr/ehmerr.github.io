@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { stages, envs, badRelease } from '../data/pipeline.js';
 import { useGame } from '../game/GameProvider.jsx';
 import SecHead from './SecHead.jsx';
+import { centerOf } from '../motion/motion.js';
 import { text } from '../data/profile.js';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -21,6 +22,7 @@ export default function Pipeline() {
   const runId = useRef(0);
   const logRef = useRef(null);
   const runningRef = useRef(false);
+  const shipRef = useRef(null);
 
   useEffect(() => () => { runId.current++; }, []);
   useEffect(() => { if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight; }, [log]);
@@ -89,6 +91,7 @@ export default function Pipeline() {
           add(badRelease.logs.slice(1));
           for (let j = i + 1; j < stages.length; j++) mark(j, 'skip');
           unlock('rollback');
+          bus.emit('fx:pulse', { ...centerOf(shipRef.current), color: '#FFB86B', power: 1 });
           finish('rollback');
           return;
         }
@@ -102,6 +105,11 @@ export default function Pipeline() {
       add([{ t: `✓ shipped to ${target}. pipeline green.`, k: 'ok' }]);
       bump('deploys');
       play('ok');
+      {
+        const at = centerOf(shipRef.current);
+        bus.emit('fx:burst', { ...at, kind: target === 'prod' ? 'confetti' : 'sparks' });
+        bus.emit('fx:pulse', { ...at, power: target === 'prod' ? 1.4 : 0.8 });
+      }
       if (target === 'prod') unlock('deploy');
       finish('ok');
 
@@ -114,7 +122,7 @@ export default function Pipeline() {
         if (res === 'rollback') toast('Rolled back on its own. Nobody noticed.');
       }
     },
-    [env, play, setStatus, unlock, bump, toast]
+    [env, play, setStatus, unlock, bump, toast, bus]
   );
 
   // Terminal / palette can trigger runs.
@@ -143,10 +151,10 @@ export default function Pipeline() {
             ))}
           </div>
           <div className="pipe-btns">
-            <button type="button" className="btn btn-primary" disabled={running} onClick={() => run()}>
+            <button ref={shipRef} type="button" className="btn btn-primary" disabled={running} onClick={() => run()} data-magnetic data-cur="ship it">
               {result ? 'Ship again' : 'Ship it'}
             </button>
-            <button type="button" className="btn btn-ghost" disabled={running} onClick={() => run({ bad: true })}>
+            <button type="button" className="btn btn-ghost" disabled={running} onClick={() => run({ bad: true })} data-magnetic data-cur="break it">
               Ship a bad release
             </button>
           </div>
@@ -154,11 +162,13 @@ export default function Pipeline() {
 
         <ol className="stages" aria-label="Pipeline stages">
           {stages.map((s, i) => (
-            <li key={s.id} className={`stage is-${state[i]}`}>
+            <li key={s.id} className={`stage is-${state[i]}`} style={{ '--dur': `${s.dur || 800}ms` }}>
               <span className="stage-ic" aria-hidden="true">{ICON[state[i]]}</span>
               <span className="stage-name mono">{s.name}</span>
               <span className="sr"> {state[i]}</span>
               {s.gate && <span className="stage-note mono">prod only</span>}
+              <span className="stage-bar" aria-hidden="true"><i /></span>
+              <span className="stage-pk" aria-hidden="true" />
             </li>
           ))}
         </ol>
@@ -169,7 +179,7 @@ export default function Pipeline() {
               <b>Manual approval required.</b> Deploy <code>api</code> to <b>production</b>?
             </p>
             <div className="gate-btns">
-              <button type="button" className="btn btn-primary" onClick={() => decide(true)} autoFocus>Approve</button>
+              <button type="button" className="btn btn-primary" onClick={() => decide(true)} autoFocus data-cur="LGTM">Approve</button>
               <button type="button" className="btn btn-ghost" onClick={() => decide(false)}>Reject</button>
             </div>
           </div>

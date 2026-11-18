@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { botNames, botColors, maxBots, jobs, quips, pick } from '../data/bots.js';
 import { useGame } from '../game/GameProvider.jsx';
 import BotSprite from './BotSprite.jsx';
+import { reducedMotion as reduced } from '../motion/motion.js';
 
 const W = 40;
 const H = 46;
@@ -9,7 +10,6 @@ const G = 1800; // px/s²
 const WALK = 34; // px/s
 const LEDGES = '.term, .panel';
 
-const reduced = () => typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
 function readLedges() {
   const sy = window.scrollY;
@@ -326,6 +326,7 @@ export default function Workers({ onHudText }) {
               type="button"
               className="wk-btn"
               aria-label={`Worker bot ${w.name}. Click to poke, drag to throw.`}
+              data-cur="drag me"
               onPointerDown={onDown(w.id)}
             >
               <BotSprite color={w.color} />
@@ -342,8 +343,8 @@ export function HudBotControls() {
   const { bus } = useGame();
   return (
     <>
-      <button type="button" className="hud-btn" onClick={() => bus.emit('bots:cmd', { cmd: 'hire', reply: () => {} })}>+ hire</button>
-      <button type="button" className="hud-btn" onClick={() => bus.emit('bots:cmd', { cmd: 'coffee', reply: () => {} })}>chai break</button>
+      <button type="button" className="hud-btn" data-magnetic data-cur="parachute" onClick={() => bus.emit('bots:cmd', { cmd: 'hire', reply: () => {} })}>+ hire</button>
+      <button type="button" className="hud-btn" data-magnetic data-cur="☕" onClick={() => bus.emit('bots:cmd', { cmd: 'coffee', reply: () => {} })}>chai break</button>
     </>
   );
 }

@@ -22,7 +22,7 @@ export default function NightBot() {
   return (
     <div className="night">
       {line && <p className="wk-say mono night-say">{line}</p>}
-      <button type="button" className={`night-bot${awake ? ' awake' : ''}`} onClick={wake} aria-label="Night-shift bot, asleep. Click to wake it.">
+      <button type="button" className={`night-bot${awake ? ' awake' : ''}`} onClick={wake} data-cur="wake" aria-label="Night-shift bot, asleep. Click to wake it.">
         <BotSprite color="#5CC8FF" sleeping={!awake} size={46} />
         {!awake && (
           <span className="night-z mono" aria-hidden="true">

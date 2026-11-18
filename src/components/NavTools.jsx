@@ -9,6 +9,7 @@ export default function NavTools({ onPalette }) {
       <button
         type="button"
         className="icon-btn"
+        data-magnetic
         aria-pressed={soundOn}
         aria-label={soundOn ? 'Turn sound off' : 'Turn sound on'}
         title={soundOn ? 'Sound on' : 'Sound off'}
@@ -22,13 +23,14 @@ export default function NavTools({ onPalette }) {
       <button
         type="button"
         className="icon-btn"
+        data-magnetic
         aria-label={`Accent colour: ${accent.name}. Click to change.`}
         title={`accent: ${accent.name}`}
         onClick={() => { cycleAccent(); play('click'); }}
       >
         <span className="accent-swatch" aria-hidden="true" />
       </button>
-      <button type="button" className="icon-btn nav-pal mono" aria-label="Open command palette" onClick={onPalette}>
+      <button type="button" className="icon-btn nav-pal mono" data-magnetic data-cur="⌘K" aria-label="Open command palette" onClick={onPalette}>
         <span aria-hidden="true">{isMac ? '⌘K' : 'Ctrl K'}</span>
       </button>
     </>

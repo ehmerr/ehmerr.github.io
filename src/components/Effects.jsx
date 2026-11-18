@@ -2,8 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { profile } from '../data/profile.js';
 import { useGame } from '../game/GameProvider.jsx';
 import { session } from '../game/storage.js';
-
-const reduced = () => typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+import { reducedMotion as reduced, centerOf } from '../motion/motion.js';
 
 /* ---------------- self-destruct ---------------- */
 const DESTROY_LOG = [
@@ -37,24 +36,29 @@ export function SelfDestruct() {
       k -= 1;
       setN(k);
       play('alarm');
+      if (k <= 2) document.body.classList.add('sd-shake');
       if (k <= 0) { clearInterval(t); setPhase('boom'); }
     }, 1000);
-    return () => clearInterval(t);
+    return () => { clearInterval(t); document.body.classList.remove('sd-shake'); };
   }, [phase, bus, play, setStatus]);
 
   useEffect(() => {
     if (phase !== 'boom') return;
     play('boom');
+    document.body.classList.remove('sd-shake');
     document.body.classList.add('sd-boom');
+    bus.emit('fx:pulse', { color: '#FF7A7A', power: 1.6 });
+    bus.emit('fx:burst', { x: window.innerWidth / 2, y: window.innerHeight / 2, kind: 'shards', count: 60, colors: ['#FF7A7A', '#FFB86B', '#F5E663', '#8B95A3'] });
     setLog([]);
     let i = 0;
     const t = setInterval(() => {
-      setLog((l) => [...l, DESTROY_LOG[i]]);
+      const line = DESTROY_LOG[i]; // read now; the state updater may run later
+      if (line) setLog((l) => [...l, line]);
       i += 1;
       if (i >= DESTROY_LOG.length) { clearInterval(t); setPhase('dead'); }
     }, 450);
     return () => clearInterval(t);
-  }, [phase, play]);
+  }, [phase, play, bus]);
 
   const abort = () => {
     setPhase(null);
@@ -63,6 +67,9 @@ export function SelfDestruct() {
   };
   const restore = () => {
     document.body.classList.remove('sd-boom');
+    document.body.classList.add('sd-restore');
+    setTimeout(() => document.body.classList.remove('sd-restore'), 1600);
+    setTimeout(() => bus.emit('fx:burst', { x: window.innerWidth / 2, y: window.innerHeight * 0.4, kind: 'confetti' }), 300);
     setPhase(null);
     setLog([]);
     setStatus('ok', 'all systems operational');
@@ -178,6 +185,7 @@ export function Gravity() {
       toast('Gravity set to 0.08g. The bots did not consent.');
       document.body.classList.add('low-g');
       bus.emit('bots:gravity', true);
+      bus.emit('fx:pulse', { power: 1.8 });
       setTimeout(() => {
         active.current = false;
         document.body.classList.remove('low-g');
@@ -216,7 +224,17 @@ export function Boot() {
   const [show, setShow] = useState(() => !session.get('booted') && !reduced());
   const [count, setCount] = useState(0);
 
-  useEffect(() => bus.on('fx:boot', () => { setCount(0); setShow(true); }), [bus]);
+  useEffect(() => bus.on('fx:boot', () => { document.body.classList.remove('booted'); setCount(0); setShow(true); }), [bus]);
+
+  useEffect(() => {
+    if (show) return;
+    // Next frame, so the hero's hidden starting state is painted before the intro animates.
+    const r = requestAnimationFrame(() => {
+      document.body.classList.add('booted');
+      bus.emit('fx:boot-done');
+    });
+    return () => cancelAnimationFrame(r);
+  }, [show, bus]);
 
   useEffect(() => {
     if (!show) return;

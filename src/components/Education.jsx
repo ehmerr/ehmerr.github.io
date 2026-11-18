@@ -5,10 +5,10 @@ export default function Education() {
   const r = profile.resume;
   return (
     <section id="education" className="sec wrap edu-sec" aria-labelledby="education-title">
-      <div className="edu">
+      <div className="edu" data-reveal="left">
         <p className="sec-kicker mono">{text.education.kicker}</p>
         <h2 id="education-title" className="edu-title">{text.education.title}</h2>
-        <dl className="edu-list">
+        <dl className="edu-list" data-reveal-stagger>
           {education.map((e) => (
             <div key={e.key} className="edu-row">
               <dt className="edu-when mono">{e.when}</dt>
@@ -23,7 +23,7 @@ export default function Education() {
         </dl>
       </div>
 
-      <div className="cv panel">
+      <div className="cv panel" data-reveal="right" style={{ '--d': '120ms' }}>
         <div className="cv-copy">
           <p className="sec-kicker mono">{text.resume.kicker}</p>
           <h2 className="edu-title">{text.resume.title}</h2>
@@ -35,11 +35,11 @@ export default function Education() {
           <p className="cv-meta mono">
             {r.format} · updated {r.updated}
           </p>
-          <a className="btn btn-primary" href={r.href} target="_blank" rel="noopener">
+          <a className="btn btn-primary" href={r.href} target="_blank" rel="noopener" data-magnetic>
             {text.resume.button || 'Read the resume'}
           </a>
         </div>
-        <a className="cv-sheet" href={r.href} target="_blank" rel="noopener" aria-label={`Open ${profile.name}'s resume, PDF, in a new tab`}>
+        <a className="cv-sheet" data-cur="open pdf" href={r.href} target="_blank" rel="noopener" aria-label={`Open ${profile.name}'s resume, PDF, in a new tab`}>
           <img src={r.preview} width="1100" height="1424" alt={`First page of ${profile.name}'s resume`} loading="lazy" decoding="async" />
         </a>
       </div>

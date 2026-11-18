@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { nodes, workloads, maxApiReplicas, onCallSeconds, monitoringLine, clusterQuips as Q } from '../data/cluster.js';
 import { useGame } from '../game/GameProvider.jsx';
 import SecHead from './SecHead.jsx';
+import { centerOf } from '../motion/motion.js';
 import { text } from '../data/profile.js';
 
 const suffix = () => Math.random().toString(36).slice(2, 6);
@@ -90,6 +91,10 @@ export default function Cluster() {
       if (!pod || pod.status === 'terminating') return false;
       setPods((ps) => ps.map((p) => (p.id === id ? { ...p, status: 'terminating' } : p)));
       play('kill');
+      {
+        const el = document.querySelector(`[data-pod="${id}"]`);
+        if (el) bus.emit('fx:burst', { ...centerOf(el), kind: 'shards', colors: [colorOf[pod.app], '#FF7A7A', '#E7ECF2'] });
+      }
       bump('podsKilled');
       if (source !== 'chaos') unlock('kill');
       alert('fire', `PodNotReady ${id}`);
@@ -102,7 +107,7 @@ export default function Cluster() {
       }, 800);
       return true;
     },
-    [play, bump, unlock, alert, reconcile]
+    [play, bump, unlock, alert, reconcile, bus]
   );
 
   const scale = useCallback(
@@ -194,12 +199,15 @@ export default function Cluster() {
     setPods((ps) => ps.map((p) => (p.status === 'crash' ? { ...p, status: 'running' } : p)));
     unlock('oncall');
     if (breaches === 0) unlock('flawless');
+    bus.emit('fx:burst', { x: window.innerWidth / 2, y: window.innerHeight * 0.35, kind: breaches === 0 ? 'confetti' : 'sparks' });
     toast(breaches === 0 ? Q.flawless : Q.okay(breaches), breaches === 0 ? 'ach' : 'info', 5000);
     setStatus('ok', 'all systems operational');
     toggleHeal(true);
-  }, [oncall, unlock, toast, setStatus, toggleHeal]);
+  }, [oncall, unlock, toast, setStatus, toggleHeal, bus]);
 
   const restart = (id) => {
+    const el = document.querySelector(`[data-pod="${id}"]`);
+    if (el) bus.emit('fx:burst', { ...centerOf(el), kind: 'sparks', count: 14 });
     setPods((ps) => ps.map((p) => (p.id === id ? { ...p, status: 'running' } : p)));
     setOncall((o) => (o ? { ...o, fixes: o.fixes + 1 } : o));
     alert('ok', `${id} restarted by visitor`);
@@ -263,6 +271,7 @@ export default function Cluster() {
         {text.cluster.intro}
       </SecHead>
 
+      {oncall && <div className="oncall-vignette" aria-hidden="true" />}
       <div className="cluster">
         <div className="cl-main panel">
           <div className="cl-controls">
@@ -270,13 +279,13 @@ export default function Cluster() {
               <button type="button" className="btn btn-ghost" onClick={() => scale(apiReplicas - 1)} disabled={!!oncall || apiReplicas <= 1} aria-label="Scale api down">api −</button>
               <span className="cl-repl mono" aria-live="polite">api × {apiReplicas}</span>
               <button type="button" className="btn btn-ghost" onClick={() => scale(apiReplicas + 1)} disabled={!!oncall} aria-label="Scale api up">api +</button>
-              <button type="button" className="btn btn-ghost" onClick={runChaos} disabled={chaos || !!oncall}>Chaos monkey</button>
+              <button type="button" className="btn btn-ghost" onClick={runChaos} disabled={chaos || !!oncall} data-cur="🐒">Chaos monkey</button>
               <label className="cl-heal mono">
                 <input type="checkbox" checked={heal} disabled={!!oncall} onChange={(e) => toggleHeal(e.target.checked)} />
                 auto-heal
               </label>
             </div>
-            <button type="button" className="btn btn-primary" onClick={startOncall} disabled={!!oncall}>
+            <button type="button" className="btn btn-primary" onClick={startOncall} disabled={!!oncall} data-magnetic data-cur="page me">
               {oncall ? `On call · ${Math.ceil(oncall.left)}s` : `Take the pager (${onCallSeconds}s)`}
             </button>
           </div>
@@ -292,7 +301,8 @@ export default function Cluster() {
 
           <div className="nodes">
             {nodes.map((n) => (
-              <div key={n} className="node">
+              <div key={n} className={`node${pods.some((p) => p.node === n && p.status === 'running') ? '' : ' quiet'}`}>
+                <span className="traffic" aria-hidden="true"><i /><i /><i /></span>
                 <p className="node-name mono">{n}</p>
                 <ul className="pods">
                   {pods.filter((p) => p.node === n).map((p) => (
@@ -300,6 +310,8 @@ export default function Cluster() {
                       <button
                         type="button"
                         className={`pod is-${p.status}`}
+                        data-pod={p.id}
+                        data-cur={p.status === 'crash' ? 'restart' : 'kill'}
                         style={{ '--c': colorOf[p.app] }}
                         disabled={p.status === 'terminating' || p.status === 'pending'}
                         onClick={() => (p.status === 'crash' ? restart(p.id) : kill(p.id))}
