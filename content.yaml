@@ -48,7 +48,7 @@ resume:
   file: Ahmar-Rahmani-Resume.pdf       # the PDF inside the public/ folder
   preview: resume-preview.webp         # image of page 1, inside public/
   format: PDF, 1 page
-  updated: 11 November 2026
+  updated: November 2026
   covers:
     - DevOps Intern · BytePe
     - VMs → GKE
@@ -70,8 +70,7 @@ sections:
     nav: pipeline
     kicker: PIPELINE
     title: How a change ships
-    intro: "This is how a change gets to production at BytePe: build, dry run, migrate, a human approval for production, then a Helm upgrade that rolls back by itself if anything fails. Try it."
-  cluster:
+    intro: "Here's how I approach shipping changes to production: automating builds, validating deployments, handling database migrations, and ensuring safe releases with rollback mechanisms."
     nav: cluster
     kicker: SELF-HEALING CLUSTER
     title: Break it. It heals.
