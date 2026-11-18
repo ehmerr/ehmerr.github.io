@@ -22,7 +22,7 @@ site:
   company: BytePe
   track: Platform / SRE
   tagline: I move apps onto Kubernetes, then keep them awake.
-  summary: DevOps Intern at BytePe, a fintech startup. I run our platform on Google Cloud with GKE, Helm, Terraform and GitLab CI/CD.
+  summary: DevOps Intern at BytePe, a fintech startup, running production on Google Cloud with GKE, Helm, Terraform and GitLab CI/CD. Preparing for AWS Cloud Practitioner (Dec 2026).
   city: New Delhi
   timeZone: Asia/Kolkata    # used for the live clock in the hero
   openTo:
@@ -47,12 +47,14 @@ resume:
   file: Ahmar-Rahmani-Resume.pdf       # the PDF inside the public/ folder
   preview: resume-preview.webp         # image of page 1, inside public/
   format: PDF, 1 page
-  updated: 17 October 2026
+  updated: 11 November 2026
   covers:
     - DevOps Intern · BytePe
     - VMs → GKE
     - GitLab CI/CD
+    - Prometheus · Grafana · OpenTelemetry
     - Terraform
+    - logging side project
     - skills & education
 
 # Headings and intro lines for each section of the page.
@@ -101,41 +103,58 @@ experience:
   - title: DevOps Intern @ BytePe
     when: Jun 2026 – present
     place: Noida
-    summary: Fintech startup · I run the platform on Google Cloud with my lead
+    summary: Fintech startup · I run production on Google Cloud with the DevOps lead
     ref: HEAD → main
     stats:
-      - value: '3'
-        label: environments moved to Kubernetes
+      - value: '10'
+        label: production services moved from VMs to Kubernetes
       - value: '~64%'
-        label: lower production compute cost
-      - value: '~55%'
         label: fewer non-production compute hours
-    tags: [Google Cloud, GKE, Kubernetes, Helm, Terraform, GitLab CI/CD, Docker, Grafana, Prometheus, OpenTelemetry, k6, Python, Bash]
+      - value: '11'
+        label: monitoring dashboards
+      - value: 50+
+        label: alerts that tell developers what to fix
+    tags: [Google Cloud, GKE, Kubernetes, Helm, Terraform, GitLab CI/CD, Docker, Prometheus, Grafana, OpenTelemetry, Bash, k6, vLLM]
     groups:
       - heading: VMs → Kubernetes
         points:
-          - Moved dev, staging and production from VMs to GKE Autopilot with my lead. All three are done.
-          - Set up the production pipeline and ran the cutover. Production has been live on GKE since Oct 2026.
-          - Put our web front ends on Kubernetes with Helm.
-      - heading: monitoring
-        points:
-          - "Set up the whole monitoring stack myself: Grafana, Prometheus, OpenTelemetry, Cloud Logging, Cloud Trace and Slack alerts, for all three environments."
+          - Moved our 10-service production backend from VMs to GKE Autopilot with the DevOps lead.
+          - Moved the routing engine (OSRM) to GKE in production, and the search engine (Typesense) in dev and staging. Production is next.
+          - Containerised a document-parsing service to run on GKE.
       - heading: CI/CD
         points:
-          - Built the staging pipeline and the production approval gate in GitLab CI/CD.
-          - Made releases safe to ship, with automatic rollback when an upgrade fails.
-      - heading: cost
+          - Built GitLab CI/CD pipelines that deploy our backend and frontend services to dev, staging and production with Helm.
+          - Every release runs its database migrations first, ships an immutable image tag, and rolls back by itself if it fails.
+          - Brought up a staging environment on the shared GKE cluster, with its own limited permissions for the CI deployer and secrets kept out of the code.
+      - heading: monitoring
         points:
-          - Cut production compute cost by ~64%.
-          - "Dev and staging now sleep on nights and weekends: ~55% fewer compute hours."
-      - heading: platform
+          - Replaced Datadog with Prometheus, Grafana and OpenTelemetry, which I set up myself across all three environments.
+          - Built 11 dashboards and 50+ alerts, plus tracing (with sensitive data hidden) and real-user monitoring.
+          - "Redesigned our Slack alerts so developers can fix things without DevOps: a readable error, the likely cause, and a link to the logs."
+          - Wrote a 900-line Bash tool that deploys the monitoring stack safely, and CI checks that catch broken alert rules and leaked secrets.
+      - heading: infra as code
         points:
-          - Set up autoscaling and wrote k6 load tests for the platform.
-          - Moved OSRM (routing) and Typesense (search) onto GKE.
-          - Wrote Terraform for our infrastructure across all three environments.
+          - "Managed our Google Cloud infrastructure with Terraform across all three environments: gateway, WAF, identity, IAM and VPN access to databases."
+      - heading: cost & scaling
+        points:
+          - Cut non-production compute hours by about 64% by scaling to zero outside working hours.
+          - Halved the CPU each frontend pod needs.
+          - Tuned autoscaling, health checks and disruption budgets, and load-tested the platform and WAF rules with k6.
       - heading: AI
         points:
-          - "Built an AI proof of concept: a self-hosted LLM that answers from our docs, on a GPU that scales to zero."
+          - Self-hosted NVIDIA Nemotron on vLLM on a GPU node that shuts down outside working hours.
+          - Built a RAG proof of concept (pgvector, hybrid search) behind an internal chat app.
+
+  - title: Centralized Container Logging Stack
+    when: Sep 2026
+    place: side project
+    summary: Every container's logs, searchable in one place
+    ref: "branch: side-project"
+    tags: [Docker Compose, Grafana, Loki, Grafana Alloy, LogQL]
+    groups:
+      - points:
+          - Built a self-hosted log stack (Grafana, Loki, Grafana Alloy) with Docker Compose. Logs and dashboards survive restarts and rebuilds.
+          - Set up Alloy to find every running container and label its logs, so all of them can be searched in one place with LogQL.
 
   - title: "init: B.Tech CSE (Data Science)"
     when: Nov 2022 – Jun 2026
@@ -179,30 +198,33 @@ skills:
         grep: GKE
       - symbol: Ca
         name: Cloud Armor
-        use: Security rules in front of production.
-        grep: production
+        use: The web application firewall (WAF) in front of production.
+        grep: WAF
       - symbol: Ar
         name: Artifact Registry
         use: Where every image we build is stored.
-        grep: pipeline
+        grep: image tag
       - symbol: Wi
         name: Workload Identity
         use: Lets pods use short-lived credentials instead of key files.
-        grep: Terraform
+        grep: identity
+      - symbol: Aw
+        name: AWS
+        use: Foundational. Preparing for AWS Cloud Practitioner (Dec 2026).
       - symbol: Nw
         name: Networking
-        use: TCP/IP, DNS, TLS, VPCs and load balancers.
+        use: TCP/IP, DNS, HTTP/HTTPS, TLS, CIDR, NAT, VPC, VPN and L4/L7 load balancing.
 
   - group: IaC & CI/CD
     color: '#FFB86B'
     elements:
       - symbol: Tf
         name: Terraform
-        use: Our infrastructure for all three environments, as code.
+        use: Our Google Cloud infrastructure for all three environments, as code.
         grep: Terraform
       - symbol: Gl
         name: GitLab CI/CD
-        use: Backend and front-end pipelines, the approval gate and rollbacks.
+        use: Pipelines that deploy every service to dev, staging and production.
         grep: GitLab
       - symbol: Ga
         name: GitHub Actions
@@ -216,41 +238,47 @@ skills:
     elements:
       - symbol: Dk
         name: Docker
-        use: Images for every service, plus Docker Compose locally.
+        use: Images for every service, plus Docker Compose for side projects.
+        grep: Docker
       - symbol: K8
         name: Kubernetes
-        use: Autoscaling, health checks, Jobs and CronJobs.
-        grep: Kubernetes
+        use: Autoscaling, health checks, disruption budgets and RBAC.
+        grep: GKE
       - symbol: Hm
         name: Helm
-        use: Shared charts for our services and front ends.
+        use: How every service is packaged and deployed.
         grep: Helm
       - symbol: Gw
-        name: Gateway API
+        name: GKE Gateway
         use: How users reach production on GKE.
-        grep: production
+        grep: gateway
 
   - group: Observability
     color: '#FF8A8A'
     elements:
       - symbol: Pm
         name: Prometheus
-        use: Metrics and alert rules for all three environments.
+        use: Metrics and 50+ alerts for all three environments.
         grep: Prometheus
       - symbol: Gf
         name: Grafana
-        use: One place to see dev, staging and production.
+        use: Our 11 dashboards, in one place.
         grep: Grafana
       - symbol: Ot
         name: OpenTelemetry
-        use: Traces from our services without changing app code.
+        use: Tracing across our services, with sensitive data hidden.
         grep: OpenTelemetry
+      - symbol: Am
+        name: Alertmanager
+        use: Sends alerts to Slack, checked in CI before every deploy.
+        grep: alert
       - symbol: Lk
         name: Loki & Alloy
-        use: A self-hosted log stack, as a side project.
+        use: My self-hosted log stack side project.
+        grep: Loki
       - symbol: K6
         name: k6
-        use: Load tests for the platform.
+        use: Load tests for the platform and the WAF rules.
         grep: k6
 
   - group: Data
@@ -262,20 +290,21 @@ skills:
       - symbol: My
         name: MySQL
         use: Cloud SQL for our apps.
-      - symbol: Rd
-        name: Redis
-        use: Memorystore for caching.
+      - symbol: Mg
+        name: MongoDB
+        use: One of the databases I've worked with.   # TODO: check, say where you used it
       - symbol: Pv
         name: pgvector
-        use: The search index behind the AI proof of concept.
-        grep: AI
+        use: The search index behind the RAG proof of concept.
+        grep: pgvector
 
   - group: Code & AI
     color: '#6EF0B4'
     elements:
       - symbol: Sh
         name: Bash
-        use: Scripts and automation.
+        use: Scripts and automation, including a 900-line deploy tool.
+        grep: Bash
       - symbol: Py
         name: Python
         use: Scripts and tooling.
@@ -284,12 +313,12 @@ skills:
         use: Ubuntu and SSH, every day.
       - symbol: Nx
         name: Nginx
-        use: Serving our front ends.
-        grep: front ends
+        use: Serving our frontends.
+        grep: frontend
       - symbol: Vl
         name: vLLM
-        use: Running a self-hosted LLM on a GPU.
-        grep: AI
+        use: Running NVIDIA Nemotron on a GKE GPU node.
+        grep: vLLM
       - symbol: Cc
         name: Claude Code
         use: AI help with Terraform, manifests and pipelines.
@@ -385,10 +414,14 @@ compounds:
       b: Tf
       name: Pair Programming
       says: Terraform drafted with AI, reviewed by a human.
-    - a: Rd
-      b: K8
-      name: Cache Hit
-      says: Fast answers, right up until someone flushes it.
+    - a: Lk
+      b: Dk
+      name: Container Black Box
+      says: Every container's logs, searchable in one place.
+    - a: Am
+      b: Pm
+      name: Pager Pipeline
+      says: A number crosses a line, and Slack hears about it.
   failed:
     - "Reaction failed: CrashLoopBackOff."
     - Rejected by the admission controller.
@@ -502,7 +535,7 @@ personality:
     - zero pages
     - rollbacks ready
     - costs down
-  monitoring: "I set up this monitoring myself: Grafana · Prometheus · OpenTelemetry · Slack alerts."
+  monitoring: "I replaced Datadog with this stack myself: Prometheus · Grafana · OpenTelemetry · Slack alerts."
   cluster:
     chaos: Chaos monkey loose. Watch the cluster heal itself.
     healOff: Auto-heal is off. Dead pods stay dead now.

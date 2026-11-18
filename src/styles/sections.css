@@ -75,7 +75,7 @@
 .commit-head:hover .commit-title { color: var(--accent); }
 .commit-tags { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .diff-wrap { margin-top: 18px; animation: rise .35s both; }
-.stats { list-style: none; margin: 0 0 14px; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.stats { list-style: none; margin: 0 0 14px; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
 .stats li { background: var(--bg-2); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 4px; }
 .stats b { font-size: clamp(26px, 3.4vw, 36px); line-height: 1; letter-spacing: -0.03em; color: var(--accent); }
 .stats span { color: var(--text-2); font-size: 13.5px; }
@@ -90,7 +90,7 @@
   .commit { padding-left: 38px; }
   .log::before { left: 8px; }
   .commit-dot { left: 0; }
-  .stats { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: 1fr 1fr; }
   .diff { font-size: 12.5px; }
 }
 
