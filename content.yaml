@@ -23,7 +23,7 @@ site:
   track: DevOps & SRE
   location: New Delhi, India
   tagline: I build cloud infrastructure, automate deployments, and keep production running.
-  summary: DevOps Intern at BytePe, a fintech startup, running production on Google Cloud with GKE, Helm, Terraform and GitLab CI/CD. Preparing for AWS Cloud Practitioner (Dec 2026).
+  summary: DevOps Engineer at BytePe, a fintech startup, working on production infrastructure on Google Cloud Platform. Experienced with GKE, Kubernetes, Helm, Terraform and GitLab CI/CD, with hands-on experience in infrastructure automation, production deployments, observability and cloud cost optimisation.
   city: New Delhi
   timeZone: Asia/Kolkata    # used for the live clock in the hero
   openTo:
