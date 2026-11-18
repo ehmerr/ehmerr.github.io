@@ -40,11 +40,15 @@ w.HTMLCanvasElement.prototype.getContext = function () {
   });
 };
 // IntersectionObserver that reports everything as visible right away.
+// Like the real thing, it stops reporting after unobserve()/disconnect().
 class FakeIO {
-  constructor(cb) { this.cb = cb; }
-  observe(el) { setTimeout(() => this.cb([{ isIntersecting: true, target: el }], this), 0); }
-  unobserve() {}
-  disconnect() {}
+  constructor(cb) { this.cb = cb; this.els = new Set(); }
+  observe(el) {
+    this.els.add(el);
+    setTimeout(() => { if (this.els.has(el)) this.cb([{ isIntersecting: true, target: el }], this); }, 0);
+  }
+  unobserve(el) { this.els.delete(el); }
+  disconnect() { this.els.clear(); }
 }
 w.IntersectionObserver = FakeIO;
 globalThis.IntersectionObserver = FakeIO;
@@ -77,17 +81,19 @@ try {
   ids.length ? fail('missing section ids: ' + ids.join(', ')) : ok('all section ids present');
 
   // ---------- 2. play through it ----------
-  createRoot($('#root')).render(React.createElement(App));
-  await sleep(700);
-  key('x');
-  await sleep(300);
-  !$('.boot') ? ok('boot screen skippable') : fail('boot screen still showing');
-  await sleep(200);
-  w.document.body.classList.contains('booted') ? ok('hero intro triggered (body.booted)') : fail('body never got .booted');
+  // StrictMode, exactly like src/main.jsx: in dev it mounts every effect twice.
+  createRoot($('#root')).render(React.createElement(React.StrictMode, null, React.createElement(App)));
+  // Poll instead of fixed sleeps: jsdom is slow, especially with StrictMode and the canvas loops running.
+  const waitFor = async (cond, ms = 6000) => { const t0 = Date.now(); while (Date.now() - t0 < ms) { if (cond()) return true; await sleep(50); } return cond(); };
+  await waitFor(() => $('.term-input'));
+  if (!REDUCED) await waitFor(() => $('.boot'), 2000);
+  const skipped = await waitFor(() => { key('x'); return !$('.boot'); }, 1200);
+  skipped ? ok('boot screen skippable') : fail('boot screen still showing');
+  (await waitFor(() => w.document.body.classList.contains('booted'))) ? ok('hero intro triggered (body.booted)') : fail('body never got .booted');
   const revealSel = '[data-reveal], [data-reveal-stagger], [data-reveal-wave]';
   const notIn = $$(revealSel).filter((n) => !n.classList.contains('in'));
   notIn.length ? fail(`${notIn.length} reveal elements never got .in`) : ok(`all ${$$(revealSel).length} reveal elements revealed`);
-  await sleep(REDUCED ? 0 : 3200);
+  await waitFor(() => ($('.hero-tagline [aria-hidden]')?.textContent || '').includes(content.site.tagline), 8000);
   const typed = $('.hero-tagline [aria-hidden]')?.textContent || '';
   typed.includes(content.site.tagline) ? ok('tagline fully typed' + (REDUCED ? ' (instantly)' : '')) : fail('tagline not fully typed: ' + typed);
   if (REDUCED) {

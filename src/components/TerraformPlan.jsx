@@ -13,7 +13,10 @@ export default function TerraformPlan() {
   const [phase, setPhase] = useState('plan'); // plan | applying | done
   const [applyLog, setApplyLog] = useState([]);
   const alive = useRef(true);
-  useEffect(() => () => { alive.current = false; }, []);
+  useEffect(() => {
+    alive.current = true; // set on (re)mount too: StrictMode unmounts and remounts once in dev
+    return () => { alive.current = false; };
+  }, []);
 
   const apply = async () => {
     setPhase('applying');

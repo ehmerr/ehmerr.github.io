@@ -6,11 +6,14 @@ import { motionOn } from './motion.js';
 // Reveal styles only apply under html.js-motion, so content is never hidden if this doesn't run.
 export function useReveal() {
   useEffect(() => {
-    const SEL = '[data-reveal]:not([data-seen]), [data-reveal-stagger]:not([data-seen]), [data-reveal-wave]:not([data-seen])';
+    const SEL = '[data-reveal]:not(.in), [data-reveal-stagger]:not(.in), [data-reveal-wave]:not(.in)';
     if (!motionOn() || typeof IntersectionObserver === 'undefined') {
-      document.querySelectorAll('[data-reveal], [data-reveal-stagger], [data-reveal-wave]').forEach((el) => el.classList.add('in'));
+      document.querySelectorAll(SEL).forEach((el) => el.classList.add('in'));
       return;
     }
+    // Tracked per run of this effect (not on the DOM), so a remount (React StrictMode in dev,
+    // hot reload) starts fresh and re-observes everything that isn't revealed yet.
+    const watching = new WeakSet();
     const io = new IntersectionObserver(
       (entries) => entries.forEach((en) => {
         if (!en.isIntersecting) return;
@@ -21,7 +24,8 @@ export function useReveal() {
     );
     const scan = () => {
       document.querySelectorAll(SEL).forEach((el) => {
-        el.setAttribute('data-seen', '');
+        if (watching.has(el)) return;
+        watching.add(el);
         if (el.hasAttribute('data-reveal-stagger')) [...el.children].forEach((c, i) => c.style.setProperty('--i', i));
         io.observe(el);
       });
