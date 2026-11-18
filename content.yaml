@@ -70,7 +70,8 @@ sections:
     nav: pipeline
     kicker: PIPELINE
     title: How a change ships
-    intro: "Here's how I approach shipping changes to production: automating builds, validating deployments, handling database migrations, and ensuring safe releases with rollback mechanisms."
+    intro: "This is how a change gets to production at BytePe: build, dry run, migrate, a human approval for production, then a Helm upgrade that rolls back by itself if anything fails. Try it."
+  cluster:
     nav: cluster
     kicker: SELF-HEALING CLUSTER
     title: Break it. It heals.
