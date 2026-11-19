@@ -282,9 +282,9 @@ export default function Cluster() {
         <div className="cl-main panel">
           <div className="cl-controls">
             <div className="cl-btns">
-              <button type="button" className="btn btn-ghost" onClick={() => scale(apiReplicas - 1)} disabled={!!oncall || apiReplicas <= 1} aria-label="Scale api down">api −</button>
+              <button type="button" className="btn btn-ghost" onClick={() => scale(apiReplicas - 1)} disabled={!!oncall || apiReplicas <= 1}><span>api −</span><span className="sr"> (scale down)</span></button>
               <span className="cl-repl mono" aria-live="polite">api × {apiReplicas}</span>
-              <button type="button" className="btn btn-ghost" onClick={() => scale(apiReplicas + 1)} disabled={!!oncall} aria-label="Scale api up">api +</button>
+              <button type="button" className="btn btn-ghost" onClick={() => scale(apiReplicas + 1)} disabled={!!oncall}><span>api +</span><span className="sr"> (scale up)</span></button>
               <button type="button" className="btn btn-ghost" onClick={runChaos} disabled={chaos || !!oncall} data-cur="🐒">Chaos monkey</button>
               <label className="cl-heal mono">
                 <input type="checkbox" checked={heal} disabled={!!oncall} onChange={(e) => toggleHeal(e.target.checked)} />
@@ -321,11 +321,12 @@ export default function Cluster() {
                         style={{ '--c': colorOf[p.app] }}
                         disabled={p.status === 'terminating' || p.status === 'pending'}
                         onClick={() => (p.status === 'crash' ? restart(p.id) : kill(p.id))}
-                        aria-label={`${p.id}, ${statusWord(p.status)}. ${p.status === 'crash' ? 'Restart' : 'Kill'}`}
                         title={`${p.id} · ${statusWord(p.status)}`}
                       >
+                        {/* The spoken name is the visible text plus the hidden part, so voice control can say what it sees. */}
                         <span className="pod-app mono">{p.app}</span>
                         <span className="pod-id mono">{p.id.slice(-4)}</span>
+                        <span className="sr">, {statusWord(p.status)}. {p.status === 'crash' ? 'Restart' : 'Kill'}</span>
                       </button>
                     </li>
                   ))}

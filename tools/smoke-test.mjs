@@ -108,7 +108,7 @@ try {
   const waitFor0 = async (cond, ms = 6000) => { const t0 = Date.now(); while (Date.now() - t0 < ms) { if (cond()) return true; await sleep(50); } return cond(); };
   await waitFor0(() => $('.term-body p'));
   const hydErr = errors.filter((e) => /hydrat|did not match|server rendered|client rendering/i.test(e));
-  (await waitFor0(() => /: 1 of/.test($('.hud-ach')?.getAttribute('aria-label') || ''), 3000)) ? ok('saved achievements loaded after takeover') : fail('saved achievements not loaded: ' + $('.hud-ach')?.getAttribute('aria-label'));
+  (await waitFor0(() => /\b1\/\d+ found/.test($('.hud-ach')?.textContent || ''), 3000)) ? ok('saved achievements loaded after takeover') : fail('saved achievements not loaded: ' + $('.hud-ach')?.textContent);
   hydErr.length || $('#root').firstElementChild !== prebuilt
     ? fail('hydration failed: React redrew the page instead of taking over the pre-built HTML')
     : ok('pre-built HTML taken over in place (no hydration mismatches)');

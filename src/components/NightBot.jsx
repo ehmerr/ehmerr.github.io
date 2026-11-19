@@ -24,12 +24,13 @@ export default function NightBot() {
       {line && <p className="wk-say mono night-say">{line}</p>}
       <button type="button" className={`night-bot${awake ? ' awake' : ''}`} onClick={wake} data-cur="wake" aria-label="Night-shift bot, asleep. Click to wake it.">
         <BotSprite color="#5CC8FF" sleeping={!awake} size={46} />
-        {!awake && (
-          <span className="night-z mono" aria-hidden="true">
-            <i>z</i><i>z</i><i>z</i>
-          </span>
-        )}
       </button>
+      {/* Outside the button so it isn't part of the button's text (its label stays exactly what's announced). */}
+      {!awake && (
+        <span className="night-z mono" aria-hidden="true">
+          <i>z</i><i>z</i><i>z</i>
+        </span>
+      )}
     </div>
   );
 }
