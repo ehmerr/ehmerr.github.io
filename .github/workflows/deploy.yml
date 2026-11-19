@@ -25,6 +25,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      # Pre-renders the site, takes it over in a simulated browser and plays through it; fails on any error,
+      # including a mismatch between the pre-rendered HTML and the app. Nothing deploys if it fails.
+      - run: npm run check
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
