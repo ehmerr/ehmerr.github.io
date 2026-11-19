@@ -4,7 +4,9 @@ import Typewriter from '../motion/Typewriter.jsx';
 
 // Hero. The intro animation starts when <body> gets .booted (after the boot screen).
 export default function Hero({ terminal = null, bot = null }) {
-  const letters = [...profile.name];
+  // Letters animate one by one, grouped into words so a line can only break between words.
+  let n = 0;
+  const words = profile.name.split(' ').map((w) => [...w].map((ch) => ({ ch, i: n++ })));
   return (
     <section id="top" className="hero wrap" aria-labelledby="hero-name">
       <div className="hero-copy">
@@ -16,11 +18,18 @@ export default function Hero({ terminal = null, bot = null }) {
         <h1 id="hero-name" className="hero-name">
           <span className="sr">{profile.name}</span>
           <span aria-hidden="true">
-            {letters.map((ch, i) => (
-              <span key={i} className="ch" style={{ '--i': i }}>{ch === ' ' ? ' ' : ch}</span>
+            {words.map((w, wi) => (
+              <span key={wi}>
+                {wi > 0 && ' '}
+                <span className="word">
+                  {w.map(({ ch, i }) => (
+                    <span key={i} className="ch" style={{ '--i': i }}>{ch}</span>
+                  ))}
+                  {wi === words.length - 1 && <span className="hero-dot">.</span>}
+                </span>
+              </span>
             ))}
           </span>
-          <span className="hero-dot" aria-hidden="true">.</span>
         </h1>
         <p className="hero-tagline" data-hero style={{ '--d': '450ms' }}>
           <Typewriter text={profile.tagline} delay={900} />

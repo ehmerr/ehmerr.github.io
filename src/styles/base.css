@@ -28,7 +28,9 @@ img, svg { display: block; max-width: 100%; }
 .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gutter); }
 
 /* Sections */
-.sec { padding: 120px 0 40px; scroll-margin-top: 60px; }
+.sec { padding-block: 120px 40px; scroll-margin-top: 60px; } /* block only: keeps .wrap's side gutter */
+/* Slide-in reveals start off to the side; never let that (or anything else) widen the page. */
+main { overflow-x: clip; }
 .sec-kicker { color: var(--accent); font-size: 13px; letter-spacing: 0.12em; margin: 0 0 14px; }
 .sec-title { margin: 0; font-size: clamp(34px, 6vw, 64px); line-height: 1.02; letter-spacing: -0.03em; font-weight: 700; }
 .sec-lede { color: var(--text-2); max-width: 640px; margin: 18px 0 40px; font-size: 17px; }

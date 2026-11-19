@@ -37,9 +37,11 @@ export default function Marquee() {
     </div>
   );
   return (
-    <div className="mq" aria-label="Tools I work with">
-      {row(tech, 'mq-a')}
-      {STATUS.length > 0 && row(STATUS.map((t) => ({ t: `✓ ${t}` })), 'mq-b mono')}
+    <div className="mq-clip">
+      <div className="mq" aria-label="Tools I work with">
+        {row(tech, 'mq-a')}
+        {STATUS.length > 0 && row(STATUS.map((t) => ({ t: `✓ ${t}` })), 'mq-b mono')}
+      </div>
     </div>
   );
 }

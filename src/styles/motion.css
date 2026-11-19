@@ -40,6 +40,7 @@ main { position: relative; z-index: 1; }
 
 /* ---------- hero intro (runs when body gets .booted) ---------- */
 .hero-name .ch { display: inline-block; }
+.hero-name .word { display: inline-block; white-space: nowrap; }
 .js-motion .hero-name .ch, .js-motion .hero [data-hero] { opacity: 0; }
 .js-motion .booted .hero-name .ch { animation: chIn .9s var(--spring) both; animation-delay: calc(var(--i) * 38ms + 80ms); }
 .js-motion .booted .hero [data-hero] { animation: heroIn .9s var(--ease) both; animation-delay: var(--d, 0ms); }
@@ -56,6 +57,8 @@ main { position: relative; z-index: 1; }
 .tw-caret.done { animation-delay: 1.2s; opacity: .8; }
 
 /* ---------- marquee ---------- */
+/* The band is wider than the screen and tilted; clip it sideways so the page never scrolls horizontally. */
+.mq-clip { position: relative; z-index: 1; padding-block: 28px; margin-block: -28px; overflow-x: hidden; overflow-x: clip; }
 .mq { position: relative; z-index: 1; width: 104vw; margin: 10px 0 0 -2vw; padding: 16px 0; display: grid; gap: 10px; rotate: -1.4deg; background: rgba(10, 12, 15, .75); border-block: 1px solid var(--line); overflow: hidden; }
 .mq-row { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
 .mq-track { display: flex; width: max-content; animation: mq 40s linear infinite; }
