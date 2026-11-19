@@ -109,37 +109,35 @@ experience:
     stats:
       - value: '10'
         label: production services moved from VMs to Kubernetes
-      - value: '~64%'
-        label: fewer non-production compute hours
+      - value: '~54%'
+        label: reduction in production infrastructure costs
       - value: '11'
         label: monitoring dashboards
       - value: 50+
-        label: alerts that tell developers what to fix
-    tags: [Google Cloud, GKE, Kubernetes, Helm, Terraform, GitLab CI/CD, Docker, Prometheus, Grafana, OpenTelemetry, Bash, k6, vLLM]
+        label: alerts that help developers identify issues
+    tags: [Google Cloud, Kubernetes (GKE), Helm, Terraform, GitLab CI/CD, Docker, Prometheus, Grafana, OpenTelemetry, Bash, k6]
     groups:
       - heading: VMs → Kubernetes
         points:
           - Moved our 10-service production backend from VMs to GKE Autopilot with the DevOps lead.
-          - Moved the routing engine (OSRM) to GKE in production, and the search engine (Typesense) in dev and staging. Production is next.
+          - Moved the routing engine (OSRM) to GKE in production, and the search engine (Typesense).
           - Containerised a document-parsing service to run on GKE.
       - heading: CI/CD
         points:
           - Built GitLab CI/CD pipelines that deploy our backend and frontend services to dev, staging and production with Helm.
           - Every release runs its database migrations first, ships an immutable image tag, and rolls back by itself if it fails.
-          - Brought up a staging environment on the shared GKE cluster, with its own limited permissions for the CI deployer and secrets kept out of the code.
       - heading: monitoring
         points:
           - Replaced Datadog with Prometheus, Grafana and OpenTelemetry, which I set up myself across all three environments.
           - Built 11 dashboards and 50+ alerts, plus tracing (with sensitive data hidden) and real-user monitoring.
           - "Redesigned our Slack alerts so developers can fix things without DevOps: a readable error, the likely cause, and a link to the logs."
-          - Wrote a 900-line Bash tool that deploys the monitoring stack safely, and CI checks that catch broken alert rules and leaked secrets.
       - heading: infra as code
         points:
           - "Managed our Google Cloud infrastructure with Terraform across all three environments: gateway, WAF, identity, IAM and VPN access to databases."
       - heading: cost & scaling
         points:
           - Cut non-production compute hours by about 64% by scaling to zero outside working hours.
-          - Halved the CPU each frontend pod needs.
+          - Optimized application workloads, reducing CPU utilization per pod upto 50%.
           - Tuned autoscaling, health checks and disruption budgets, and load-tested the platform and WAF rules with k6.
       - heading: AI
         points:
