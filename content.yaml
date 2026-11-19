@@ -104,7 +104,7 @@ experience:
   - title: DevOps Intern @ BytePe
     when: Jun 2026 – present
     place: Noida
-    summary: Fintech startup · I run production on Google Cloud with the DevOps lead
+    summary: Fintech startup ·  Building and maintaining production cloud infrastructure, Kubernetes deployments, CI/CD pipelines, and observability on Google Cloud.
     ref: HEAD → main
     stats:
       - value: '10'
