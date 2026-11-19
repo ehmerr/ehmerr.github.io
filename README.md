@@ -43,7 +43,11 @@ content.yaml needs a fix:
   • line 101: experience › item 1 › title is missing or empty
 ```
 
-To swap the resume, put the new PDF in `public/` and update `resume.file` and `resume.updated`.
+To swap the resume, put the new PDF in `public/` and update `resume.file` and `resume.updated`,
+then run `npm run images` to redraw the resume thumbnail and the link-preview card (`public/og.png`).
+
+How the site looks in Google and link previews is under `seo:`; visitor stats are under `analytics:`
+(put your GoatCounter code there; only the live site counts visits).
 
 Game mechanics (timings, colours, pod counts) live in `src/data/*.js`; you shouldn't need to touch them.
 
@@ -52,9 +56,17 @@ Game mechanics (timings, colours, pod counts) live in `src/data/*.js`; you shoul
 ```bash
 npm run check           # renders every section and plays through the games in a simulated browser
 npm run check:reduced   # the same, with reduced motion switched on
+npm run shots           # desktop + phone screenshots of every section into shots/ (needs Playwright's Chromium)
+```
+
+One-time setup for `shots` and `images`:
+
+```bash
+npx playwright install chromium
+sudo apt-get install -y libnss3 libnspr4 libasound2t64 poppler-utils webp
 ```
 
 ## Deploy
 
-Pushing to `main` runs `.github/workflows/deploy.yml`, which builds with Vite and publishes `dist/`
-to GitHub Pages. In the repo settings, Pages → Source must be set to **GitHub Actions**.
+Pushing to `main` runs `.github/workflows/deploy.yml`, which builds (pre-rendering the page into
+`dist/index.html`), runs `npm run check`, and only then publishes `dist/` to GitHub Pages. In the repo settings, Pages → Source must be set to **GitHub Actions**.

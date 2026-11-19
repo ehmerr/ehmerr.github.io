@@ -8,7 +8,9 @@
     "build": "vite build && node tools/prerender.mjs",
     "preview": "vite preview",
     "check": "node tools/smoke-test.mjs",
-    "check:reduced": "node tools/smoke-test.mjs --reduced"
+    "check:reduced": "node tools/smoke-test.mjs --reduced",
+    "shots": "npm run build && node tools/shots.mjs",
+    "images": "node tools/images.mjs"
   },
   "dependencies": {
     "@fontsource-variable/jetbrains-mono": "5.1.0",
