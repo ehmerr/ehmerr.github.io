@@ -20,22 +20,37 @@ import Toasts from './components/Toasts.jsx';
 import AchievementsDrawer from './components/AchievementsDrawer.jsx';
 import Palette from './components/Palette.jsx';
 import { SelfDestruct, Matrix, Gravity, Boot, useScramble } from './components/Effects.jsx';
+import Field from './motion/Field.jsx';
+import Burst from './motion/Burst.jsx';
+import Cursor from './motion/Cursor.jsx';
+import Marquee from './motion/Marquee.jsx';
+import { useReveal } from './motion/useReveal.js';
+import { useTilt } from './motion/useTilt.js';
+import { useMagnetic } from './motion/useMagnetic.js';
+import { useLinkTracking } from './game/track.js';
 import './styles/sections.css';
 import './styles/game.css';
 import './styles/play.css';
 import './styles/fx.css';
+import './styles/motion.css';
 
 function Site() {
   const { status, bus } = useGame();
   const [hudText, setHudText] = useState('bots clocking in…');
   useScramble();
+  useLinkTracking();
+  useReveal();
+  useTilt();
+  useMagnetic();
 
   return (
     <>
+      <Field />
       <a className="skip mono" href="#experience">Skip to content</a>
       <Nav status={status.level} statusText={status.text} tools={<NavTools onPalette={() => bus.emit('palette:open')} />} />
       <main>
         <Hero terminal={<Terminal />} bot={<HangingBot />} />
+        <Marquee />
         <Experience />
         <Pipeline />
         <Cluster />
@@ -55,6 +70,8 @@ function Site() {
       <Matrix />
       <Gravity />
       <Boot />
+      <Burst />
+      <Cursor />
     </>
   );
 }

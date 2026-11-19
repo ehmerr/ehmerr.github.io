@@ -2,8 +2,16 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { nodes, workloads, maxApiReplicas, onCallSeconds, monitoringLine, clusterQuips as Q } from '../data/cluster.js';
 import { useGame } from '../game/GameProvider.jsx';
 import SecHead from './SecHead.jsx';
+import { centerOf } from '../motion/motion.js';
+import { text } from '../data/profile.js';
 
 const suffix = () => Math.random().toString(36).slice(2, 6);
+// The first pods get fixed names, so the pre-built HTML and the browser agree.
+const fixedSuffix = (seed) => {
+  let h = 2166136261;
+  for (const ch of seed) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
+  return (h >>> 0).toString(36).slice(-4).padStart(4, '0');
+};
 const colorOf = Object.fromEntries(workloads.map((w) => [w.app, w.color]));
 
 function leastLoaded(pods) {
@@ -16,7 +24,7 @@ function initialPods() {
   const pods = [];
   workloads.forEach((w) => {
     for (let i = 0; i < w.replicas; i++) {
-      pods.push({ id: `${w.app}-${suffix()}`, app: w.app, node: leastLoaded(pods), status: 'running' });
+      pods.push({ id: `${w.app}-${fixedSuffix(w.app + i)}`, app: w.app, node: leastLoaded(pods), status: 'running' });
     }
   });
   return pods;
@@ -89,6 +97,10 @@ export default function Cluster() {
       if (!pod || pod.status === 'terminating') return false;
       setPods((ps) => ps.map((p) => (p.id === id ? { ...p, status: 'terminating' } : p)));
       play('kill');
+      {
+        const el = document.querySelector(`[data-pod="${id}"]`);
+        if (el) bus.emit('fx:burst', { ...centerOf(el), kind: 'shards', colors: [colorOf[pod.app], '#FF7A7A', '#E7ECF2'] });
+      }
       bump('podsKilled');
       if (source !== 'chaos') unlock('kill');
       alert('fire', `PodNotReady ${id}`);
@@ -101,7 +113,7 @@ export default function Cluster() {
       }, 800);
       return true;
     },
-    [play, bump, unlock, alert, reconcile]
+    [play, bump, unlock, alert, reconcile, bus]
   );
 
   const scale = useCallback(
@@ -193,12 +205,15 @@ export default function Cluster() {
     setPods((ps) => ps.map((p) => (p.status === 'crash' ? { ...p, status: 'running' } : p)));
     unlock('oncall');
     if (breaches === 0) unlock('flawless');
+    bus.emit('fx:burst', { x: window.innerWidth / 2, y: window.innerHeight * 0.35, kind: breaches === 0 ? 'confetti' : 'sparks' });
     toast(breaches === 0 ? Q.flawless : Q.okay(breaches), breaches === 0 ? 'ach' : 'info', 5000);
     setStatus('ok', 'all systems operational');
     toggleHeal(true);
-  }, [oncall, unlock, toast, setStatus, toggleHeal]);
+  }, [oncall, unlock, toast, setStatus, toggleHeal, bus]);
 
   const restart = (id) => {
+    const el = document.querySelector(`[data-pod="${id}"]`);
+    if (el) bus.emit('fx:burst', { ...centerOf(el), kind: 'sparks', count: 14 });
     setPods((ps) => ps.map((p) => (p.id === id ? { ...p, status: 'running' } : p)));
     setOncall((o) => (o ? { ...o, fixes: o.fixes + 1 } : o));
     alert('ok', `${id} restarted by visitor`);
@@ -258,25 +273,25 @@ export default function Cluster() {
 
   return (
     <section id="cluster" className="sec wrap" aria-labelledby="cluster-title">
-      <SecHead num="03" kicker="SELF-HEALING CLUSTER" title="Break it. It heals." id="cluster-title">
-        A toy Kubernetes cluster running in your browser. Click a pod to kill it and watch it come back.
-        Then turn auto-heal off, or take the pager yourself.
+      <SecHead num="03" kicker={text.cluster.kicker} title={text.cluster.title} id="cluster-title">
+        {text.cluster.intro}
       </SecHead>
 
+      {oncall && <div className="oncall-vignette" aria-hidden="true" />}
       <div className="cluster">
         <div className="cl-main panel">
           <div className="cl-controls">
             <div className="cl-btns">
-              <button type="button" className="btn btn-ghost" onClick={() => scale(apiReplicas - 1)} disabled={!!oncall || apiReplicas <= 1} aria-label="Scale api down">api −</button>
+              <button type="button" className="btn btn-ghost" onClick={() => scale(apiReplicas - 1)} disabled={!!oncall || apiReplicas <= 1}><span>api −</span><span className="sr"> (scale down)</span></button>
               <span className="cl-repl mono" aria-live="polite">api × {apiReplicas}</span>
-              <button type="button" className="btn btn-ghost" onClick={() => scale(apiReplicas + 1)} disabled={!!oncall} aria-label="Scale api up">api +</button>
-              <button type="button" className="btn btn-ghost" onClick={runChaos} disabled={chaos || !!oncall}>Chaos monkey</button>
+              <button type="button" className="btn btn-ghost" onClick={() => scale(apiReplicas + 1)} disabled={!!oncall}><span>api +</span><span className="sr"> (scale up)</span></button>
+              <button type="button" className="btn btn-ghost" onClick={runChaos} disabled={chaos || !!oncall} data-cur="🐒">Chaos monkey</button>
               <label className="cl-heal mono">
                 <input type="checkbox" checked={heal} disabled={!!oncall} onChange={(e) => toggleHeal(e.target.checked)} />
                 auto-heal
               </label>
             </div>
-            <button type="button" className="btn btn-primary" onClick={startOncall} disabled={!!oncall}>
+            <button type="button" className="btn btn-primary" onClick={startOncall} disabled={!!oncall} data-magnetic data-cur="page me">
               {oncall ? `On call · ${Math.ceil(oncall.left)}s` : `Take the pager (${onCallSeconds}s)`}
             </button>
           </div>
@@ -292,7 +307,8 @@ export default function Cluster() {
 
           <div className="nodes">
             {nodes.map((n) => (
-              <div key={n} className="node">
+              <div key={n} className={`node${pods.some((p) => p.node === n && p.status === 'running') ? '' : ' quiet'}`}>
+                <span className="traffic" aria-hidden="true"><i /><i /><i /></span>
                 <p className="node-name mono">{n}</p>
                 <ul className="pods">
                   {pods.filter((p) => p.node === n).map((p) => (
@@ -300,14 +316,17 @@ export default function Cluster() {
                       <button
                         type="button"
                         className={`pod is-${p.status}`}
+                        data-pod={p.id}
+                        data-cur={p.status === 'crash' ? 'restart' : 'kill'}
                         style={{ '--c': colorOf[p.app] }}
                         disabled={p.status === 'terminating' || p.status === 'pending'}
                         onClick={() => (p.status === 'crash' ? restart(p.id) : kill(p.id))}
-                        aria-label={`${p.id}, ${statusWord(p.status)}. ${p.status === 'crash' ? 'Restart' : 'Kill'}`}
                         title={`${p.id} · ${statusWord(p.status)}`}
                       >
+                        {/* The spoken name is the visible text plus the hidden part, so voice control can say what it sees. */}
                         <span className="pod-app mono">{p.app}</span>
                         <span className="pod-id mono">{p.id.slice(-4)}</span>
+                        <span className="sr">, {statusWord(p.status)}. {p.status === 'crash' ? 'Restart' : 'Kill'}</span>
                       </button>
                     </li>
                   ))}

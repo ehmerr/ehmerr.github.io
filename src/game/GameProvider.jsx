@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { achievements, achById } from '../data/achievements.js';
 import { sound } from './sound.js';
 import { store } from './storage.js';
+import { track } from './track.js';
 
 export const accents = [
   { name: 'mint', hex: '#6EF0B4', rgb: '110, 240, 180' },
@@ -30,11 +31,11 @@ function makeBus() {
 }
 
 export function GameProvider({ children }) {
-  const [found, setFound] = useState(() => new Set(store.get('ach', [])));
-  const [accentIdx, setAccentIdx] = useState(() => {
-    const i = store.get('accent', 0);
-    return i >= 0 && i < accents.length ? i : 0;
-  });
+  // Saved progress and accent are read after the first render (see the effect below),
+  // so the first browser render matches the pre-built HTML.
+  const [found, setFound] = useState(() => new Set());
+  const [accentIdx, setAccentIdx] = useState(0);
+  const [loaded, setLoaded] = useState(false);
   const [soundOn, setSoundOn] = useState(false);
   const [toasts, setToasts] = useState([]);
   const [achOpen, setAchOpen] = useState(false);
@@ -44,14 +45,27 @@ export function GameProvider({ children }) {
   const bus = useRef(makeBus()).current;
   const toastId = useRef(0);
 
-  // Accent → CSS variables
+  // Load saved achievements and accent once we're in the browser.
   useEffect(() => {
+    const saved = new Set([...store.get('ach', []), ...foundRef.current]);
+    foundRef.current = saved;
+    setFound(saved);
+    const i = store.get('accent', 0);
+    if (i >= 0 && i < accents.length) setAccentIdx(i);
+    setLoaded(true);
+  }, []);
+
+  // Accent → CSS variables. The <head> script in index.html applies the saved
+  // 'accentVars' before the first paint, so returning visitors never see the default flash.
+  useEffect(() => {
+    if (!loaded) return;
     const a = accents[accentIdx];
     const r = document.documentElement.style;
     r.setProperty('--accent', a.hex);
     r.setProperty('--accent-rgb', a.rgb);
     store.set('accent', accentIdx);
-  }, [accentIdx]);
+    store.set('accentVars', [a.hex, a.rgb]);
+  }, [accentIdx, loaded]);
 
   const toast = useCallback((text, kind = 'info', ms = 3200) => {
     const id = ++toastId.current;
@@ -67,6 +81,7 @@ export function GameProvider({ children }) {
       foundRef.current = next;
       setFound(next);
       store.set('ach', [...next]);
+      track(`ach-${id}`);
       sound.play('unlock');
       toast(`Achievement unlocked · ${achById[id].name}`, 'ach', 4000);
     },
@@ -114,7 +129,7 @@ export function GameProvider({ children }) {
 
   const value = useMemo(
     () => ({
-      found, total: achievements.length, unlock,
+      found, total: achievements.length, unlock, loaded,
       accent: accents[accentIdx], cycleAccent,
       soundOn, setSound, play: sound.play,
       toasts, toast,
@@ -123,7 +138,7 @@ export function GameProvider({ children }) {
       stats, bump,
       bus,
     }),
-    [found, unlock, accentIdx, cycleAccent, soundOn, setSound, toasts, toast, achOpen, status, setStatus, stats, bump, bus]
+    [found, unlock, loaded, accentIdx, cycleAccent, soundOn, setSound, toasts, toast, achOpen, status, setStatus, stats, bump, bus]
   );
 
   return <GameCtx.Provider value={value}>{children}</GameCtx.Provider>;

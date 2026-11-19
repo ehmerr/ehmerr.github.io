@@ -1,63 +1,26 @@
-// Career history, shown as `git log`. Newest first.
-// Copy rule: one short line per item, plain words, say what was done (no bug stories or internals).
-//
-// diff entries are [kind, text]:  'hdr' → @@ group heading @@,  'add' → + line
+// Career history for the `git log` section. The text comes from content.yaml (experience:).
+// diff entries are [kind, text]:  'hdr' → @@ heading @@,  'add' → + line
+import c, { str } from './content.js';
 
-export const career = [
-  {
-    hash: 'b7e4c21',
-    ref: 'HEAD → main',
-    title: 'DevOps Intern @ BytePe',
-    when: 'Jun 2026 – present',
-    place: 'Noida',
-    sub: 'Fintech startup · I run the platform on Google Cloud with my lead',
-    stats: [
-      { value: '3', label: 'environments moved to Kubernetes' },
-      { value: '~64%', label: 'lower production compute cost' },
-      { value: '~55%', label: 'fewer non-production compute hours' },
-    ],
-    tags: [
-      'Google Cloud', 'GKE', 'Kubernetes', 'Helm', 'Terraform', 'GitLab CI/CD', 'Docker',
-      'Grafana', 'Prometheus', 'OpenTelemetry', 'k6', 'Python', 'Bash',
-    ],
-    diff: [
-      ['hdr', 'VMs → Kubernetes'],
-      ['add', 'Moved dev, staging and production from VMs to GKE Autopilot with my lead. All three are done.'],
-      ['add', 'Set up the production pipeline and ran the cutover. Production has been live on GKE since Oct 2026.'],
-      ['add', 'Put our web front ends on Kubernetes with Helm.'],
+// A stable, made-up short commit hash for roles that don't set one.
+function shortHash(s) {
+  let h = 0x811c9dc5;
+  for (const ch of s) h = Math.imul(h ^ ch.codePointAt(0), 16777619) >>> 0;
+  return h.toString(16).padStart(8, '0').slice(0, 7);
+}
 
-      ['hdr', 'monitoring'],
-      ['add', 'Set up the whole monitoring stack myself: Grafana, Prometheus, OpenTelemetry, Cloud Logging, Cloud Trace and Slack alerts, for all three environments.'],
-
-      ['hdr', 'CI/CD'],
-      ['add', 'Built the staging pipeline and the production approval gate in GitLab CI/CD.'],
-      ['add', 'Made releases safe to ship, with automatic rollback when an upgrade fails.'],
-
-      ['hdr', 'cost'],
-      ['add', 'Cut production compute cost by ~64%.'],
-      ['add', 'Dev and staging now sleep on nights and weekends: ~55% fewer compute hours.'],
-
-      ['hdr', 'platform'],
-      ['add', 'Set up autoscaling and wrote k6 load tests for the platform.'],
-      ['add', 'Moved OSRM (routing) and Typesense (search) onto GKE.'],
-      ['add', 'Wrote Terraform for our infrastructure across all three environments.'],
-
-      ['hdr', 'AI'],
-      ['add', 'Built an AI proof of concept: a self-hosted LLM that answers from our docs, on a GPU that scales to zero.'],
-    ],
-  },
-  {
-    hash: '1a0f3d9',
-    ref: 'tag: v0.1',
-    title: 'init: B.Tech CSE (Data Science)',
-    when: 'Nov 2022 – Jun 2026',
-    place: 'ITS Engineering College',
-    sub: 'Where it started',
-    tags: ['Computer Science', 'Data Science'],
-    diff: [
-      ['add', 'B.Tech in Computer Science and Engineering (Data Science).'],
-      ['add', 'Graduated with a CGPA of 7.98.'],
-    ],
-    link: { href: '#education', label: 'see education' },
-  },
-];
+export const career = (c.experience || []).map((job, i, all) => ({
+  hash: str(job.hash) || shortHash(`${job.title}|${job.when}`),
+  ref: str(job.ref) || (i === 0 ? 'HEAD → main' : i === all.length - 1 ? 'tag: v0.1' : `HEAD~${i}`),
+  title: str(job.title),
+  when: str(job.when),
+  place: str(job.place),
+  sub: str(job.summary),
+  stats: job.stats?.length ? job.stats.map((s) => ({ value: str(s.value), label: str(s.label) })) : null,
+  tags: (job.tags || []).map(str),
+  diff: (job.groups || []).flatMap((g) => [
+    ...(g.heading ? [['hdr', str(g.heading)]] : []),
+    ...(g.points || []).map((p) => ['add', str(p)]),
+  ]),
+  link: job.link?.href ? { href: str(job.link.href), label: str(job.link.label) || 'more' } : null,
+}));

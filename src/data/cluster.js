@@ -1,5 +1,5 @@
-// The toy cluster in 03 / SELF-HEALING CLUSTER. Workloads are named after the kinds of things
-// that run on the BytePe platform; counts are made up for the game.
+// The toy cluster in 03 / SELF-HEALING CLUSTER. Mechanics live here; its messages come from content.yaml.
+import c, { fill, str } from './content.js';
 
 export const nodes = ['node-a', 'node-b', 'node-c'];
 
@@ -15,14 +15,15 @@ export const workloads = [
 export const maxApiReplicas = 12;
 export const onCallSeconds = 20;
 
-export const monitoringLine = 'I set up this monitoring myself: Grafana · Prometheus · OpenTelemetry · Slack alerts.';
+const q = c.personality.cluster;
+export const monitoringLine = str(c.personality.monitoring);
 
 export const clusterQuips = {
-  chaos: 'Chaos monkey loose. Watch the cluster heal itself.',
-  healOff: "Auto-heal is off. Dead pods stay dead now.",
-  healOn: 'Auto-heal back on. Kubernetes has it from here.',
-  quota: `Quota reached: max ${maxApiReplicas} api replicas. Finance is watching.`,
-  oncallStart: "You're on call. Auto-heal is off. Click the red pods to restart them!",
-  flawless: 'Flawless shift. Now imagine doing that at 3am. That is why I automate it.',
-  okay: (n) => `Shift over with ${n} SLO breach${n === 1 ? '' : 'es'}. Automation exists for a reason.`,
+  chaos: str(q.chaos),
+  healOff: str(q.healOff),
+  healOn: str(q.healOn),
+  quota: fill(q.quota, { max: maxApiReplicas }),
+  oncallStart: str(q.oncallStart),
+  flawless: str(q.flawless),
+  okay: (n) => fill(q.okay, { n }),
 };
