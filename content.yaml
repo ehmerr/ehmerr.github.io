@@ -527,15 +527,31 @@ personality:
     - The cheapest server is the one that is asleep.
     - Friday deploys are fine if you're on call for the weekend anyway.
     - Monitoring is how you find out before the customer tweets.
-  marquee:                    # the moving band under the hero (your skills scroll in the other row)
-    - pods healthy
-    - pipeline green
-    - SLOs met
-    - alerts quiet
-    - auto-heal on
-    - zero pages
-    - rollbacks ready
-    - costs down
+  marquee:                    # the moving band between the hero and Career
+    tools:                    # big top row, scrolls in this order (a name that matches a skill gets its colour)
+      - Google Cloud
+      - GKE
+      - Kubernetes
+      - Python
+      - Helm
+      - Terraform
+      - GitLab CI/CD
+      - Docker
+      - Prometheus
+      - Grafana
+      - OpenTelemetry
+      - Bash
+      - k6
+      - FinOps
+    status:                   # small bottom row, each gets a ✓ (delete all lines to hide this row)
+      - pods healthy
+      - pipeline green
+      - SLOs met
+      - alerts quiet
+      - auto-heal on
+      - zero pages
+      - rollbacks ready
+      - costs down
   monitoring: "I replaced Datadog with this stack myself: Prometheus · Grafana · OpenTelemetry · Slack alerts."
   cluster:
     chaos: Chaos monkey loose. Watch the cluster heal itself.

@@ -58,7 +58,7 @@ main { position: relative; z-index: 1; }
 /* ---------- marquee ---------- */
 .mq { position: relative; z-index: 1; width: 104vw; margin: 10px 0 0 -2vw; padding: 16px 0; display: grid; gap: 10px; rotate: -1.4deg; background: rgba(10, 12, 15, .75); border-block: 1px solid var(--line); overflow: hidden; }
 .mq-row { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
-.mq-track { display: flex; width: max-content; animation: mq 70s linear infinite; }
+.mq-track { display: flex; width: max-content; animation: mq 40s linear infinite; }
 .mq-b .mq-track { animation-direction: reverse; animation-duration: 50s; }
 .mq:hover .mq-track { animation-play-state: paused; }
 .mq-group { display: flex; gap: 38px; padding-right: 38px; }

@@ -1,11 +1,25 @@
 import { elements } from '../data/elements.js';
 import content, { str } from '../data/content.js';
 
-const STATUS = (content.personality.marquee || []).map(str);
+// content.yaml › personality › marquee: { tools: [...], status: [...] }
+// (a plain list still works and is treated as the status words)
+const MQ = content.personality.marquee || {};
+const TOOLS = (Array.isArray(MQ) ? [] : MQ.tools || []).map(str).filter(Boolean);
+const STATUS = (Array.isArray(MQ) ? MQ : MQ.status || []).map(str).filter(Boolean);
 
-// Two bands of tech and status words drifting in opposite directions.
+// A tool takes the colour of the skill with the same name ("GKE" also matches "GKE Autopilot").
+const colorOf = (name) => {
+  const n = name.toLowerCase();
+  const hit = elements.find((e) => e.name.toLowerCase() === n)
+    || elements.find((e) => e.name.toLowerCase().startsWith(n + ' '));
+  return hit?.color;
+};
+
+// Two bands drifting in opposite directions: tools on top, status words below.
 export default function Marquee() {
-  const tech = elements.map((e) => ({ t: e.name, c: e.color }));
+  const tech = TOOLS.length
+    ? TOOLS.map((t) => ({ t, c: colorOf(t) }))
+    : elements.map((e) => ({ t: e.name, c: e.color })); // no list given: show every skill
   const row = (items, cls) => (
     <div className={`mq-row ${cls}`}>
       <div className="mq-track">
