@@ -105,6 +105,13 @@ export function validate(c) {
   const missing = ACHIEVEMENT_IDS.filter((id) => !seen.has(id));
   if (missing.length) bad(['achievements'], `is missing id${missing.length > 1 ? 's' : ''}: ${missing.join(', ')}`);
 
+  // seo + analytics (all optional)
+  ['title', 'description', 'shareText'].forEach((k) => { if (get(['seo', k]) != null) text(['seo', k]); });
+  const url = get(['seo', 'url']);
+  if (url != null && !/^https:\/\/[^\s]+\/$/.test(String(url))) bad(['seo', 'url'], 'should be the full address ending in /, like https://ehmerr.github.io/');
+  const gc = get(['analytics', 'goatcounter']);
+  if (gc != null && gc !== '' && !/^[a-z0-9-]{2,50}$/.test(String(gc))) bad(['analytics', 'goatcounter'], 'should be just your GoatCounter code, like ehmerr (lowercase letters, numbers, dashes)');
+
   // personality
   ['late', 'morning', 'afternoon', 'evening', 'night'].forEach((k) => text(['personality', 'greetings', k]));
   textList(['personality', 'fortunes']);

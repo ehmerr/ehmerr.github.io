@@ -11,6 +11,8 @@
     "check:reduced": "node tools/smoke-test.mjs --reduced"
   },
   "dependencies": {
+    "@fontsource-variable/jetbrains-mono": "5.1.0",
+    "@fontsource-variable/space-grotesk": "5.1.0",
     "react": "18.3.1",
     "react-dom": "18.3.1"
   },

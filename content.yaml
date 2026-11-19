@@ -58,6 +58,20 @@ resume:
     - logging side project
     - skills & education
 
+# How the site appears in Google and in link previews (LinkedIn, WhatsApp, Slack…).
+# All optional: leave a line out and it's built from `site` above.
+seo:
+  url: https://ehmerr.github.io/
+  title: Ahmar Rahmani · DevOps Engineer
+  description: Ahmar Rahmani, DevOps Intern at BytePe. Moved a 10-service production backend from VMs to GKE, built CI/CD for dev, staging and production, and replaced Datadog with Prometheus, Grafana and OpenTelemetry.
+  shareText: DevOps Intern at BytePe. GCP, Kubernetes, Terraform, CI/CD and observability.
+
+# Visitor stats with GoatCounter (free, no cookies). Put your GoatCounter site code here,
+# e.g. `goatcounter: ehmerr` for ehmerr.goatcounter.com. Leave it empty to turn stats off.
+# Only the live site counts visits; `npm run dev` never does.
+analytics:
+  goatcounter:
+
 # Headings and intro lines for each section of the page.
 # {count}, {groups}, {openTo}, {openWhere} and {city} are filled in automatically.
 sections:

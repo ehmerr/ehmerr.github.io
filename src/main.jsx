@@ -1,6 +1,9 @@
 import React from 'react';
 import { createRoot, hydrateRoot } from 'react-dom/client';
 import App from './App.jsx';
+// Fonts are served from the site itself (no Google Fonts request); the build preloads the latin files.
+import '@fontsource-variable/space-grotesk/wght.css';
+import '@fontsource-variable/jetbrains-mono/wght.css';
 import './styles/tokens.css';
 import './styles/base.css';
 

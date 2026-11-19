@@ -152,7 +152,7 @@ export function Matrix() {
       ctx.fillStyle = 'rgba(10, 12, 15, 0.12)';
       ctx.fillRect(0, 0, c.width, c.height);
       ctx.fillStyle = accent;
-      ctx.font = `${size}px 'JetBrains Mono', monospace`;
+      ctx.font = `${size}px 'JetBrains Mono Variable', monospace`;
       for (let i = 0; i < cols; i++) {
         ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * size, drops[i] * size);
         if (drops[i] * size > c.height && Math.random() > 0.975) drops[i] = 0;
