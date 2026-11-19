@@ -5,6 +5,7 @@ import { groups, elements } from '../data/elements.js';
 import { fortunes, greetings } from '../data/quips.js';
 import { useGame, accents } from '../game/GameProvider.jsx';
 import { scrollToId, findSection } from '../game/scroll.js';
+import { track } from '../game/track.js';
 
 const HELP = [
   'available commands (tab completes):',
@@ -254,6 +255,7 @@ export default function Terminal() {
 
   function onKey(e) {
     if (e.key === 'Enter') {
+      if (input.trim()) track('terminal-used');
       run(input);
       setInput('');
       histIdx.current = -1;

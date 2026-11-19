@@ -62,7 +62,7 @@ w.IntersectionObserver = FakeIO;
 const server = await viteServer(root);
 const $ = (s) => w.document.querySelector(s);
 const $$ = (s) => [...w.document.querySelectorAll(s)];
-const click = (el, what = '') => { if (!el) throw new Error('missing element to click: ' + what); el.dispatchEvent(new w.MouseEvent('click', { bubbles: true })); };
+const click = (el, what = '') => { if (!el) throw new Error('missing element to click: ' + what); el.dispatchEvent(new w.MouseEvent('click', { bubbles: true, cancelable: true })); };
 const byText = (sel, txt) => $$(sel).find((e) => e.textContent.includes(txt));
 const key = (k, extra = {}) => w.dispatchEvent(new w.KeyboardEvent('keydown', { key: k, ...extra }));
 
@@ -97,6 +97,11 @@ try {
   (REDUCED ? !cls.contains('js-motion') && !cls.contains('boot-on') : cls.contains('js-motion') && cls.contains('boot-on'))
     ? ok(`head script set ${REDUCED ? 'no motion classes (reduced motion)' : 'js-motion + boot-on'}`)
     : fail('head script classes wrong: ' + cls.value);
+  // Stand-in for GoatCounter, to check which events the site reports.
+  const counted = [];
+  w.goatcounter = { count: (o) => counted.push(o.path) };
+  // jsdom can't follow links; stop it trying (the site's own click listeners still run).
+  w.addEventListener('click', (e) => { if (e.target.closest?.('a[href]')) e.preventDefault(); }, true);
   const prebuilt = $('#root').firstElementChild;
   await server.ssrLoadModule('/src/main.jsx'); // hydrateRoot under StrictMode (mounts every effect twice in dev)
   // Poll instead of fixed sleeps: jsdom is slow, especially with StrictMode and the canvas loops running.
@@ -214,6 +219,13 @@ try {
   click(byText('.sd-term .btn', 'terraform apply'), 'restore');
   await sleep(200);
   !w.document.body.classList.contains('sd-boom') ? ok('self-destruct → restore') : fail('site not restored');
+
+  click($('a[href$=".pdf"]'), 'resume link');
+  click($('.reach a[href^="mailto:"]') || $('a[href^="mailto:"]'), 'email link');
+  const wantEvents = ['ach-deploy', 'ach-kill', 'ach-compound', 'contact-revealed', 'terminal-used', 'click-resume', 'click-email'];
+  const missingEv = wantEvents.filter((e) => !counted.includes(e));
+  missingEv.length ? fail('analytics events missing: ' + missingEv.join(', ')) : ok(`analytics: ${counted.length} events reported (${wantEvents.join(', ')}…)`);
+  counted.length === new Set(counted).size ? ok('each event reported once') : fail('duplicate analytics events: ' + counted.join(', '));
 
   // Nothing should be left invisible once revealed.
   w.document.querySelectorAll('[data-reveal]').forEach((n) => n.classList.add('in'));

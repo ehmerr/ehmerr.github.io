@@ -2,6 +2,7 @@ import { profile } from '../data/profile.js';
 import SecHead from './SecHead.jsx';
 import { text } from '../data/profile.js';
 import { fill } from '../data/content.js';
+import { track } from '../game/track.js';
 
 // 05 / CONTACT. `plan` is the terraform plan → apply flow (Step 8); until then the links show directly.
 export default function Contact({ plan = null }) {
@@ -19,6 +20,7 @@ export function ContactLinks({ onCopy }) {
   const copy = async (text) => {
     try {
       await navigator.clipboard.writeText(text);
+      track('email-copied');
       onCopy?.(true);
     } catch {
       onCopy?.(false);

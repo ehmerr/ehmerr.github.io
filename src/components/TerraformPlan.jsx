@@ -3,6 +3,7 @@ import { profile } from '../data/profile.js';
 import { useGame } from '../game/GameProvider.jsx';
 import { ContactLinks } from './Contact.jsx';
 import { centerOf } from '../motion/motion.js';
+import { track } from '../game/track.js';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -36,6 +37,7 @@ export default function TerraformPlan() {
       play('key');
     }
     unlock('apply');
+    track('contact-revealed');
     play('ok');
     setPhase('done');
     const at = centerOf(boxRef.current?.querySelector('.tf-actions'));
@@ -85,7 +87,7 @@ export default function TerraformPlan() {
           {phase === 'plan' && (
             <>
               <button type="button" className="btn btn-primary" onClick={apply} data-magnetic data-cur="apply">Approve &amp; apply</button>
-              <button type="button" className="btn btn-ghost" onClick={async () => { try { await navigator.clipboard.writeText(profile.email); toast('email copied'); } catch { toast(profile.email); } }}>
+              <button type="button" className="btn btn-ghost" onClick={async () => { try { await navigator.clipboard.writeText(profile.email); track('email-copied'); toast('email copied'); } catch { toast(profile.email); } }}>
                 skip, just copy email
               </button>
             </>

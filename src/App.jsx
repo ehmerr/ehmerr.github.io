@@ -27,6 +27,7 @@ import Marquee from './motion/Marquee.jsx';
 import { useReveal } from './motion/useReveal.js';
 import { useTilt } from './motion/useTilt.js';
 import { useMagnetic } from './motion/useMagnetic.js';
+import { useLinkTracking } from './game/track.js';
 import './styles/sections.css';
 import './styles/game.css';
 import './styles/play.css';
@@ -37,6 +38,7 @@ function Site() {
   const { status, bus } = useGame();
   const [hudText, setHudText] = useState('bots clocking in…');
   useScramble();
+  useLinkTracking();
   useReveal();
   useTilt();
   useMagnetic();

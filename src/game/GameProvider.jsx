@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { achievements, achById } from '../data/achievements.js';
 import { sound } from './sound.js';
 import { store } from './storage.js';
+import { track } from './track.js';
 
 export const accents = [
   { name: 'mint', hex: '#6EF0B4', rgb: '110, 240, 180' },
@@ -80,6 +81,7 @@ export function GameProvider({ children }) {
       foundRef.current = next;
       setFound(next);
       store.set('ach', [...next]);
+      track(`ach-${id}`);
       sound.play('unlock');
       toast(`Achievement unlocked · ${achById[id].name}`, 'ach', 4000);
     },
