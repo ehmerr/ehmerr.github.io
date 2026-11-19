@@ -5,12 +5,13 @@ import { reducedMotion } from './motion.js';
 export default function CountUp({ value, ms = 1400 }) {
   const raw = String(value);
   const m = raw.match(/^(\D*?)(\d+(?:\.\d+)?)(.*)$/);
-  const [shown, setShown] = useState(() => (m && !reducedMotion() && typeof IntersectionObserver !== 'undefined' ? `${m[1]}0${m[3]}` : raw));
+  const [shown, setShown] = useState(raw); // the real value first: it's what the pre-built HTML shows
   const ref = useRef(null);
 
   useEffect(() => {
     if (!m || reducedMotion() || typeof IntersectionObserver === 'undefined') { setShown(raw); return; }
     const [, pre, num, post] = m;
+    setShown(`${pre}0${post}`);
     const target = parseFloat(num);
     const decimals = (num.split('.')[1] || '').length;
     let raf = 0;

@@ -1,4 +1,15 @@
 // Shared motion helpers. Every effect checks these so reduced-motion and touch users get a calm site.
+import { useEffect, useState } from 'react';
+
+// False on the server and during the first browser render, true right after.
+// The site ships pre-built HTML that React takes over in place ("hydration"), and the first
+// browser render must match that HTML exactly, so anything that depends on the browser
+// (time, screen, saved state) waits for this.
+export function useMounted() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  return mounted;
+}
 
 export const reducedMotion = () =>
   typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;

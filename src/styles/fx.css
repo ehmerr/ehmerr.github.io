@@ -77,6 +77,7 @@ body.low-g .el:nth-child(3n) { animation-delay: -2s; }
 .matrix { position: fixed; inset: 0; z-index: 92; width: 100vw; height: 100vh; cursor: pointer; }
 
 /* ---------- boot ---------- */
+html:not(.boot-on) .boot { display: none; } /* see Boot in Effects.jsx */
 .boot { position: fixed; inset: 0; z-index: 99; background: var(--bg); display: grid; place-items: center; padding: 24px; animation: fade .2s both; }
 .boot-in { width: min(560px, 100%); font-size: 13.5px; line-height: 1.8; color: var(--text-2); }
 .boot-in p { margin: 0; white-space: pre-wrap; }

@@ -4,12 +4,13 @@ import { centerOf } from '../motion/motion.js';
 
 // Bottom-right HUD: achievements counter (bumps and throws sparks on unlock), plus bot controls.
 export default function Hud({ text = 'all quiet', children = null }) {
-  const { found, total, setAchOpen, bus } = useGame();
+  const { found, total, setAchOpen, bus, loaded } = useGame();
   const btn = useRef(null);
-  const prev = useRef(found.size);
+  const prev = useRef(null);
 
   useEffect(() => {
-    if (found.size <= prev.current) { prev.current = found.size; return; }
+    if (!loaded) return; // saved achievements arriving after load aren't new unlocks
+    if (prev.current === null || found.size <= prev.current) { prev.current = found.size; return; }
     prev.current = found.size;
     const el = btn.current;
     if (!el) return;
@@ -19,7 +20,7 @@ export default function Hud({ text = 'all quiet', children = null }) {
     const at = centerOf(el);
     bus.emit('fx:burst', { ...at, kind: 'sparks', count: 26 });
     bus.emit('fx:pulse', { ...at, power: 1.2 });
-  }, [found.size, bus]);
+  }, [found.size, loaded, bus]);
 
   return (
     <div className="hud mono">

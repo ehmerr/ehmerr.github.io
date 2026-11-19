@@ -6,6 +6,12 @@ import { centerOf } from '../motion/motion.js';
 import { text } from '../data/profile.js';
 
 const suffix = () => Math.random().toString(36).slice(2, 6);
+// The first pods get fixed names, so the pre-built HTML and the browser agree.
+const fixedSuffix = (seed) => {
+  let h = 2166136261;
+  for (const ch of seed) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
+  return (h >>> 0).toString(36).slice(-4).padStart(4, '0');
+};
 const colorOf = Object.fromEntries(workloads.map((w) => [w.app, w.color]));
 
 function leastLoaded(pods) {
@@ -18,7 +24,7 @@ function initialPods() {
   const pods = [];
   workloads.forEach((w) => {
     for (let i = 0; i < w.replicas; i++) {
-      pods.push({ id: `${w.app}-${suffix()}`, app: w.app, node: leastLoaded(pods), status: 'running' });
+      pods.push({ id: `${w.app}-${fixedSuffix(w.app + i)}`, app: w.app, node: leastLoaded(pods), status: 'running' });
     }
   });
   return pods;

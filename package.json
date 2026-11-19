@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node tools/prerender.mjs",
     "preview": "vite preview",
     "check": "node tools/smoke-test.mjs",
     "check:reduced": "node tools/smoke-test.mjs --reduced"
@@ -17,6 +17,7 @@
   "devDependencies": {
     "@vitejs/plugin-react": "4.3.3",
     "jsdom": "24.1.3",
+    "playwright": "1.48.2",
     "vite": "5.4.10",
     "yaml": "2.5.1"
   }

@@ -1,12 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
-import { reducedMotion, isTouch } from './motion.js';
+import { useEffect, useRef } from 'react';
+import { reducedMotion, isTouch, useMounted } from './motion.js';
 
 const HOT = '[data-cur], a, button, input, label, [role="button"], [role="option"]';
 
 // A ring that trails the mouse, grows over anything clickable, and shows a label from data-cur.
 // Desktop only; the normal cursor stays visible underneath.
 export default function Cursor() {
-  const [enabled] = useState(() => !isTouch() && !reducedMotion());
+  const mounted = useMounted();
+  const enabled = mounted && !isTouch() && !reducedMotion();
   const ring = useRef(null);
   const dot = useRef(null);
   const label = useRef(null);

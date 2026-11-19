@@ -15,6 +15,24 @@
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Ahmar Rahmani, DevOps Intern at BytePe. GKE, Helm, Terraform, Grafana." />
     <meta name="twitter:card" content="summary_large_image" />
+    <script>
+      // Runs before the first paint (keep it small, plain and in sync with src/main.jsx):
+      //  · js-motion: lets CSS hide things that animate in (skipped under reduced motion)
+      //  · boot-on: show the boot screen on the first page view of this session
+      //  · the accent colour the visitor picked last time
+      //  · a failsafe: if the app hasn't started after 8 s, show everything without animation
+      (function () {
+        var d = document.documentElement, calm = false;
+        try { calm = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+        if (!calm) d.classList.add('js-motion');
+        try { if (!calm && !sessionStorage.getItem('ahmar.booted')) d.classList.add('boot-on'); } catch (e) {}
+        try {
+          var a = JSON.parse(localStorage.getItem('ahmar.accentVars'));
+          if (a && a[0]) { d.style.setProperty('--accent', a[0]); d.style.setProperty('--accent-rgb', a[1]); }
+        } catch (e) {}
+        setTimeout(function () { if (!window.__appStarted) d.classList.remove('js-motion', 'boot-on'); }, 8000);
+      })();
+    </script>
     <link rel="canonical" href="https://ehmerr.github.io/" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -23,12 +41,7 @@
   </head>
   <body>
     <div id="root"></div>
-    <noscript>
-      <p style="font-family:monospace;color:#E7ECF2;background:#0A0C0F;padding:24px">
-        Ahmar Rahmani — DevOps Intern at BytePe. This site needs JavaScript.
-        Resume: <a href="/Ahmar-Rahmani-Resume.pdf" style="color:#6EF0B4">Ahmar-Rahmani-Resume.pdf</a>
-      </p>
-    </noscript>
+    <noscript><p class="noscript mono">JavaScript is off: everything is readable, but the games won't run.</p></noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

@@ -219,15 +219,25 @@ const BOOT = [
   'boot   handing over to visitor@prod',
 ];
 
+// The overlay is always in the HTML; CSS shows it only while <html> has .boot-on.
+// The script in index.html's <head> adds .boot-on before the first paint on a visitor's first
+// page view this session (and not under reduced motion), so the boot screen never flickers.
+const bootOn = (on) => document.documentElement.classList.toggle('boot-on', on);
+
 export function Boot() {
   const { bus } = useGame();
-  const [show, setShow] = useState(() => !session.get('booted') && !reduced());
+  const [show, setShow] = useState(true);
   const [count, setCount] = useState(0);
 
-  useEffect(() => bus.on('fx:boot', () => { document.body.classList.remove('booted'); setCount(0); setShow(true); }), [bus]);
+  useEffect(() => {
+    if (!document.documentElement.classList.contains('boot-on')) setShow(false);
+  }, []);
+
+  useEffect(() => bus.on('fx:boot', () => { document.body.classList.remove('booted'); setCount(0); bootOn(true); setShow(true); }), [bus]);
 
   useEffect(() => {
     if (show) return;
+    bootOn(false);
     // Next frame, so the hero's hidden starting state is painted before the intro animates.
     const r = requestAnimationFrame(() => {
       document.body.classList.add('booted');
@@ -237,7 +247,7 @@ export function Boot() {
   }, [show, bus]);
 
   useEffect(() => {
-    if (!show) return;
+    if (!show || !document.documentElement.classList.contains('boot-on')) return;
     session.set('booted', '1');
     let i = 0;
     const t = setInterval(() => {

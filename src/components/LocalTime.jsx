@@ -16,8 +16,9 @@ const fmt = (() => {
 })();
 
 export default function LocalTime() {
-  const [now, setNow] = useState(() => new Date());
+  const [now, setNow] = useState(null); // no clock in the pre-built HTML; it starts ticking in the browser
   useEffect(() => {
+    setNow(new Date());
     const t = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(t);
   }, []);
@@ -25,7 +26,7 @@ export default function LocalTime() {
   return (
     <p className="local-time mono">
       <span className="live-dot" aria-hidden="true" />
-      Local time in {profile.city} · <time>{fmt.format(now)}</time> IST
+      Local time in {profile.city} · <time>{now ? fmt.format(now) : '--:--:--'}</time> IST
     </p>
   );
 }

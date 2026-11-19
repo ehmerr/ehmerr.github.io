@@ -1,12 +1,15 @@
 // Smoke test: `npm run check`
-// 1. Server-renders the app and checks every section is there.
-// 2. Mounts it in jsdom (a simulated browser) and plays through it like a visitor,
-//    reporting any runtime error and which achievements unlocked.
+// 1. Server-renders the app (exactly what tools/prerender.mjs puts in dist/index.html) and checks every section is there.
+// 2. Loads that HTML into jsdom (a simulated browser), runs index.html's <head> script and src/main.jsx,
+//    which takes the HTML over in place (hydration), like the live site. Any mismatch between the
+//    pre-built HTML and the first browser render is reported by React and fails the test.
+// 3. Plays through the site like a visitor, reporting any runtime error and which achievements unlocked.
 // Pass --reduced to simulate prefers-reduced-motion.
 import { JSDOM } from 'jsdom';
-import { createServer } from 'vite';
+import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import { viteServer, renderApp } from './render.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const REDUCED = process.argv.includes('--reduced');
@@ -15,15 +18,19 @@ let failed = false;
 const fail = (m) => { failed = true; console.log('✕ ' + m); };
 const ok = (m) => console.log('✓ ' + m);
 
-const dom = new JSDOM('<!doctype html><html><body><div id="root"></div></body></html>', { url: 'http://localhost/', pretendToBeVisual: true });
+const dom = new JSDOM('<!doctype html><html><body><div id="root"></div></body></html>', { url: 'http://localhost/', pretendToBeVisual: true, runScripts: 'outside-only' });
 const w = dom.window;
 const errors = [];
 w.addEventListener('error', (e) => errors.push('window error: ' + (e.error?.stack || e.message)));
 const origErr = console.error;
 console.error = (...a) => errors.push('console.error: ' + a.map(String).join(' ').slice(0, 500));
+// Browser globals are installed only after the server render below, which (like tools/prerender.mjs) runs in plain Node.
+const installBrowserGlobals = () => {
 for (const k of ['window', 'document', 'navigator', 'HTMLElement', 'Node', 'Element', 'getComputedStyle', 'requestAnimationFrame', 'cancelAnimationFrame', 'localStorage', 'sessionStorage', 'KeyboardEvent', 'MouseEvent', 'Event', 'MutationObserver']) {
   try { Object.defineProperty(globalThis, k, { value: w[k], configurable: true, writable: true }); } catch { /* read-only */ }
 }
+globalThis.IntersectionObserver = FakeIO;
+};
 // Simulate a desktop browser: precise pointer, optional reduced motion.
 w.matchMedia = (q) => ({
   matches: /reduce/.test(q) ? REDUCED : /pointer: fine|hover: hover/.test(q),
@@ -51,10 +58,8 @@ class FakeIO {
   disconnect() { this.els.clear(); }
 }
 w.IntersectionObserver = FakeIO;
-globalThis.IntersectionObserver = FakeIO;
-if (!REDUCED) w.document.documentElement.classList.add('js-motion');
 
-const server = await createServer({ root, logLevel: 'error', server: { middlewareMode: true }, appType: 'custom' });
+const server = await viteServer(root);
 const $ = (s) => w.document.querySelector(s);
 const $$ = (s) => [...w.document.querySelectorAll(s)];
 const click = (el, what = '') => { if (!el) throw new Error('missing element to click: ' + what); el.dispatchEvent(new w.MouseEvent('click', { bubbles: true })); };
@@ -62,14 +67,12 @@ const byText = (sel, txt) => $$(sel).find((e) => e.textContent.includes(txt));
 const key = (k, extra = {}) => w.dispatchEvent(new w.KeyboardEvent('keydown', { key: k, ...extra }));
 
 try {
-  const React = (await import('react')).default;
-  const { renderToString } = (await import('react-dom/server')).default;
-  const { createRoot } = (await import('react-dom/client')).default;
-  const { default: App } = await server.ssrLoadModule('/src/App.jsx');
+  // ---------- 1. server render (plain Node, no window) ----------
+  const html = await renderApp(server);
+  // Re-evaluate every app module with the browser globals in place, as a real browser would.
+  server.moduleGraph.invalidateAll();
+  installBrowserGlobals();
   const content = (await server.ssrLoadModule('/src/data/content.js')).default;
-
-  // ---------- 1. server render ----------
-  const html = renderToString(React.createElement(App));
   const want = [
     content.site.name, content.site.tagline,
     ...Object.values(content.sections).map((s) => s.title).filter(Boolean),
@@ -80,10 +83,32 @@ try {
   const ids = ['top', 'experience', 'pipeline', 'cluster', 'stack', 'education', 'contact'].filter((i) => !html.includes(`id="${i}"`));
   ids.length ? fail('missing section ids: ' + ids.join(', ')) : ok('all section ids present');
 
-  // ---------- 2. play through it ----------
-  // StrictMode, exactly like src/main.jsx: in dev it mounts every effect twice.
-  createRoot($('#root')).render(React.createElement(React.StrictMode, null, React.createElement(App)));
+  // ---------- 2. take over the pre-built HTML, like the live site ----------
+  $('#root').innerHTML = html;
+  const head = readFileSync(resolve(root, 'index.html'), 'utf8').match(/<script>([\s\S]*?)<\/script>/);
+  if (!head) throw new Error('index.html has no inline <head> script');
+  // A returning visitor: saved accent + an achievement. Must not change the first render.
+  w.localStorage.setItem('ahmar.accent', '1');
+  w.localStorage.setItem('ahmar.accentVars', JSON.stringify(['#5CC8FF', '92, 200, 255']));
+  w.localStorage.setItem('ahmar.ach', JSON.stringify(['theme']));
+  w.eval(head[1]);
+  w.document.documentElement.style.getPropertyValue('--accent') === '#5CC8FF' ? ok('saved accent applied before first paint') : fail('saved accent not applied by head script');
+  const cls = w.document.documentElement.classList;
+  (REDUCED ? !cls.contains('js-motion') && !cls.contains('boot-on') : cls.contains('js-motion') && cls.contains('boot-on'))
+    ? ok(`head script set ${REDUCED ? 'no motion classes (reduced motion)' : 'js-motion + boot-on'}`)
+    : fail('head script classes wrong: ' + cls.value);
+  const prebuilt = $('#root').firstElementChild;
+  await server.ssrLoadModule('/src/main.jsx'); // hydrateRoot under StrictMode (mounts every effect twice in dev)
   // Poll instead of fixed sleeps: jsdom is slow, especially with StrictMode and the canvas loops running.
+  const waitFor0 = async (cond, ms = 6000) => { const t0 = Date.now(); while (Date.now() - t0 < ms) { if (cond()) return true; await sleep(50); } return cond(); };
+  await waitFor0(() => $('.term-body p'));
+  const hydErr = errors.filter((e) => /hydrat|did not match|server rendered|client rendering/i.test(e));
+  (await waitFor0(() => /: 1 of/.test($('.hud-ach')?.getAttribute('aria-label') || ''), 3000)) ? ok('saved achievements loaded after takeover') : fail('saved achievements not loaded: ' + $('.hud-ach')?.getAttribute('aria-label'));
+  hydErr.length || $('#root').firstElementChild !== prebuilt
+    ? fail('hydration failed: React redrew the page instead of taking over the pre-built HTML')
+    : ok('pre-built HTML taken over in place (no hydration mismatches)');
+
+  // ---------- 3. play through it ----------
   const waitFor = async (cond, ms = 6000) => { const t0 = Date.now(); while (Date.now() - t0 < ms) { if (cond()) return true; await sleep(50); } return cond(); };
   await waitFor(() => $('.term-input'));
   if (!REDUCED) await waitFor(() => $('.boot'), 2000);

@@ -5,7 +5,8 @@ import { reducedMotion } from './motion.js';
 // Types `text` out once the boot screen is gone, with a blinking caret. Screen readers get the full text.
 export default function Typewriter({ text, speed = 32, delay = 700 }) {
   const { bus } = useGame();
-  const [n, setN] = useState(() => (reducedMotion() ? text.length : 0));
+  // Starts with the full text (it's in the pre-built HTML); the effect clears it and types it once the boot screen is gone.
+  const [n, setN] = useState(text.length);
 
   useEffect(() => {
     if (reducedMotion()) { setN(text.length); return; }
